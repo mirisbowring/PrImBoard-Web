@@ -17,12 +17,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { InviteComponent } from './components/invite/invite.component';
+import { UploadComponent } from './components/upload/upload.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    InviteComponent
+    InviteComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
