@@ -10,13 +10,19 @@ import { MatToolbarModule,
   MatIconModule,
   MatCardModule,
   MatButtonModule,
-  MatProgressSpinnerModule } from '@angular/material';
+  MatProgressSpinnerModule,
+  MatInputModule } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
+import { InviteComponent } from './components/invite/invite.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    InviteComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +33,12 @@ import { HttpClientModule } from '@angular/common/http';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FlexLayoutModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
