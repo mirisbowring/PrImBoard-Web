@@ -18,13 +18,17 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { InviteComponent } from './components/invite/invite.component';
 import { UploadComponent } from './components/upload/upload.component';
+import { LoginComponent } from './components/login/login.component';
+import { LogoutComponent } from './components/logout/logout.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     InviteComponent,
-    UploadComponent
+    UploadComponent,
+    LoginComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
