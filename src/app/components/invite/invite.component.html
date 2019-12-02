@@ -1,4 +1,4 @@
-<form [formGroup]="createUserForm" (ngSubmit)="submitCreateUserForm()">
+<form [formGroup]="cuForm" (ngSubmit)="submitcuForm()">
   <div class="container" fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="center">
     <div fxFlex="20%">
       <mat-form-field>
@@ -36,6 +36,6 @@
       </mat-form-field>
 
     </div>
-    <button type="submit" [disabled]="!createUserForm.valid">Submit</button>
+    <button type="submit" [disabled]="!cuForm.valid">Submit</button>
   </div>
 </form>

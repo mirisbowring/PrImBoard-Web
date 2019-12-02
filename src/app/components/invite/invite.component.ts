@@ -10,7 +10,7 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class InviteComponent implements OnInit {
 
-  public createUserForm = new FormGroup({
+  public cuForm = new FormGroup({
     username: new FormControl(''),
     firstname: new FormControl(''),
     lastname: new FormControl(''),
@@ -23,19 +23,19 @@ export class InviteComponent implements OnInit {
   ngOnInit() {
   }
 
-  public submitCreateUserForm() {
-    if (this.createUserForm.controls.password.value !== this.createUserForm.controls.password_rep.value) {
+  public submitcuForm() {
+    if (this.cuForm.controls.password.value !== this.cuForm.controls.password_rep.value) {
 
-    } else if (this.createUserForm.controls.password.value !== '') {
+    } else if (this.cuForm.controls.password.value !== '') {
 
     }
     // map the form to the user model and create a post
     this.userService.createUser(
       new User(
-        this.createUserForm.controls.username.value,
-        this.createUserForm.controls.firstname.value,
-        this.createUserForm.controls.lastname.value,
-        this.createUserForm.controls.password.value
+        this.cuForm.controls.username.value,
+        this.cuForm.controls.firstname.value,
+        this.cuForm.controls.lastname.value,
+        this.cuForm.controls.password.value
       )
     ).subscribe();
   }
