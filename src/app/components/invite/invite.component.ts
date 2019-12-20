@@ -26,12 +26,10 @@ export class InviteComponent implements OnInit {
   public submitcuForm() {
     if (this.cuForm.controls.password.value !== this.cuForm.controls.password_rep.value) {
 
-    } else if (this.cuForm.controls.password.value !== '') {
-
     }
     // map the form to the user model and create a post
     this.userService.createUser(
-      new User(
+      new User().All(
         this.cuForm.controls.username.value,
         this.cuForm.controls.firstname.value,
         this.cuForm.controls.lastname.value,
