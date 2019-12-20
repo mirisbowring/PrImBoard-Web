@@ -1,1 +1,35 @@
-<p>upload works!</p>
+<form [formGroup]="uForm" (ngSubmit)="submituForm()">
+  <mat-form-field>
+    <input matInput placeholder="Title" formControlName="title" required minlength="1">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Description" formControlName="description">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Creator" formControlName="creator">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Date</mat-label>
+    <input matInput placeholder="date" formControlName="timestamp" [matDatepicker]="picker">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Url" formControlName="url">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Thumbnail Url" formControlName="urlThumb">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Media Type</mat-label>
+    <mat-select formControlName="type" placeholder="type">
+      <mat-option *ngFor="let type of types" [value]="type.prop">
+        {{type.prop}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Format" formControlName="format">
+  </mat-form-field>
+  <button type="submit" mat-raised-button color="primary" [disabled]="!uForm.valid">Submit</button>
+</form>
