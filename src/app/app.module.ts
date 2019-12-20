@@ -11,7 +11,11 @@ import { MatToolbarModule,
   MatCardModule,
   MatButtonModule,
   MatProgressSpinnerModule,
-  MatInputModule } from '@angular/material';
+  MatInputModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatGridListModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -42,6 +46,10 @@ import { LogoutComponent } from './components/logout/logout.component';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatGridListModule,
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule

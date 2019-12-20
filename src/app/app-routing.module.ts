@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuardService as AuthGuard } from 'src/app/services/auth-guard.service';
+import { AuthGuardService as AuthGuard, AuthGuardService } from 'src/app/services/auth-guard.service';
 import { HomeComponent } from 'src/app/components/home/home.component';
 import { InviteComponent } from 'src/app/components/invite/invite.component';
 import { UploadComponent } from 'src/app/components/upload/upload.component';
@@ -14,7 +14,7 @@ const routes: Routes = [
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'logout', component: LogoutComponent },
-    { path: 'upload', component: UploadComponent },
+    { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 
