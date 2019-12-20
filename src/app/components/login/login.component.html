@@ -1,1 +1,19 @@
-<p>login works!</p>
+<div class="align-center">
+  <div class="example-container">
+    <form [formGroup]="loginForm" (ngSubmit)="submitlForm()">
+      <mat-form-field>
+        <input matInput placeholder="Username" formControlName="username" minlength="1">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'"
+          formControlName="password" minlength="1">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+      <button type="submit" mat-raised-button color="primary">Submit</button>
+    </form>
+  </div>
+</div>
