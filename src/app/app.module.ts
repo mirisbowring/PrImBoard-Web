@@ -24,6 +24,7 @@ import { InviteComponent } from './components/invite/invite.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { MediaComponent } from './components/media/media.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { LogoutComponent } from './components/logout/logout.component';
     InviteComponent,
     UploadComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    MediaComponent
   ],
   imports: [
     BrowserModule,
