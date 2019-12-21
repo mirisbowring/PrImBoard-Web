@@ -25,7 +25,17 @@
   flex: 1 1 128px;
 }
 
+.module > a {
+  width: 128px;
+  height: 128px;
+}
+
 .module > img {
+  width: 100%;
+  height: 100%;
+}
+
+.module > a > img {
   width: 100%;
   height: 100%;
 }

@@ -6,6 +6,7 @@ import { InviteComponent } from 'src/app/components/invite/invite.component';
 import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { MediaComponent } from './components/media/media.component';
 
 
 const routes: Routes = [
@@ -14,8 +15,9 @@ const routes: Routes = [
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'logout', component: LogoutComponent },
+    { path: 'media/:sha1', component: MediaComponent },
     { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
-    { path: '**', redirectTo: '' }
+    { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({

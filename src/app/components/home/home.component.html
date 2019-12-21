@@ -13,6 +13,8 @@
 </div> -->
 <div class="grid">
   <div *ngFor="let m of media" class="module">
-    <img src="{{m.url}}" alt="{{m.url}}"/>
+    <a href="/media/{{m.sha1}}">
+      <img src="{{m.url}}" alt="{{m.url}}"/>
+    </a>
   </div>
 </div>
