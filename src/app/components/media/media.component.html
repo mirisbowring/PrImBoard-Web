@@ -1,1 +1,30 @@
-<p>media works!</p>
+<div *ngIf="med != null" class="container-fluid">
+  <div class="row">
+    <div class="col-lg-9 col-md-12 order-lg-12">
+      <img style="max-width:100%;max-height: 100%;" class="pull-right" src="{{med.url}}">
+    </div>
+    <div class="col-lg-3 col-md-12 order-lg-1">
+      <ng-container *ngIf="med.title != null; then knownTitle; else unknownTitle">
+      </ng-container>
+      <ng-container *ngIf="med.timestamp != null; then knownDate; else unknownDate">
+      </ng-container>
+      <p *ngIf="med.description != null">{{med.description}}</p>
+      <!-- <p><b>Tags</b></p>
+      <p><b>Kommentare</b></p> -->
+    </div>
+  </div>
+  <ng-template #knownTitle>
+    <b>{{med.title}}</b><br>
+  </ng-template>
+  <ng-template #unknownTitle>
+    <b>&lt;unknown title&gt;</b><br>
+  </ng-template>
+  <ng-template #knownDate>
+    {{med.timestamp * 1000 | date: 'yyyy-MM-dd'}}
+    {{med.timestamp_upload * 1000 | date}}
+  </ng-template>
+  <ng-template #unknownDate>
+    Created: <i>&lt;unknown&gt;</i><br>
+    Added: {{med.timestampUpload * 1000 | date}}
+  </ng-template>
+</div>
