@@ -4,7 +4,7 @@ export class Media {
   description: string;
   creator: string;
   timestamp: number;
-  timestampUpload: number;
+  timestamp_upload: number;
   url: string;
   urlthumb: string;
   type: string;

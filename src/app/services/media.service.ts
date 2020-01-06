@@ -18,4 +18,8 @@ export class MediaService {
   public getAllMedia() {
     return this.httpClient.get(environment.gateway + '/api/v1/media');
   }
+
+  public getMediaByHash(hash: string) {
+    return this.httpClient.get(environment.gateway + '/api/v1/mediaByHash/' + hash);
+  }
 }
