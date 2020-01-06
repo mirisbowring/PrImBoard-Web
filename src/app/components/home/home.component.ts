@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.mediaService.getAllMedia().subscribe((data: any[]) => {
-      console.log(data);
       this.media = data;
     });
   }
