@@ -16,10 +16,10 @@ export class MediaService {
   }
 
   public getAllMedia() {
-    return this.httpClient.get(environment.gateway + '/api/v1/media');
+    return this.httpClient.get(environment.gateway + '/api/v1/media', {withCredentials: true});
   }
 
   public getMediaByHash(hash: string) {
-    return this.httpClient.get(environment.gateway + '/api/v1/mediaByHash/' + hash);
+    return this.httpClient.get(environment.gateway + '/api/v1/mediaByHash/' + hash, {withCredentials: true});
   }
 }
