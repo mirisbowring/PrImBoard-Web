@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
+import { CookieService } from 'ngx-cookie-service';
 import { User } from '../models/user';
 import { Observable } from 'rxjs';
 
@@ -8,24 +9,13 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private cookieService: CookieService) { }
 
   public isAuthenticated(): boolean {
     const username = localStorage.getItem('username');
-    if (username === null) {
-      console.log('no token');
+    if (!this.cookieService.check('stoken')) {
       return false;
     }
-    // this.userService.loggedIn(new User().User(username)).subscribe(
-    //   res => {
-    //     console.log('success');
-    //     this.ret = true;
-    //   },
-    //   err => {
-    //     console.log('fail');
-    //     this.ret = false;
-    //   });
-    // check if expired
     return true;
   }
 }
