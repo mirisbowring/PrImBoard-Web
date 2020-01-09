@@ -12,7 +12,7 @@ export class UserService {
   constructor(private httpClient: HttpClient) { }
 
   public createUser(user: User) {
-    return this.httpClient.post(environment.gateway + '/api/v1/user', user);
+    return this.httpClient.post(environment.gateway + '/api/v1/user', user, {withCredentials: true});
   }
 
   public loginUser(user: User) {
