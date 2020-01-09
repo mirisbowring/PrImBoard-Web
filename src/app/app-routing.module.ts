@@ -11,11 +11,11 @@ import { MediaComponent } from './components/media/media.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent },
+    { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
-    { path: 'logout', component: LogoutComponent },
-    { path: 'media/:sha1', component: MediaComponent },
+    { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
+    { path: 'media/:sha1', component: MediaComponent, canActivate: [AuthGuard] },
     { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: 'home' }
 ];
