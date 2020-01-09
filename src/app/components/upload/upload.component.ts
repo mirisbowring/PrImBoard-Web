@@ -27,17 +27,21 @@ export class UploadComponent implements OnInit {
 
   ngOnInit() {
     this.types = [
-      {prop: 'Video'},
-      {prop: 'Image'}
+      { prop: 'Video' },
+      { prop: 'Image' }
     ];
   }
 
   private submituForm() {
-    this.mediaService.createMedia(new Media().Upload(
+    this.mediaService.createMedia(new Media(
+      null,
+      null,
       this.uForm.controls.title.value,
       this.uForm.controls.description.value,
       this.uForm.controls.creator.value,
+      null,
       // this.uForm.controls.timestamp.value,
+      null,
       this.uForm.controls.url.value,
       this.uForm.controls.urlThumb.value,
       this.uForm.controls.type.value,
