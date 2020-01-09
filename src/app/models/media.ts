@@ -1,27 +1,31 @@
 export class Media {
-  id: string;
+
+  constructor(
+    public id: string,
+    public sha1: string,
+    public title: string,
+    public description: string,
+    public creator: string,
+    public timestamp: number,
+    public timestampUpload: number,
+    public url: string,
+    public urlthumb: string,
+    public type: string,
+    public format: string
+  ) { }
+
+}
+
+export interface MediaJson {
+  _id: string;
+  sha1: string;
   title: string;
   description: string;
   creator: string;
   timestamp: number;
-  timestampUpload: number;
+  timestamp_upload: number;
   url: string;
   urlthumb: string;
   type: string;
   format: string;
-
-  public Upload(title: string, description: string, creator: string,
-                url: string, urlthumb: string, type: string,
-                format: string
-  ): Media {
-    this.title = title;
-    this.description = description;
-    this.creator = creator;
-    // this.timestamp = timestamp;
-    this.url = url;
-    this.urlthumb = urlthumb;
-    this.type = type;
-    this.format = format;
-    return this;
-  }
 }
