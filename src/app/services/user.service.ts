@@ -22,4 +22,8 @@ export class UserService {
   public loggedIn(user: User) {
     return this.httpClient.post(environment.gateway + '/api/v1/loggedin', user, {observe: 'response', withCredentials: true});
   }
+
+  public logoutUser() {
+    return this.httpClient.post(environment.gateway + '/api/v1/logout', null, {observe: 'response', withCredentials: true});
+  }
 }

@@ -5,6 +5,16 @@
   <button mat-button routerLink="/">Home</button>
   <button mat-button routerLink="/invite">Invite</button>
   <button mat-button routerLink="/upload">Upload</button>
+  <span class="spacer"></span>
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="doLogout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 <!-- <app-home></app-home> -->
 <router-outlet></router-outlet>

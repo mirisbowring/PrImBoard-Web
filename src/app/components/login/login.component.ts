@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  show = false;
+
   loginForm = new FormGroup({
     username: new FormControl(''),
     password: new FormControl('')

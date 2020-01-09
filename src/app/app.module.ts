@@ -15,7 +15,8 @@ import { MatToolbarModule,
   MatSelectModule,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatGridListModule } from '@angular/material';
+  MatGridListModule,
+  MatMenuModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -54,6 +55,7 @@ import { CookieService } from 'ngx-cookie-service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatGridListModule,
+    MatMenuModule,
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,

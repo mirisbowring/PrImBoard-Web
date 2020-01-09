@@ -6,11 +6,11 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'"
+        <input matInput placeholder="Enter your password" [type]="show ? 'text' : 'password'"
           formControlName="password" minlength="1">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-          [attr.aria-pressed]="hide">
-          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <button mat-icon-button matSuffix (click)="show = !show" [attr.aria-label]="'Show password'"
+          [attr.aria-pressed]="show">
+          <mat-icon>{{show ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
       </mat-form-field>
       <button type="submit" mat-raised-button color="primary">Submit</button>
