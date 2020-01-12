@@ -7,10 +7,14 @@ import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { MediaComponent } from './components/media/media.component';
+import { EventComponent } from './components/event/event/event.component';
+import { EventsComponent } from './components/event/events/events.component';
 
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'event', component: EventComponent, canActivate: [AuthGuard ]},
+    { path: 'events', component: EventsComponent, canActivate: [AuthGuard ]},
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
