@@ -29,6 +29,7 @@ import { MediaComponent } from './components/media/media.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { EventComponent } from './components/event/event/event.component';
+import { EventsComponent } from './components/event/events/events.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { EventComponent } from './components/event/event/event.component';
     LoginComponent,
     LogoutComponent,
     MediaComponent,
-    EventComponent
+    EventComponent,
+    EventsComponent
   ],
   imports: [
     BrowserModule,
