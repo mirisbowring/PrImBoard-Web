@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  private formSubmitAttempt: boolean;
   show = false;
 
   loginForm = new FormGroup({
@@ -35,6 +36,14 @@ export class LoginComponent implements OnInit {
         console.log('Error:' + err);
         localStorage.removeItem('username');
       }
+    );
+    this.formSubmitAttempt = true;
+  }
+
+  isFieldInvalid(field: string) {
+    return (
+      (!this.loginForm.get(field).valid && this.loginForm.get(field).touched) ||
+      (this.loginForm.get(field).untouched && this.formSubmitAttempt)
     );
   }
 
