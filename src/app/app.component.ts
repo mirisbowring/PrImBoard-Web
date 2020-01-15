@@ -7,10 +7,16 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent  {
+export class AppComponent implements OnInit {
   title = 'PrImBoard-Web';
+  route: Router;
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router) {
+    this.route = router;
+  }
+
+  ngOnInit() {
+  }
 
   doLogout() {
     this.userService.logoutUser().subscribe(
