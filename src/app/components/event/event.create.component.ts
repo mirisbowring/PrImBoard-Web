@@ -29,6 +29,7 @@ export class CreateComponent implements OnInit {
   private submitnForm() {
     let event: Event;
     event = this.nForm.getRawValue();
+    // convert dates to unix timestamps
     event.timestampStart = Math.round((this.nForm.controls.timestampStart.value as Date).getTime() / 1000);
     event.timestampEnd = Math.round((this.nForm.controls.timestampEnd.value as Date).getTime() / 1000);
     this.eventService.createEvent(event).subscribe();

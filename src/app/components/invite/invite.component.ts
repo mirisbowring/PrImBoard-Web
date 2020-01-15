@@ -25,17 +25,11 @@ export class InviteComponent implements OnInit {
 
   public submitcuForm() {
     if (this.cuForm.controls.password.value !== this.cuForm.controls.password_rep.value) {
-
+      return;
     }
-    // map the form to the user model and create a post
-    this.userService.createUser(
-      new User().All(
-        this.cuForm.controls.username.value,
-        this.cuForm.controls.firstname.value,
-        this.cuForm.controls.lastname.value,
-        this.cuForm.controls.password.value
-      )
-    ).subscribe();
+    this.cuForm.removeControl('password_rep');
+    // pass uform and check against contract
+    this.userService.createUser(this.cuForm.getRawValue()).subscribe();
   }
 
 }

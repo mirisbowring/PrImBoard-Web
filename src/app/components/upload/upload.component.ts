@@ -33,20 +33,10 @@ export class UploadComponent implements OnInit {
   }
 
   private submituForm() {
-    this.mediaService.createMedia(new Media(
-      null,
-      null,
-      this.uForm.controls.title.value,
-      this.uForm.controls.description.value,
-      this.uForm.controls.creator.value,
-      null,
-      // this.uForm.controls.timestamp.value,
-      null,
-      this.uForm.controls.url.value,
-      this.uForm.controls.urlThumb.value,
-      this.uForm.controls.type.value,
-      this.uForm.controls.format.value
-    )).subscribe();
+    let med: Media;
+    med = this.uForm.getRawValue();
+    med.timestamp = Math.round((this.uForm.controls.timestamp.value as Date).getTime() / 1000);
+    this.mediaService.createMedia(med).subscribe();
   }
 
 }

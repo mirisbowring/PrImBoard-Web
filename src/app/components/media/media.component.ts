@@ -24,7 +24,6 @@ export class MediaComponent implements OnInit, AfterViewInit {
     tmp = parts[parts.length - 1];
     // receive media object
     this.mediaService.getMediaByHash(tmp).subscribe((data: Media) => {
-      console.log(data);
       this.med = data;
     });
   }

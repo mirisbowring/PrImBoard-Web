@@ -24,12 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   submitlForm() {
-    this.userService.loginUser(
-      new User().Login(
-        this.loginForm.controls.username.value,
-        this.loginForm.controls.password.value
-      )
-    ).subscribe(
+    this.userService.loginUser(this.loginForm.getRawValue()).subscribe(
       res => {
         if (res.status === 200) {
           localStorage.setItem('username', this.loginForm.controls.username.value);

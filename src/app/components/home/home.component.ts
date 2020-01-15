@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MediaService } from '../../services/media.service';
-import { MediaAdapter } from 'src/app/adapter/media.adapter';
-import { map } from 'rxjs/operators';
+import { Media } from 'src/app/models/media';
 
 @Component({
   selector: 'app-home',
@@ -12,18 +11,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   temp = Array;
   math = Math;
-  media = [];
+  media: Media[];
 
-  constructor(private mediaService: MediaService, private adapter: MediaAdapter ) { }
+  constructor(private mediaService: MediaService ) { }
 
   ngOnInit() {
 
   }
 
   ngAfterViewInit() {
-    this.mediaService.getAllMedia().pipe(
-      map((data: any[]) => data.map(item => this.adapter.adapt(item)))
-    ).subscribe((data: any[]) => this.media = data);
+    this.mediaService.getAllMedia().subscribe((data: Media[]) => this.media = data);
   }
 
 }
