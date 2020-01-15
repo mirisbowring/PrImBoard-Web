@@ -28,8 +28,9 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { MediaComponent } from './components/media/media.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
-import { EventComponent } from './components/event/event/event.component';
-import { EventsComponent } from './components/event/events/events.component';
+import { CreateComponent } from './components/event/event.create.component';
+import { ListComponent } from './components/event/event.list.component';
+import { ShowComponent } from './components/event/event.show.component';
 
 @NgModule({
   declarations: [
@@ -40,8 +41,9 @@ import { EventsComponent } from './components/event/events/events.component';
     LoginComponent,
     LogoutComponent,
     MediaComponent,
-    EventComponent,
-    EventsComponent
+    CreateComponent,
+    ListComponent,
+    ShowComponent
   ],
   imports: [
     BrowserModule,
