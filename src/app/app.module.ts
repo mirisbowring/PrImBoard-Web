@@ -16,7 +16,8 @@ import { MatToolbarModule,
   MatDatepickerModule,
   MatNativeDateModule,
   MatGridListModule,
-  MatMenuModule } from '@angular/material';
+  MatMenuModule,
+  MatAutocompleteModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -62,6 +63,7 @@ import { ShowComponent } from './components/event/event.show.component';
     MatNativeDateModule,
     MatGridListModule,
     MatMenuModule,
+    MatAutocompleteModule,
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,

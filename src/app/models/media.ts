@@ -7,7 +7,7 @@ export interface Media {
   title: string;
   description: string;
   creator: string;
-  tags: string[];
+  tags: Tag[];
   events: string[];
   groups: string[];
   timestamp: number;
