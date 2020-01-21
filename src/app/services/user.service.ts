@@ -15,6 +15,10 @@ export class UserService {
     return this.httpClient.post(environment.gateway + '/api/v1/user', user, {withCredentials: true});
   }
 
+  public getUser(username: string) {
+    return this.httpClient.get(environment.gateway + '/api/v1/user/' + username, {withCredentials: true});
+  }
+
   public loginUser(user: User) {
     return this.httpClient.post(environment.gateway + '/api/v1/login', user, {observe: 'response', withCredentials: true});
   }
