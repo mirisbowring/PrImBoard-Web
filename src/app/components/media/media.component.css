@@ -47,32 +47,26 @@ form.tag-form {
   margin-bottom: 0px;
 }
 
-.page-fixed {
-  margin: 0;
-  overflow: hidden;
-  height: 100%;
+.edit-description:hover {
+  cursor: pointer;
+  color: lightskyblue;
 }
 
-.page-fixed .media-info {
-  position: absolute;
-    top: 64px;
-    bottom: 0;
-    left: 0;
-    overflow-y: scroll;
+.edit-button {
+  border-radius: 50%;
+  background-color: transparent;
+  border-color: transparent;
 }
-.page-fixed .media-image {
-  position: absolute;
-    top: 64px;
-    bottom: 0;
-    right: 0;
-    overflow-y: scroll;
+.edit-button:active {
+  background-color: lightgrey;
 }
 
-@media (min-width: 768px){
-
+.tag-button {
+  border-radius: 50%;
+  background-color: transparent;
+  border-color: transparent;
 }
 
-.desktop {
-  width: 1052px;
-  margin: 0 auto;
+.edit-button:active {
+  background-color: lightgrey;
 }

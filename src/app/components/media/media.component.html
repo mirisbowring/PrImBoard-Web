@@ -6,23 +6,43 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <h2>
-        {{med.title != null ? med.title : "&lt;unknown title&gt;"}}
-        <button mat-icon-button aria-label="Edit">
-          <mat-icon>edit</mat-icon>
-        </button>
+      <h2 class="no-margin-bottom">
+        <div *ngIf="!addTitleShown">
+          {{med.title != null ? med.title : "&lt;unknown title&gt;"}}
+          <button class="edit-button" aria-label="edit" (click)="addTitleShown=true">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+        <form (ngSubmit)="submitTitleForm()" *ngIf="addTitleShown">
+          <mat-form-field class="full-width-input">
+            <input matInput placeholder="Title" [formControl]="titleInput">
+          </mat-form-field>
+          <button mat-flat-button color="primary" type="submit">{{med.title != null ? "Edit Title" : "Add Title"}}</button>
+          <button mat-flat-button type="button" (click)="addTitleShown=false">Cancel</button>
+        </form>
       </h2>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <ng-container *ngIf="med.timestamp != null; then knownDate; else unknownDate">
-      </ng-container>
+      <p>
+        <ng-container *ngIf="med.timestamp != null; then knownDate; else unknownDate">
+        </ng-container>
+      </p>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <div *ngIf="med.description != null">{{med.description}}</div>
+      <p *ngIf="med.description != null && !addDescriptionShown">{{med.description}}</p>
+      <p (click)="addDescriptionShown=true" *ngIf="!addDescriptionShown" class="edit-description">
+        {{med.description == null ? "Add description" : "Edit Description"}}</p>
+      <form (ngSubmit)="submitDescriptionForm()" *ngIf="addDescriptionShown">
+        <mat-form-field class="full-width-input">
+          <textarea matInput placeholder="Description" [formControl]="descriptionInput"></textarea>
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="submit">Send Comment</button>
+        <button mat-flat-button type="button" (click)="addDescriptionShown=false">Cancel</button>
+      </form>
     </div>
   </div>
   <div class="row">
@@ -41,12 +61,12 @@
             <button mat-flat-button color="primary" (click)="addCommentShown=true" *ngIf="!addCommentShown">
               Comment
             </button>
-            <form [formGroup]="commentForm" (ngSubmit)="submitCommentForm()" *ngIf="addCommentShown">
+            <form (ngSubmit)="submitCommentForm()" *ngIf="addCommentShown">
               <mat-form-field class="full-width-input">
-                <textarea matInput placeholder="Kommentar" formControlName="comment"></textarea>
+                <textarea matInput placeholder="Kommentar" [formControl]="commentInput"></textarea>
               </mat-form-field>
               <button mat-flat-button color="primary" type="submit">Send Comment</button>
-            <button mat-flat-button type="button" (click)="addCommentShown=false">Cancel</button>
+              <button mat-flat-button type="button" (click)="addCommentShown=false">Cancel</button>
             </form>
           </div>
         </div>
@@ -58,7 +78,7 @@
           <div class="col-md-12">
             <h3>
               Tags
-              <button mat-icon-button (click)="addTagShown=true" *ngIf="!addTagShown">
+              <button class="tag-button" (click)="addTagShown=true" *ngIf="!addTagShown">
                 <mat-icon>add</mat-icon>
               </button>
             </h3>
@@ -72,9 +92,9 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <form [formGroup]="tagForm" (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
+            <form (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
               <mat-form-field class="full-width-input">
-                <input matInput placeholder="Tags (kommasepariert)" type="text" formControlName="name"
+                <input matInput placeholder="Tags (kommasepariert)" type="text" [formControl]="tagInput"
                   [matAutocomplete]="auto">
                 <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete">
                   <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag.name">

@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormControlDirective } from '@angular/forms';
 import { Tag } from 'src/app/models/tag';
 import { Comment } from 'src/app/models/comment';
 import { TagService } from 'src/app/services/tag.service';
@@ -19,26 +19,23 @@ export class MediaComponent implements OnInit, AfterViewInit {
 
   tagAutoComplete$: Observable<Tag> = null;
 
-  tagForm = new FormGroup({
-    name: new FormControl('')
-  });
-
-  commentForm = new FormGroup({
-    comment: new FormControl('')
-  });
+  commentInput = new FormControl('');
+  descriptionInput = new FormControl('');
+  tagInput = new FormControl('');
+  titleInput = new FormControl('');
 
   addCommentShown = false;
+  addDescriptionShown = false;
   addTagShown = false;
+  addTitleShown = false;
   med: Media;
   users: User[] = [];
 
   private hash;
-  private asked = false;
 
   constructor(private mediaService: MediaService, private tagService: TagService, private userService: UserService) { }
 
   ngOnInit() {
-
   }
 
   ngAfterViewInit() {
@@ -49,6 +46,8 @@ export class MediaComponent implements OnInit, AfterViewInit {
     // receive media object
     this.mediaService.getMediaByHash(this.hash).subscribe((data: Media) => {
       this.med = data;
+      this.descriptionInput.setValue(this.med.description);
+      this.titleInput.setValue(this.med.title);
     });
     // pull tags
     this.receiveTags();
@@ -64,7 +63,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
   }
 
   receiveTags() {
-    this.tagAutoComplete$ = this.tagForm.controls.name.valueChanges.pipe(
+    this.tagAutoComplete$ = this.tagInput.valueChanges.pipe(
       startWith(''),
       // delay emits
       debounceTime(200),
@@ -81,7 +80,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
   }
 
   submitTagForm() {
-    const input = this.tagForm.controls.name.value;
+    const input = this.tagInput.value;
     if (input === '') {
       return;
     }
@@ -100,7 +99,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
     this.med.tags = tags;
     this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
       if (res.status === 200) {
-        this.tagForm.controls.name.setValue('');
+        this.tagInput.setValue('');
         this.med = res.body as Media;
         this.addTagShown = false;
       }
@@ -110,7 +109,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
   }
 
   submitCommentForm() {
-    const input = this.commentForm.controls.comment.value.trim();
+    const input = this.commentInput.value.trim();
     if (input === '') {
       return;
     }
@@ -120,9 +119,35 @@ export class MediaComponent implements OnInit, AfterViewInit {
     this.med.comments.push({ comment: input });
     this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
       if (res.status === 200) {
-        this.commentForm.controls.comment.setValue('');
+        this.commentInput.setValue('');
         this.med = res.body as Media;
         this.addCommentShown = false;
+      }
+    }, err => {
+      console.log('Error:' + err);
+    });
+  }
+
+  submitDescriptionForm() {
+    this.med.description = this.descriptionInput.value.trim();
+    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+      if (res.status === 200) {
+        this.med = res.body as Media;
+        this.descriptionInput.setValue(this.med.description);
+        this.addDescriptionShown = false;
+      }
+    }, err => {
+      console.log('Error:' + err);
+    });
+  }
+
+  submitTitleForm() {
+    this.med.title = this.titleInput.value.trim();
+    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+      if (res.status === 200) {
+        this.med = res.body as Media;
+        this.titleInput.setValue(this.med.title);
+        this.addTitleShown = false;
       }
     }, err => {
       console.log('Error:' + err);
