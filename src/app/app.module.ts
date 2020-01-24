@@ -27,7 +27,6 @@ import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { MediaComponent } from './components/media/media.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { CreateComponent } from './components/event/event.create.component';
 import { ListComponent } from './components/event/event.list.component';
@@ -67,7 +66,6 @@ import { ShowComponent } from './components/event/event.show.component';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
   ],
   providers: [ CookieService ],
   bootstrap: [ AppComponent ]

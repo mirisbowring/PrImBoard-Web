@@ -1,75 +1,127 @@
-<div *ngIf="med != null" class="container page-fixed">
+<div *ngIf="med != null" class="container">
   <div class="row">
-    <div class="col-lg-9 col-md-12 order-lg-12 media-image">
-      <img style="max-width:100%;max-height: 100%;" class="pull-right" src="{{med.url}}">
-    </div>
-    <div class="col-lg-3 col-md-12 order-lg-1 media-info">
-      <b>{{med.title != null ? med.title : "&lt;unknown title&gt;"}}</b>
-      <button mat-icon-button aria-label="Edit">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <br>
-      <ng-container *ngIf="med.timestamp != null; then knownDate; else unknownDate">
-      </ng-container>
-      <p *ngIf="med.description != null">{{med.description}}</p>
-      <p class="no-margin-bottom"><b>Tags</b>
-      <button mat-icon-button (click)="addTagShown=true" *ngIf="!addTagShown">
-        <mat-icon>add</mat-icon>
-      </button></p>
-      <ng-container *ngIf="med.tags == null else tags">
-      </ng-container>
-      <form [formGroup]="tagForm" (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
-        <mat-form-field class="full-width-input" class="example-container">
-          <input matInput placeholder="Tags (kommasepariert)" type="text" formControlName="name" [matAutocomplete]="auto">
-          <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete">
-            <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag.name">
-              {{ tag.name }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <button mat-flat-button color="primary" type="submit">Save Tags</button>
-        <button mat-flat-button type="button" (click)="addTagShown=false">Cancel</button>
-      </form>
-      <p class="no-margin-bottom"><b>Kommentare</b></p>
-      <ng-container *ngIf="med.comments == null else comments">
-
-      </ng-container>
-      <button mat-flat-button color="primary" (click)="addCommentShown=true" *ngIf="!addCommentShown">
-        Comment
-      </button>
-      <form [formGroup]="commentForm" (ngSubmit)="submitCommentForm()" *ngIf="addCommentShown">
-        <mat-form-field class="full-width-input" class="example-container">
-          <textarea matInput placeholder="Kommentar" formControlName="comment"></textarea>
-        </mat-form-field>
-        <button mat-flat-button color="primary" type="submit">Send Comment</button>
-        <button mat-flat-button type="button" (click)="addCommentShown=false">Cancel</button>
-      </form>
+    <div class="col-md-12">
+      <img style="max-width:100%;max-height: 100%;" src="{{med.url}}">
     </div>
   </div>
-  <ng-template #knownDate>
-    Created: {{med.timestamp * 1000 | date: 'dd.MM.yyyy'}}<br>
-    Added: {{med.timestampUpload * 1000 | date: 'dd.MM.yyyy'}}
-  </ng-template>
-  <ng-template #unknownDate>
-    Created: <i>&lt;unknown&gt;</i><br>
-    Added: {{med.timestampUpload * 1000 | date}}
-  </ng-template>
-  <ng-template #tags>
-    <div class="tags">
-      <span class="tag" *ngFor="let tag of med.tags">
-        <a class="tag-link" href="/tag/{{tag.name}}">{{tag.name}}</a>
-      </span>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>
+        {{med.title != null ? med.title : "&lt;unknown title&gt;"}}
+        <button mat-icon-button aria-label="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </h2>
     </div>
-  </ng-template>
-  <ng-template #comments>
-    <div class="comment" *ngFor="let comment of med.comments">
-      <div class="comment-profile">
-        <div class="comment-profile-img">
-          <img src="{{ getProfileImage(comment.username) }}">
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ng-container *ngIf="med.timestamp != null; then knownDate; else unknownDate">
+      </ng-container>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div *ngIf="med.description != null">{{med.description}}</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-sm-12 first-sm">
+      <div class="box box-container">
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Kommentare</h3>
+          </div>
+        </div>
+        <ng-container *ngIf="med.comments == null else comments">
+
+        </ng-container>
+        <div class="row">
+          <div class="col-md-12">
+            <button mat-flat-button color="primary" (click)="addCommentShown=true" *ngIf="!addCommentShown">
+              Comment
+            </button>
+            <form [formGroup]="commentForm" (ngSubmit)="submitCommentForm()" *ngIf="addCommentShown">
+              <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Kommentar" formControlName="comment"></textarea>
+              </mat-form-field>
+              <button mat-flat-button color="primary" type="submit">Send Comment</button>
+            <button mat-flat-button type="button" (click)="addCommentShown=false">Cancel</button>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="comment-content">{{ comment.comment }}</div>
-      <div class="comment-footer">{{ comment.timestamp * 1000 | date: 'dd.MM.yyyy hh:mm' }} - {{ comment.username }}</div>
     </div>
-  </ng-template>
+    <div class="col-md-6 col-sm-12 first-xs">
+      <div class="box box-container">
+        <div class="row">
+          <div class="col-md-12">
+            <h3>
+              Tags
+              <button mat-icon-button (click)="addTagShown=true" *ngIf="!addTagShown">
+                <mat-icon>add</mat-icon>
+              </button>
+            </h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ng-container *ngIf="med.tags == null else tags">
+            </ng-container>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <form [formGroup]="tagForm" (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
+              <mat-form-field class="full-width-input">
+                <input matInput placeholder="Tags (kommasepariert)" type="text" formControlName="name"
+                  [matAutocomplete]="auto">
+                <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag.name">
+                    {{ tag.name }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <button mat-flat-button color="primary" type="submit">Save Tags</button>
+              <button mat-flat-button type="button" (click)="addTagShown=false">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<ng-template #knownDate>
+  Taken on {{med.timestamp * 1000 | date: 'dd. MMMM yyyy'}} and uploaded on
+  {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
+</ng-template>
+
+<ng-template #unknownDate>
+  Taken on <i>&lt;unknown&gt;</i> and uploaded on {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
+</ng-template>
+
+<ng-template #tags>
+  <div class="tags">
+    <span class="tag" *ngFor="let tag of med.tags">
+      <a class="tag-link" href="/tag/{{tag.name}}">{{tag.name}}</a>
+    </span>
+  </div>
+</ng-template>
+
+<ng-template #comments>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="comment" *ngFor="let comment of med.comments">
+        <div class="comment-profile">
+          <div class="comment-profile-img">
+            <img src="{{ getProfileImage(comment.username) }}">
+          </div>
+        </div>
+        <div class="comment-content">{{ comment.comment }}</div>
+        <div class="comment-footer">{{ comment.timestamp * 1000 | date: 'dd.MM.yyyy hh:mm' }} - {{ comment.username }}
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

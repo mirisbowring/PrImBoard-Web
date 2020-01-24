@@ -71,3 +71,8 @@ form.tag-form {
 @media (min-width: 768px){
 
 }
+
+.desktop {
+  width: 1052px;
+  margin: 0 auto;
+}
