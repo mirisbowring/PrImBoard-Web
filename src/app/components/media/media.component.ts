@@ -3,9 +3,12 @@ import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Tag } from 'src/app/models/tag';
+import { Comment } from 'src/app/models/comment';
 import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap, map, catchError } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-media',
@@ -20,11 +23,19 @@ export class MediaComponent implements OnInit, AfterViewInit {
     name: new FormControl('')
   });
 
+  commentForm = new FormGroup({
+    comment: new FormControl('')
+  });
+
+  addCommentShown = false;
+  addTagShown = false;
   med: Media;
+  users: User[] = [];
 
   private hash;
+  private asked = false;
 
-  constructor(private mediaService: MediaService, private tagService: TagService) { }
+  constructor(private mediaService: MediaService, private tagService: TagService, private userService: UserService) { }
 
   ngOnInit() {
 
@@ -41,6 +52,15 @@ export class MediaComponent implements OnInit, AfterViewInit {
     });
     // pull tags
     this.receiveTags();
+  }
+
+  getProfileImage(username: string): string {
+    this.med.users.forEach(user => {
+      if (user.username === username) {
+        return user.urlImage;
+      }
+    });
+    return 'assets/profile.svg';
   }
 
   receiveTags() {
@@ -81,6 +101,28 @@ export class MediaComponent implements OnInit, AfterViewInit {
     this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
       if (res.status === 200) {
         this.tagForm.controls.name.setValue('');
+        this.med = res.body as Media;
+        this.addTagShown = false;
+      }
+    }, err => {
+      console.log('Error:' + err);
+    });
+  }
+
+  submitCommentForm() {
+    const input = this.commentForm.controls.comment.value.trim();
+    if (input === '') {
+      return;
+    }
+    if (!this.med.comments) {
+      this.med.comments = [];
+    }
+    this.med.comments.push({ comment: input });
+    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+      if (res.status === 200) {
+        this.commentForm.controls.comment.setValue('');
+        this.med = res.body as Media;
+        this.addCommentShown = false;
       }
     }, err => {
       console.log('Error:' + err);

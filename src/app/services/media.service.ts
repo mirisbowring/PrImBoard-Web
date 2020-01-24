@@ -24,6 +24,6 @@ export class MediaService {
   }
 
   public updateMediaByHash(hash: string, media: Media) {
-    return this.httpClient.put(environment.gateway + '/api/v1/media/' + hash, media, {observe: 'response', withCredentials: true});
+    return this.httpClient.put(environment.gateway + '/api/v1/mediaByHash/' + hash, media, {observe: 'response', withCredentials: true});
   }
 }

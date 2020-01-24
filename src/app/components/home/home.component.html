@@ -15,6 +15,7 @@
   <div *ngFor="let m of media" class="module">
     <!-- <a href="/media/{{m.sha1}}"> -->
       <img src="{{m.urlThumb}}" alt="{{m.urlThumb}}" [routerLink]="'/media/'+m.sha1+'_'+m._id"/>
+      <!-- <img alt="{{m.urlThumb}}" [routerLink]="'/media/'+m.sha1+'_'+m._id"/> -->
     <!-- </a> -->
   </div>
 </div>
