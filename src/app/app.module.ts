@@ -31,6 +31,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { CreateComponent } from './components/event/event.create.component';
 import { ListComponent } from './components/event/event.list.component';
 import { ShowComponent } from './components/event/event.show.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { ShowComponent } from './components/event/event.show.component';
     MediaComponent,
     CreateComponent,
     ListComponent,
-    ShowComponent
+    ShowComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,6 +67,7 @@ import { ShowComponent } from './components/event/event.show.component';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
+    InfiniteScrollModule,
   ],
   providers: [ CookieService ],
   bootstrap: [ AppComponent ]

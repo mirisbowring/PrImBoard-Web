@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaService } from '../../services/media.service';
 import { Media } from 'src/app/models/media';
 
@@ -9,18 +9,43 @@ import { Media } from 'src/app/models/media';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
-  temp = Array;
-  math = Math;
-  media: Media[];
+  @ViewChild('mediastream', { read: ElementRef, static: false }) public mediastream: ElementRef;
 
-  constructor(private mediaService: MediaService ) { }
+  isFullListDisplayed = false;
+  media: Media[] = [];
+
+  constructor(private mediaService: MediaService) { }
 
   ngOnInit() {
-
   }
 
   ngAfterViewInit() {
-    this.mediaService.getAllMedia().subscribe((data: Media[]) => this.media = data);
+    this.mediaService.getMediaPage(null, 0).subscribe((data: Media[]) => {this.media = data; this.requestMedia(); });
   }
+
+  requestMedia() {
+    this.mediaService.getMediaPage(this.media[this.media.length - 1]._id, 0).subscribe((data: Media[]) => {
+      if (data == null || data.length === 0) {
+        this.isFullListDisplayed = true;
+      } else {
+        this.media = this.media.concat(data);
+        this.callbackUntilScrollable();
+      }
+    });
+  }
+
+  onScroll() {
+    this.requestMedia();
+  }
+
+  private callbackUntilScrollable() {
+    window.setTimeout(() => {
+      if (this.mediastream.nativeElement.clientHeight <= window.innerHeight + 500) {
+        this.onScroll();
+      }
+    }, 0);  // If you use loading-placeholder.
+  }
+
+
 
 }

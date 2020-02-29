@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Media } from 'src/app/models/media';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,14 @@ export class MediaService {
 
   public createMedia(media: Media) {
     return this.httpClient.post(environment.gateway + '/api/v1/media', media, {observe: 'response', withCredentials: true});
+  }
+
+  public getMediaPage(id: string, size: number): Observable<Media[]> {
+    size = (size != null && size > 0) ? size : environment.defaultPageSize;
+    let query = '';
+    query += (id != null) ? '?after=' + id : '';
+    query += (query !== '') ? '&size=' + size : '?size=' + size;
+    return this.httpClient.get<Media[]>(environment.gateway + '/api/v1/media' + query, {withCredentials: true});
   }
 
   public getAllMedia() {

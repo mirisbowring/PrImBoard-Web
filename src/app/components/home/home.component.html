@@ -1,21 +1,9 @@
-<!-- <mat-grid-list cols="4" rowHeight="128px">
-  <mat-spinner *ngIf="media.length === 0"></mat-spinner>
-  <mat-grid-tile id="{{m._id}}" (click)="printHi()" *ngFor="let m of media">
-    <div>
-        <img src="{{m.urlthumb}}" alt="Image" />
+<div #mediastream infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="isFullListDisplayed" (scrolled)="onScroll()">
+  <div class="grid">
+    <div *ngFor="let m of media" class="module">
+      <a>
+        <img src="{{m.urlThumb}}" alt="{{m.urlThumb}}" [routerLink]="'/media/'+m.sha1+'_'+m._id" />
+      </a>
     </div>
-  </mat-grid-tile>
-</mat-grid-list> -->
-<!-- <div class="media-row" (click)="printHi()" *ngFor="let m of temp(math.ceil(media.length/2)).fill(); let i = index">
-  <a *ngFor="let item of media.slice(2*i,2*i + 2);">
-    <img src="{{item.urlthumb}}" alt="Image" />
-  </a>
-</div> -->
-<div class="grid">
-  <div *ngFor="let m of media" class="module">
-    <!-- <a href="/media/{{m.sha1}}"> -->
-      <img src="{{m.urlThumb}}" alt="{{m.urlThumb}}" [routerLink]="'/media/'+m.sha1+'_'+m._id"/>
-      <!-- <img alt="{{m.urlThumb}}" [routerLink]="'/media/'+m.sha1+'_'+m._id"/> -->
-    <!-- </a> -->
   </div>
 </div>
