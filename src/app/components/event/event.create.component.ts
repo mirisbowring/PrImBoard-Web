@@ -26,7 +26,7 @@ export class CreateComponent implements OnInit {
   ngOnInit() {
   }
 
-  private submitnForm() {
+  submitnForm() {
     let event: Event;
     event = this.nForm.getRawValue();
     // convert dates to unix timestamps
