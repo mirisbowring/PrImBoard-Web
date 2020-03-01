@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   requestMedia() {
-    this.mediaService.getMediaPage(this.media[this.media.length - 1]._id, 0).subscribe((data: Media[]) => {
+    this.mediaService.getMediaPage(this.media[this.media.length - 1].id, 0).subscribe((data: Media[]) => {
       if (data == null || data.length === 0) {
         this.isFullListDisplayed = true;
       } else {

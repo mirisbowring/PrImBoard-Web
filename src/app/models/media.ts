@@ -4,7 +4,7 @@ import { Event } from 'src/app/models/event';
 import { User } from 'src/app/models/user';
 
 export interface Media {
-  _id: string;
+  id: string;
   sha1: string;
   title: string;
   description: string;

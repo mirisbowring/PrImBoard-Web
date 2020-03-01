@@ -15,6 +15,7 @@ import { CreateComponent } from './components/event/event.create.component';
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'event', component: ShowComponent, canActivate: [AuthGuard ]},
+    { path: 'event/:id', component: ShowComponent, canActivate: [AuthGuard ]},
     { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard ]},
     { path: 'events', component: ListComponent, canActivate: [AuthGuard ]},
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },

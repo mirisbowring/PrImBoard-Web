@@ -1,5 +1,5 @@
 export interface Event {
-   _id: string;
+   id: string;
    title: string;
    description: string;
    comments: Comment[];
