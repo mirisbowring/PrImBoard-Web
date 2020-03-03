@@ -16,11 +16,12 @@ export class MediaService {
     return this.httpClient.post(environment.gateway + '/api/v1/media', media, {observe: 'response', withCredentials: true});
   }
 
-  public getMediaPage(id: string, size: number): Observable<Media[]> {
+  public getMediaPage(id: string, size: number, filter: string): Observable<Media[]> {
     size = (size != null && size > 0) ? size : environment.defaultPageSize;
     let query = '';
     query += (id != null) ? '?after=' + id : '';
     query += (query !== '') ? '&size=' + size : '?size=' + size;
+    query += (filter !== '') ? '&filter=' + filter : '';
     return this.httpClient.get<Media[]>(environment.gateway + '/api/v1/media' + query, {withCredentials: true});
   }
 
