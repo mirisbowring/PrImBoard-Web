@@ -1,21 +1,65 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import { of, Observable } from 'rxjs';
+import { Tag } from 'src/app/models/tag';
+import { FormControl } from '@angular/forms';
+import { startWith, debounceTime, switchMap } from 'rxjs/operators';
+import { TagService } from 'src/app/services/tag.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+
+  tagAutoComplete$: Observable<Tag> = null;
+  tagInput = new FormControl('');
+
   title = 'PrImBoard-Web';
   route: Router;
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private router: Router, private tagService: TagService) {
     this.route = router;
+    let filter = window.location.pathname;
+    if (filter.startsWith('/home/')) {
+      filter = filter.replace('/home/', '');
+      this.tagInput.setValue(filter);
+    }
   }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    // pull tags
+    this.receiveTags();
+  }
+
+  receiveTags() {
+    this.tagAutoComplete$ = this.tagInput.valueChanges.pipe(
+      startWith(''),
+      // delay emits
+      debounceTime(200),
+      // use switch map to cancel previous subscribed events, before creating new
+      switchMap(value => {
+        if (value !== '') {
+          return this.tagService.tagPreview(value.toLowerCase());
+        } else {
+          // no value present
+          return of(null);
+        }
+      })
+    );
+  }
+
+  submitTagForm() {
+    const input = this.tagInput.value;
+    if (input === '') {
+      this.router.navigate(['/home']);
+    }
+    this.router.navigate(['/home/' + input]);
   }
 
   doLogout() {

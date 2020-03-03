@@ -7,6 +7,21 @@
   <button mat-button routerLink="/invite">Invite</button>
   <button mat-button routerLink="/upload">Upload</button>
   <span class="spacer"></span>
+  <form (ngSubmit)="submitTagForm()">
+    <mat-form-field class="full-width-input">
+      <input matInput placeholder="Filter" type="text" [formControl]="tagInput"
+        [matAutocomplete]="auto">
+      <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag.name">
+          {{ tag.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button mat-icon-button color="white" type="submit">
+      <mat-icon>search</mat-icon>
+    </button>
+  </form>
+  <span class="spacer"></span>
   <button mat-icon-button aria-label="Add Event" routerLink="/event/new" *ngIf="route.url == '/events'">
     <mat-icon>add</mat-icon>
   </button>

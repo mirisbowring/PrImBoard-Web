@@ -10,6 +10,7 @@ import { MediaComponent } from './components/media/media.component';
 import { ListComponent } from './components/event/event.list.component';
 import { ShowComponent } from './components/event/event.show.component';
 import { CreateComponent } from './components/event/event.create.component';
+import { MediaListComponent } from './components/media/media.list.component';
 
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
     { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard ]},
     { path: 'events', component: ListComponent, canActivate: [AuthGuard ]},
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+    { path: 'home/:filter', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
