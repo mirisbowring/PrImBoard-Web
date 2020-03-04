@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (input === '') {
       this.router.navigate(['/home']);
     }
-    this.router.navigate(['/home/' + input]);
+    this.router.navigate(['/home/' + input ]);
   }
 
   doLogout() {

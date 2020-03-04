@@ -17,11 +17,8 @@ export class MediaListComponent implements OnInit, AfterViewInit {
   filter: string;
 
   constructor(private mediaService: MediaService, private router: Router, private route: ActivatedRoute) {
-    route.params.subscribe(val => {
-      this.filter = this.router.url;
-      this.filter = this.filter.startsWith('/home/') ? this.filter.replace('/home/', '') : '';
-      console.log(this.filter);
-      this.mediaService.getMediaPage(null, 0, this.filter).subscribe((data: Media[]) => {this.media = data; this.requestMedia(); });
+    route.params.subscribe(param => {
+      this.mediaService.getMediaPage(null, 0, param.filter).subscribe((data: Media[]) => {this.media = data; this.requestMedia(); });
     });
    }
 
