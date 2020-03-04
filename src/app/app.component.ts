@@ -1,11 +1,12 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { Tag } from 'src/app/models/tag';
 import { FormControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
 import { TagService } from 'src/app/services/tag.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -14,18 +15,27 @@ import { TagService } from 'src/app/services/tag.service';
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
+  authenticated: boolean;
+
   tagAutoComplete$: Observable<Tag> = null;
   tagInput = new FormControl('');
 
-  title = 'PrImBoard-Web';
-  route: Router;
+  constructor(
+    private userService: UserService,
+    public router: Router,
+    private tagService: TagService,
+    authService: AuthService) {
 
-  constructor(private userService: UserService, private router: Router, private tagService: TagService) {
-    this.route = router;
-    let filter = window.location.pathname;
-    if (filter.startsWith('/home/')) {
-      filter = filter.replace('/home/', '');
-      this.tagInput.setValue(filter);
+    router.events.subscribe(val => {
+      this.authenticated = authService.isAuthenticated();
+      console.log('called');
+    });
+    if (!this.authenticated) {
+      let filter = window.location.pathname;
+      if (filter.startsWith('/home/')) {
+        filter = filter.replace('/home/', '');
+        this.tagInput.setValue(filter);
+      }
     }
   }
 
