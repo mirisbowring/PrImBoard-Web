@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-media-list',
@@ -16,7 +16,7 @@ export class MediaListComponent implements OnInit, AfterViewInit {
   media: Media[] = [];
   filter: string;
 
-  constructor(private mediaService: MediaService, private router: Router, private route: ActivatedRoute) {
+  constructor(private mediaService: MediaService, route: ActivatedRoute) {
     route.params.subscribe(param => {
       this.mediaService.getMediaPage(null, 0, param.filter).subscribe((data: Media[]) => {this.media = data; this.requestMedia(); });
     });

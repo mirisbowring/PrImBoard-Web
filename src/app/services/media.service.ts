@@ -20,8 +20,8 @@ export class MediaService {
     size = (size != null && size > 0) ? size : environment.defaultPageSize;
     let query = '';
     query += (id != null) ? '?after=' + id : '';
-    query += (query !== '') ? '&size=' + size : '?size=' + size;
-    query += (filter !== '') ? '&filter=' + filter : '';
+    query += (query) ? '&size=' + size : '?size=' + size;
+    query += (filter) ? '&filter=' + filter : '';
     return this.httpClient.get<Media[]>(environment.gateway + '/api/v1/media' + query, {withCredentials: true});
   }
 

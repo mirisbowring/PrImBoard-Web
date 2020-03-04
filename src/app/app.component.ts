@@ -25,7 +25,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     // store authenticated in a local boolean to prevent delay due to cookie access
     router.events.subscribe(val => {
       this.authenticated = authService.isAuthenticated();
-      console.log('called');
     });
     // parse filter from url if authenticated only
     if (!this.authenticated) {
