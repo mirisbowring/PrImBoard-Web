@@ -5,10 +5,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  templateUrl: './media.list.component.html',
+  styleUrls: ['./media.list.component.css']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class MediaListComponent implements OnInit, AfterViewInit {
 
   @ViewChild('mediastream', { read: ElementRef, static: false }) public mediastream: ElementRef;
 

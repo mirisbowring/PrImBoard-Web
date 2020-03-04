@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService as AuthGuard, AuthGuardService } from 'src/app/services/auth-guard.service';
-import { HomeComponent } from 'src/app/components/home/home.component';
 import { InviteComponent } from 'src/app/components/invite/invite.component';
 import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
@@ -19,8 +18,8 @@ const routes: Routes = [
     { path: 'event/:id', component: ShowComponent, canActivate: [AuthGuard ]},
     { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard ]},
     { path: 'events', component: ListComponent, canActivate: [AuthGuard ]},
-    { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'home/:filter', component: HomeComponent, canActivate: [AuthGuard] },
+    { path: 'home', component: MediaListComponent, canActivate: [AuthGuard] },
+    { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
