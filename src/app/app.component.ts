@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { Tag } from 'src/app/models/tag';
 import { FormControl } from '@angular/forms';
@@ -20,16 +20,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   tagAutoComplete$: Observable<Tag> = null;
   tagInput = new FormControl('');
 
-  constructor(
-    private userService: UserService,
-    public router: Router,
-    private tagService: TagService,
-    authService: AuthService) {
+  constructor(private userService: UserService, public router: Router, private tagService: TagService, authService: AuthService) {
 
+    // store authenticated in a local boolean to prevent delay due to cookie access
     router.events.subscribe(val => {
       this.authenticated = authService.isAuthenticated();
       console.log('called');
     });
+    // parse filter from url if authenticated only
     if (!this.authenticated) {
       let filter = window.location.pathname;
       if (filter.startsWith('/home/')) {
