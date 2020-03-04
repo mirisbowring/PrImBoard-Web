@@ -18,7 +18,8 @@ export class MediaListComponent implements OnInit, AfterViewInit {
 
   constructor(private mediaService: MediaService, route: ActivatedRoute) {
     route.params.subscribe(param => {
-      this.mediaService.getMediaPage(null, 0, param.filter).subscribe((data: Media[]) => {this.media = data; this.requestMedia(); });
+      this.filter = param.filter;
+      this.mediaService.getMediaPage(null, 0, this.filter).subscribe((data: Media[]) => {this.media = data; this.requestMedia(); });
     });
    }
 

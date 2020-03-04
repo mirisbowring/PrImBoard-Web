@@ -1,8 +1,15 @@
 <div #mediastream infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="isFullListDisplayed" (scrolled)="onScroll()">
-  <div class="grid">
+  <div *ngIf="filter" class="grid">
     <div *ngFor="let m of media" class="module">
       <a>
-        <img src="{{m.urlThumb}}" alt="{{m.urlThumb}}" [routerLink]="['/media/', m.id]" />
+        <img src="{{m.urlThumb}}" alt="{{m.urlThumb}}" [routerLink]="['/media/' + filter + '/' + m.id]" />
+      </a>
+    </div>
+  </div>
+  <div *ngIf="!filter" class="grid">
+    <div *ngFor="let m of media" class="module">
+      <a>
+        <img src="{{m.urlThumb}}" alt="{{m.urlThumb}}" [routerLink]="['/media/' + m.id]" />
       </a>
     </div>
   </div>

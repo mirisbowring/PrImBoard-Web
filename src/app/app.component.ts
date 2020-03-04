@@ -25,15 +25,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     // store authenticated in a local boolean to prevent delay due to cookie access
     router.events.subscribe(val => {
       this.authenticated = authService.isAuthenticated();
-    });
-    // parse filter from url if authenticated only
-    if (!this.authenticated) {
-      let filter = window.location.pathname;
-      if (filter.startsWith('/home/')) {
-        filter = filter.replace('/home/', '');
-        this.tagInput.setValue(filter);
+      // parse filter from url if authenticated only
+      if (this.authenticated) {
+        // filter has to be manually parsed because this component is not in scope of router-outlet
+        let filter = window.location.pathname;
+        if (filter.startsWith('/home/')) {
+          // filter = filter.replace('/home/', '');
+          filter = filter.split('/')[2];
+          console.log(filter);
+          this.tagInput.setValue(filter);
+        } else {
+          this.tagInput.setValue('');
+        }
       }
-    }
+    });
   }
 
   ngOnInit() {
@@ -66,7 +71,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (input === '') {
       this.router.navigate(['/home']);
     }
-    this.router.navigate(['/home/' + input ]);
+    this.router.navigate(['/home/' + input]);
   }
 
   doLogout() {

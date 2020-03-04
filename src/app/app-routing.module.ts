@@ -20,6 +20,7 @@ const routes: Routes = [
     { path: 'events', component: ListComponent, canActivate: [AuthGuard ]},
     { path: 'home', component: MediaListComponent, canActivate: [AuthGuard] },
     { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
+    { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard] },
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
