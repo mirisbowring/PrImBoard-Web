@@ -23,7 +23,7 @@ const routes: Routes = [
     { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
-    { path: 'media/:sha1', component: MediaComponent, canActivate: [AuthGuard] },
+    { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard] },
     { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: 'home' }
 ];

@@ -9,6 +9,7 @@ import { startWith, debounceTime, switchMap, map, catchError } from 'rxjs/operat
 import { of, Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-media',
@@ -31,23 +32,20 @@ export class MediaComponent implements OnInit, AfterViewInit {
   med: Media;
   users: User[] = [];
 
-  private hash;
-
-  constructor(private mediaService: MediaService, private tagService: TagService, private userService: UserService) { }
+  constructor(private mediaService: MediaService, private tagService: TagService, private route: ActivatedRoute) { }
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    // receive hash from current url
-    const tmp = location.href;
-    const parts = tmp.split('/');
-    this.hash = parts[parts.length - 1];
-    // receive media object
-    this.mediaService.getMediaByHash(this.hash).subscribe((data: Media) => {
-      this.med = data;
-      this.descriptionInput.setValue(this.med.description);
-      this.titleInput.setValue(this.med.title);
+    this.route.params.subscribe(param => {
+      // receive media object
+      console.log(param);
+      this.mediaService.getMediaByID(param.id).subscribe((data: Media) => {
+        this.med = data;
+        this.descriptionInput.setValue(this.med.description);
+        this.titleInput.setValue(this.med.title);
+      });
     });
     // pull tags
     this.receiveTags();
@@ -97,7 +95,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
     // post to database
     // add tags
     this.med.tags = tags;
-    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+    this.mediaService.updateMediaByID(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.tagInput.setValue('');
         this.med = res.body as Media;
@@ -117,7 +115,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
       this.med.comments = [];
     }
     this.med.comments.push({ comment: input });
-    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+    this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.commentInput.setValue('');
         this.med = res.body as Media;
@@ -130,7 +128,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
 
   submitDescriptionForm() {
     this.med.description = this.descriptionInput.value.trim();
-    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+    this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.med = res.body as Media;
         this.descriptionInput.setValue(this.med.description);
@@ -143,7 +141,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
 
   submitTitleForm() {
     this.med.title = this.titleInput.value.trim();
-    this.mediaService.updateMediaByHash(this.hash, this.med).subscribe(res => {
+    this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.med = res.body as Media;
         this.titleInput.setValue(this.med.title);
