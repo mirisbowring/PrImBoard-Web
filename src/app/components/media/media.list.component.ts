@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { MediaService } from '../../services/media.service';
+import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-media-list',
   templateUrl: './media.list.component.html',
   styleUrls: ['./media.list.component.css']
 })
