@@ -1,4 +1,9 @@
-<mat-toolbar class="app-toolbar" color="primary">
+<mat-toolbar *ngIf="!authenticated" class="app-toolbar" color="primary">
+  <h1>
+    PrImBoard
+  </h1>
+</mat-toolbar>
+<mat-toolbar *ngIf="authenticated" class="app-toolbar" color="primary">
   <h1>
     PrImBoard
   </h1>
