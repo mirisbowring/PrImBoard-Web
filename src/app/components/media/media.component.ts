@@ -1,13 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
-import { FormGroup, FormControl, FormControlDirective } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Tag } from 'src/app/models/tag';
-import { Comment } from 'src/app/models/comment';
 import { TagService } from 'src/app/services/tag.service';
-import { startWith, debounceTime, switchMap, map, catchError } from 'rxjs/operators';
+import { startWith, debounceTime, switchMap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
-import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
 import { ActivatedRoute } from '@angular/router';
 
