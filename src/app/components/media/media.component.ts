@@ -1,20 +1,25 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
 import { FormControl } from '@angular/forms';
 import { Tag } from 'src/app/models/tag';
 import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { of, Observable, Unsubscribable } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { ActivatedRoute } from '@angular/router';
+import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
 
 @Component({
   selector: 'app-media',
   templateUrl: './media.component.html',
   styleUrls: ['./media.component.css']
 })
-export class MediaComponent implements OnInit, AfterViewInit {
+@DestroySubscribers()
+export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @CombineSubscriptions()
+  private subscribers: Unsubscribable;
 
   tagAutoComplete$: Observable<Tag> = null;
 
@@ -36,7 +41,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.route.params.subscribe(param => {
+    this.subscribers = this.route.params.subscribe(param => {
       // receive media object
       this.mediaService.getMediaByID(param.id).subscribe((data: Media) => {
         this.med = data;
@@ -47,6 +52,8 @@ export class MediaComponent implements OnInit, AfterViewInit {
     // pull tags
     this.receiveTags();
   }
+
+  ngOnDestroy() { }
 
   getProfileImage(username: string): string {
     this.med.users.forEach(user => {
@@ -92,7 +99,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
     // post to database
     // add tags
     this.med.tags = tags;
-    this.mediaService.updateMediaByID(this.med.id, this.med).subscribe(res => {
+    this.subscribers = this.mediaService.updateMediaByID(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.tagInput.setValue('');
         this.med = res.body as Media;
@@ -112,7 +119,7 @@ export class MediaComponent implements OnInit, AfterViewInit {
       this.med.comments = [];
     }
     this.med.comments.push({ comment: input });
-    this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
+    this.subscribers = this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.commentInput.setValue('');
         this.med = res.body as Media;
