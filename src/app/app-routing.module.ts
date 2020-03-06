@@ -13,24 +13,28 @@ import { MediaListComponent } from 'src/app/components/media/media.list.componen
 
 
 const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'event', component: ShowComponent, canActivate: [AuthGuard ]},
-    { path: 'event/:id', component: ShowComponent, canActivate: [AuthGuard ]},
-    { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard ]},
-    { path: 'events', component: ListComponent, canActivate: [AuthGuard ]},
-    { path: 'home', component: MediaListComponent, canActivate: [AuthGuard] },
-    { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
-    { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard] },
-    { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
-    { path: 'login', component: LoginComponent },
-    { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
-    { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard] },
-    { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
-    { path: '**', redirectTo: 'home' }
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'event', component: ShowComponent, canActivate: [AuthGuard] },
+  { path: 'event/:id', component: ShowComponent, canActivate: [AuthGuard] },
+  { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard] },
+  { path: 'events', component: ListComponent, canActivate: [AuthGuard] },
+  { path: 'home', component: MediaListComponent, canActivate: [AuthGuard] },
+  { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
+  { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard] },
+  { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard] },
+  { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
+  { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    // useHash: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
