@@ -30,7 +30,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
       fil(e => e instanceof NavigationEnd),
       withLatestFrom(route.params, route.fragment)
     ).subscribe(([e, params, fragment]) => {
-      console.log(e instanceof NavigationEnd);
       let operate = false;
       if (this.curID !== fragment) {
         this.curID = fragment;
@@ -45,7 +44,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
       if (operate || (e as NavigationEnd).urlAfterRedirects === '/home') {
-        console.log('getting');
         this.media = [];
         this.requestMedia();
       }
@@ -59,7 +57,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() { }
 
   requestMedia() {
-    console.log(this.prevID + '     ' + this.curID + '    ' + this.filter);
     this.mediaService.getMediaPage(this.prevID, 0, this.filter).subscribe((data: Media[]) => {
       if (data == null || data.length === 0) {
         this.isFullListDisplayed = true;
