@@ -38,7 +38,6 @@ export class MediaComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.route.params.subscribe(param => {
       // receive media object
-      console.log(param);
       this.mediaService.getMediaByID(param.id).subscribe((data: Media) => {
         this.med = data;
         this.descriptionInput.setValue(this.med.description);
