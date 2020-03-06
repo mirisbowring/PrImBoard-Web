@@ -43,9 +43,13 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
           operate = true;
         }
       }
-      if (operate || (e as NavigationEnd).urlAfterRedirects === '/home') {
+      if (operate) {
         this.media = [];
         this.requestMedia(this.prevID ? 'from' : '');
+      } else if ((e as NavigationEnd).urlAfterRedirects === '/home') {
+        this.media = [];
+        this.prevID = null;
+        this.requestMedia('');
       }
     });
   }
