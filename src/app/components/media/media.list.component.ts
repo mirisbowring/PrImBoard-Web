@@ -45,7 +45,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       if (operate || (e as NavigationEnd).urlAfterRedirects === '/home') {
         this.media = [];
-        this.requestMedia();
+        this.requestMedia(this.prevID ? 'from' : '');
       }
     });
   }
@@ -56,8 +56,8 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() { }
 
-  requestMedia() {
-    this.mediaService.getMediaPage(this.prevID, 0, this.filter).subscribe((data: Media[]) => {
+  requestMedia(param: string) {
+    this.mediaService.getMediaPage(this.prevID, 0, this.filter, param).subscribe((data: Media[]) => {
       if (data == null || data.length === 0) {
         this.isFullListDisplayed = true;
       } else {
@@ -68,14 +68,18 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onScroll() {
-    this.requestMedia();
+  onScrollDown() {
+    this.requestMedia('after');
+  }
+
+  onScrollUp() {
+    this.requestMedia('before');
   }
 
   private callbackUntilScrollable() {
     window.setTimeout(() => {
       if (this.mediastream.nativeElement.clientHeight <= window.innerHeight + 500) {
-        this.onScroll();
+        this.onScrollDown();
       }
     }, 0);
   }
