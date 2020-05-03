@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Media } from 'src/app/models/media';
 import { Observable } from 'rxjs';
+import { Tag } from '../models/tag';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,10 @@ import { Observable } from 'rxjs';
 export class MediaService {
 
   constructor(private httpClient: HttpClient) { }
+
+  public addTags(id: string, tags: Tag[]) {
+    return this.httpClient.post(environment.gateway + '/api/v1/media/' + id + '/tags', tags, { observe: 'response', withCredentials: true});
+  }
 
   public createMedia(media: Media) {
     return this.httpClient.post(environment.gateway + '/api/v1/media', media, { observe: 'response', withCredentials: true });

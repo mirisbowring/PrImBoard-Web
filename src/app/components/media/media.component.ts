@@ -87,19 +87,12 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     let tags: Tag[] = [];
-    // add existing tags to tmp tag list
-    if (this.med.tags) {
-      this.med.tags.forEach(t => tags.push(t));
-    }
-    // clear and reinit models tags (if not you will get concurrency problems)
-    this.med.tags = [];
     // append new tags (comma separated)
     input.split(',').forEach(tag => tags.push({ name: tag }));
     tags = this.tidyTags(tags);
     // post to database
     // add tags
-    this.med.tags = tags;
-    this.subscribers = this.mediaService.updateMediaByID(this.med.id, this.med).subscribe(res => {
+    this.subscribers = this.mediaService.addTags(this.med.id, tags).subscribe(res => {
       if (res.status === 200) {
         this.tagInput.setValue('');
         this.med = res.body as Media;
