@@ -108,11 +108,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     if (input === '') {
       return;
     }
-    if (!this.med.comments) {
-      this.med.comments = [];
-    }
-    this.med.comments.push({ comment: input });
-    this.subscribers = this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
+    this.subscribers = this.mediaService.addComment(this.med.id, { comment: input }).subscribe(res => {
       if (res.status === 200) {
         this.commentInput.setValue('');
         this.med = res.body as Media;
