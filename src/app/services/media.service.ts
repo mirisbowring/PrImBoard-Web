@@ -14,18 +14,18 @@ export class MediaService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public addTags(id: string, tags: Tag[]) {
-    return this.httpClient.post(
-      environment.gateway + '/api/v1/media/' + id + '/tags',
-      tags,
-      { observe: 'response', withCredentials: true }
-    );
-  }
-
   public addComment(id: string, comment: Comment) {
     return this.httpClient.post(
       environment.gateway + '/api/v1/media/' + id + '/comment',
       comment,
+      { observe: 'response', withCredentials: true }
+    );
+  }
+
+  public addTags(id: string, tags: Tag[]) {
+    return this.httpClient.post(
+      environment.gateway + '/api/v1/media/' + id + '/tags',
+      tags,
       { observe: 'response', withCredentials: true }
     );
   }
@@ -61,5 +61,44 @@ export class MediaService {
 
   public updateMediaByID(id: string, media: Media) {
     return this.httpClient.put(environment.gateway + '/api/v1/media/' + id, media, { observe: 'response', withCredentials: true });
+  }
+
+  /**
+   *
+   * @param id id of the media
+   * @param media an Media Object with description field set
+   */
+  public setDescription(id: string, media: Media) {
+    return this.httpClient.put(
+      environment.gateway + '/api/v1/media/' + id + '/description',
+      media,
+      { observe: 'response', withCredentials: true }
+    );
+  }
+
+  /**
+   *
+   * @param id id of the media
+   * @param media an Media Object with timestamp field set
+   */
+  public setTimestamp(id: string, media: Media) {
+    return this.httpClient.put(
+      environment.gateway + '/api/v1/media/' + id + '/timestamp',
+      media,
+      { observe: 'response', withCredentials: true }
+    );
+  }
+
+  /**
+   *
+   * @param id id of the media
+   * @param media an Media Object with title field set
+   */
+  public setTitle(id: string, media: Media) {
+    return this.httpClient.put(
+      environment.gateway + '/api/v1/media/' + id + '/title',
+      media,
+      { observe: 'response', withCredentials: true }
+    );
   }
 }

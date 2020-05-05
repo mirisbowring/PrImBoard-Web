@@ -9,6 +9,7 @@ import { of, Observable, Unsubscribable } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { ActivatedRoute } from '@angular/router';
 import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-media',
@@ -32,6 +33,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   addDescriptionShown = false;
   addTagShown = false;
   addTitleShown = false;
+  setDateShown = false;
   med: Media;
   users: User[] = [];
 
@@ -119,9 +121,21 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  submitDateForm(event: MatDatepickerInputEvent<Date>) {
+    this.med.timestamp = event.value.getTime() / 1000;
+    this.mediaService.setTimestamp(this.med.id, this.med).subscribe(res => {
+      if (res.status === 200) {
+        this.med = res.body as Media;
+        this.setDateShown = false;
+      }
+    }, err => {
+      console.log('Error' + err);
+    });
+  }
+
   submitDescriptionForm() {
     this.med.description = this.descriptionInput.value.trim();
-    this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
+    this.mediaService.setDescription(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.med = res.body as Media;
         this.descriptionInput.setValue(this.med.description);
@@ -132,9 +146,12 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  submitTimestampForm() {
+  }
+
   submitTitleForm() {
     this.med.title = this.titleInput.value.trim();
-    this.mediaService.updateMediaByHash(this.med.id, this.med).subscribe(res => {
+    this.mediaService.setTitle(this.med.id, this.med).subscribe(res => {
       if (res.status === 200) {
         this.med = res.body as Media;
         this.titleInput.setValue(this.med.title);

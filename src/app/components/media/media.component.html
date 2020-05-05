@@ -26,7 +26,7 @@
   <div class="row">
     <div class="col-md-12">
       <p>
-        <ng-container *ngIf="med.timestamp != null; then knownDate; else unknownDate">
+        <ng-container *ngIf="setDateShown === true; then setDate; else (med.timestamp != null && knownDate) || (unknownDate)">
         </ng-container>
       </p>
     </div>
@@ -113,12 +113,22 @@
 </div>
 
 <ng-template #knownDate>
-  Taken on {{med.timestamp * 1000 | date: 'dd. MMMM yyyy'}} and uploaded on
+  Taken on <span (click)="setDateShown=true">{{med.timestamp * 1000 | date: 'dd. MMMM yyyy'}}</span> and uploaded on
   {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
 </ng-template>
 
 <ng-template #unknownDate>
-  Taken on <i>&lt;unknown&gt;</i> and uploaded on {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
+  Taken on <i (click)="setDateShown=true">&lt;unknown&gt;</i> and uploaded on {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
+</ng-template>
+
+<ng-template #setDate>
+  Taken on
+  <mat-form-field>
+    <input matInput placeholder="date" [formControl]="med.timestamp * 1000" formControlName="timestamp" [matDatepicker]="timestamp" (dateChange)="submitDateForm($event)">
+    <mat-datepicker-toggle matSuffix [for]="timestamp"></mat-datepicker-toggle>
+    <mat-datepicker #timestamp></mat-datepicker>
+  </mat-form-field>
+  and uploaded on {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
 </ng-template>
 
 <ng-template #tags>
