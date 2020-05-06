@@ -10,6 +10,7 @@ import { ListComponent } from 'src/app/components/event/event.list.component';
 import { ShowComponent } from 'src/app/components/event/event.show.component';
 import { CreateComponent } from 'src/app/components/event/event.create.component';
 import { MediaListComponent } from 'src/app/components/media/media.list.component';
+import { SettingComponent } from './components/setting/setting.component';
 
 
 const routes: Routes = [
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingComponent, canActivate: [AuthGuard] },
   { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'home' }
 ];

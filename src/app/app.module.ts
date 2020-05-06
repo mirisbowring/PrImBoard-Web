@@ -11,6 +11,7 @@ import { MatToolbarModule,
   MatButtonModule,
   MatProgressSpinnerModule,
   MatInputModule,
+  MatListModule,
   MatSelectModule,
   MatDatepickerModule,
   MatNativeDateModule,
@@ -32,6 +33,7 @@ import { CreateComponent } from './components/event/event.create.component';
 import { ListComponent } from './components/event/event.list.component';
 import { ShowComponent } from './components/event/event.show.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { SettingComponent } from './components/setting/setting.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     CreateComponent,
     ListComponent,
     ShowComponent,
+    SettingComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatInputModule,
+    MatListModule,
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
