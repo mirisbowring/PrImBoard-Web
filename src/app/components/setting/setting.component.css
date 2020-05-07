@@ -1,3 +1,24 @@
 .usergroup-row {
   margin-bottom: 10px;
 }
+
+.user-row .trash {
+  display: none;
+}
+
+.user-row {
+  border-radius: 4px;
+  padding: 5px 0px 7px 0px;
+}
+
+.user-row:hover {
+  background-color: lightgray;
+}
+
+.user-row:hover .trash {
+  display: block;
+}
+
+.trash:hover {
+  cursor: pointer;
+}

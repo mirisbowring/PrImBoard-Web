@@ -11,13 +11,12 @@
           <mat-card class="usergroup-card">
             <mat-card-title>
               <div class="float-left">{{ g.title }}</div>
-              <div class="float-right">
+              <div class="float-right" *ngIf="isOwner(g.creator)">
                 <button mat-icon-button aria-label="Add User" (click)="currentGroup = g.id"
                   *ngIf="currentGroup !== g.id">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button aria-label="Add User" (click)="currentGroup = ''"
-                  *ngIf="currentGroup === g.id">
+                <button mat-icon-button aria-label="Add User" (click)="currentGroup = ''" *ngIf="currentGroup === g.id">
                   <mat-icon>close</mat-icon>
                 </button>
               </div>
@@ -27,16 +26,25 @@
               Owner: {{ g.creator }}
             </mat-card-subtitle>
             <mat-card-content>
-              <form (ngSubmit)="submitAddUserForm()" *ngIf="currentGroup === g.id">
+              <form (ngSubmit)="submitAddUserForm()" *ngIf="currentGroup === g.id && isOwner(g.creator)">
                 <mat-form-field class="full-width-input">
                   <input matInput placeholder="Add Users" [formControl]="newUsers" required>
                   <button mat-icon-button matSuffix aria-label="submit" type="submit">
-                    <mat-icon>send</mat-icon></button>
+                    <mat-icon>send</mat-icon>
+                  </button>
                 </mat-form-field>
               </form>
-              <mat-list dense>
-                <mat-list-item *ngFor="let u of g.users" role="listitem">{{ u }}</mat-list-item>
-              </mat-list>
+              <div class="row" *ngFor="let u of g.users" class="user-row">
+                <div class="col-md-12">
+                  <div class="float-left">{{ u }}</div>
+                  <div class="float-right" *ngIf="isOwner(g.creator)">
+                    <mat-icon class="trash" aria-label="Remove" (click)="removeUserFromGroup(u, g.id)">
+                      delete_outline
+                    </mat-icon>
+                  </div><br>
+                  <div class="float-none"></div>
+                </div>
+              </div>
             </mat-card-content>
           </mat-card>
         </div>
