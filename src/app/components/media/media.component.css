@@ -70,3 +70,7 @@ form.tag-form {
 .edit-button:active {
   background-color: lightgrey;
 }
+
+.tag-chip {
+  cursor: pointer;
+}

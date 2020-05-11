@@ -17,7 +17,8 @@ import { MatToolbarModule,
   MatNativeDateModule,
   MatGridListModule,
   MatMenuModule,
-  MatAutocompleteModule } from '@angular/material';
+  MatAutocompleteModule,
+  MatChipsModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -72,6 +73,7 @@ import { SettingComponent } from './components/setting/setting.component';
     FormsModule,
     ReactiveFormsModule,
     InfiniteScrollModule,
+    MatChipsModule,
   ],
   providers: [ CookieService ],
   bootstrap: [ AppComponent ]

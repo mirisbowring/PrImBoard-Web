@@ -132,11 +132,9 @@
 </ng-template>
 
 <ng-template #tags>
-  <div class="tags">
-    <span class="tag" *ngFor="let tag of med.tags">
-      <a class="tag-link" routerLink="/home/{{tag}}">{{tag}}</a>
-    </span>
-  </div>
+  <mat-chip-list aria-label="tags">
+    <mat-chip class="tag-chip" *ngFor="let tag of med.tags" routerLink="/home/{{tag}}">{{tag}}</mat-chip>
+  </mat-chip-list>
 </ng-template>
 
 <ng-template #comments>

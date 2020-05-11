@@ -9,6 +9,12 @@
         <form [formGroup]="cuForm" (ngSubmit)="submitcuForm()">
           <div class="form-group">
             <mat-form-field>
+              <input matInput placeholder="Token" formControlName="token" required minlength="1">
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field>
               <input matInput placeholder="Username" formControlName="username" required minlength="1">
             </mat-form-field>
           </div>
