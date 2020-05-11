@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService as AuthGuard } from 'src/app/services/auth-guard.service';
-import { InviteComponent } from 'src/app/components/invite/invite.component';
+import { RegisterComponent } from 'src/app/components/register/register.component';
 import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { LoginComponent } from 'src/app/components/login/login.component';
 import { LogoutComponent } from 'src/app/components/logout/logout.component';
@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
   { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard] },
   { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard] },
-  { path: 'invite', component: InviteComponent, canActivate: [AuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingComponent, canActivate: [AuthGuard] },

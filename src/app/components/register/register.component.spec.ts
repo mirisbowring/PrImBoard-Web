@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InviteComponent } from './invite.component';
+import { InviteComponent } from './register.component';
 
 describe('InviteComponent', () => {
   let component: InviteComponent;

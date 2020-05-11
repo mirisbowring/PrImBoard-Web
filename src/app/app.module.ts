@@ -22,7 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
-import { InviteComponent } from './components/invite/invite.component';
+import { RegisterComponent } from './components/register/register.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
@@ -39,7 +39,7 @@ import { SettingComponent } from './components/setting/setting.component';
   declarations: [
     AppComponent,
     MediaListComponent,
-    InviteComponent,
+    RegisterComponent,
     UploadComponent,
     LoginComponent,
     LogoutComponent,

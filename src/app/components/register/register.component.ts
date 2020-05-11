@@ -5,10 +5,10 @@ import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-invite',
-  templateUrl: './invite.component.html',
-  styleUrls: ['./invite.component.css']
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class InviteComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
   public cuForm = new FormGroup({
     username: new FormControl(''),
