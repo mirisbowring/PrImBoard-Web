@@ -109,7 +109,6 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       // delay emits
       debounceTime(200),
       switchMap(value => {
-        console.log(value);
         if (value !== '' && value != null) {
           return this.groupService.groupPreview(value.toLowerCase());
         } else {
@@ -161,8 +160,6 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     const input = event.input;
     const value = input.value as Group;
 
-    console.log("test");
-    console.log(value);
     // Add Group
     if ((value.title || '').trim()) {
       value.title = value.title.trim();
@@ -209,7 +206,6 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.localGroups.length === 0) {
       return;
     }
-    console.log(this.localGroups);
     // append new tags (comma separated)
     this.localGroups = this.tidyGroups(this.localGroups);
     // post to database
