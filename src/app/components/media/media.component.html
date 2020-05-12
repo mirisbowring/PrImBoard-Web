@@ -94,9 +94,25 @@
           <div class="col-md-12">
             <form (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
               <mat-form-field class="full-width-input">
-                <input matInput placeholder="Tags (kommasepariert)" type="text" [formControl]="tagInput"
-                  [matAutocomplete]="auto">
-                <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete">
+                <mat-chip-list #tagList aria-label="Tag selection">
+                  <mat-chip
+                    *ngFor="let tag of localTags"
+                    [selectable]="false"
+                    [removable]="true"
+                    (removed)="removeTag(tag)">
+                    {{ tag.name }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input
+                    #tagInput
+                    placeholder="Add Tag..."
+                    [formControl]="tagCtrl"
+                    [matAutocomplete]="auto"
+                    [matChipInputFor]="tagList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="addTag($event)">
+                </mat-chip-list>
+                <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
                   <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag.name">
                     {{ tag.name }}
                   </mat-option>
@@ -104,6 +120,55 @@
               </mat-form-field>
               <button mat-flat-button color="primary" type="submit">Save Tags</button>
               <button mat-flat-button type="button" (click)="addTagShown=false">Cancel</button>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h3>
+              Access
+              <button class="tag-button" (click)="addAccessShown=true" *ngIf="!addAccessShown">
+                <mat-icon>add</mat-icon>
+              </button>
+            </h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ng-container *ngIf="med.groups == null else groups">
+            </ng-container>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="submitAccessForm()" *ngIf="addAccessShown">
+              <mat-form-field class="full-width-input">
+                <mat-chip-list #groupList aria-label="Group selection">
+                  <mat-chip
+                    *ngFor="let group of localGroups"
+                    [selectable]="false"
+                    [removable]="true"
+                    (removed)="localGroups = removeItem(group, localGroups)">
+                    {{ group.title }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input
+                    #groupInput
+                    placeholder="Add Group..."
+                    [formControl]="groupCtrl"
+                    [matAutocomplete]="auto"
+                    [matChipInputFor]="groupList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="addGroup($event)">
+                </mat-chip-list>
+                <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete" (optionSelected)="selectedGroup($event)">
+                  <mat-option *ngFor="let group of groupAutoComplete$ | async; let index = index" [value]="group">
+                    {{ group.title }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <button mat-flat-button color="primary" type="submit">Save Groupss</button>
+              <button mat-flat-button type="button" (click)="addAccessShown=false">Cancel</button>
             </form>
           </div>
         </div>
@@ -134,6 +199,12 @@
 <ng-template #tags>
   <mat-chip-list aria-label="tags">
     <mat-chip class="tag-chip" *ngFor="let tag of med.tags" routerLink="/home/{{tag}}">{{tag}}</mat-chip>
+  </mat-chip-list>
+</ng-template>
+
+<ng-template #groups>
+  <mat-chip-list aria-label="groups">
+    <mat-chip class="group-chip" *ngFor="let group of med.groups">{{ group.title }}</mat-chip>
   </mat-chip-list>
 </ng-template>
 

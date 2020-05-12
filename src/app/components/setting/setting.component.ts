@@ -5,6 +5,7 @@ import { CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { Unsubscribable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { User } from 'src/app/models/user';
+import { InviteService } from 'src/app/services/invite.service';
 
 @Component({
   selector: 'app-setting',
@@ -19,8 +20,9 @@ export class SettingComponent implements OnInit, AfterViewInit {
   groups: Group[] = [];
   currentGroup = '';
   newUsers = new FormControl('');
+  inviteToken = '';
 
-  constructor(private groupService: GroupService) { }
+  constructor(private groupService: GroupService, private inviteService: InviteService) { }
 
   ngOnInit() {
   }
@@ -61,6 +63,12 @@ export class SettingComponent implements OnInit, AfterViewInit {
       return true;
     }
     return false;
+  }
+
+  getInviteToken(): void {
+    this.inviteService.getInviteToken().subscribe(invite => {
+        this.inviteToken = invite.token;
+    });
   }
 
   removeUserFromGroup(user: string, id: string) {

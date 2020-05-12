@@ -50,5 +50,22 @@
         </div>
       </div>
     </div>
+    <div class="col-md-7">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Divers</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <button mat-stroked-button color="primary" class="btn btn-outline-secondary" (click)="getInviteToken()">Generate Invite</button>
+            </div>
+            <input type="text" class="form-control" placeholder="Token" aria-label="Token" [(ngModel)]="inviteToken" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

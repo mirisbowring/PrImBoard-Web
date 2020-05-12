@@ -4,8 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Media } from 'src/app/models/media';
 import { Observable } from 'rxjs';
-import { Tag } from '../models/tag';
+import { Tag } from 'src/app/models/tag';
 import { Comment } from 'src/app/models/comment';
+import { Group } from 'src/app/models/group';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,14 @@ export class MediaService {
       environment.gateway + '/api/v1/media/' + id + '/comment',
       comment,
       { observe: 'response', withCredentials: true }
+    );
+  }
+
+  public addGroups(id: string, groups: Group[]) {
+    return this.httpClient.post(
+      environment.gateway + '/api/v1/media/' + id + '/usergroups',
+      groups,
+      { observe: 'response', withCredentials: true}
     );
   }
 

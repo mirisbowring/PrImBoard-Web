@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class GroupService {
       users,
       { observe: 'response', withCredentials: true }
     );
+  }
+
+  public groupPreview(name: string): Observable<Group[]> {
+    return this.httpClient.get<Group[]>(environment.gateway + '/api/v1/usergroups/' + name, {withCredentials: true});
   }
 
   public removeUserFromGroup(user: string, group: string) {

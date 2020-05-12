@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
 import { FormControl } from '@angular/forms';
@@ -7,9 +8,13 @@ import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
 import { of, Observable, Unsubscribable } from 'rxjs';
 import { User } from 'src/app/models/user';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { ActivatedRoute } from '@angular/router';
 import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { Group } from 'src/app/models/group';
+import { GroupService } from 'src/app/services/group.service';
 
 @Component({
   selector: 'app-media',
@@ -21,14 +26,19 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @CombineSubscriptions()
   private subscribers: Unsubscribable;
+  @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('groupInput', { static: false }) groupInput: ElementRef<HTMLInputElement>;
 
   tagAutoComplete$: Observable<Tag> = null;
+  groupAutoComplete$: Observable<Group> = null;
 
   commentInput = new FormControl('');
   descriptionInput = new FormControl('');
-  tagInput = new FormControl('');
+  tagCtrl = new FormControl('');
+  groupCtrl = new FormControl('');
   titleInput = new FormControl('');
 
+  addAccessShown = false;
   addCommentShown = false;
   addDescriptionShown = false;
   addTagShown = false;
@@ -36,8 +46,16 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   setDateShown = false;
   med: Media;
   users: User[] = [];
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  localTags: Tag[] = [];
+  localGroups: Group[] = [];
 
-  constructor(private mediaService: MediaService, private tagService: TagService, private route: ActivatedRoute) { }
+  constructor(
+    private mediaService: MediaService,
+    private tagService: TagService,
+    private groupService: GroupService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
   }
@@ -53,6 +71,8 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     // pull tags
     this.receiveTags();
+    // pull groups
+    this.receiveGroups();
   }
 
   ngOnDestroy() { }
@@ -67,13 +87,13 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   receiveTags() {
-    this.tagAutoComplete$ = this.tagInput.valueChanges.pipe(
+    this.tagAutoComplete$ = this.tagCtrl.valueChanges.pipe(
       startWith(''),
       // delay emits
       debounceTime(200),
       // use switch map to cancel previous subscribed events, before creating new
       switchMap(value => {
-        if (value !== '') {
+        if (value !== '' && value != null) {
           return this.tagService.tagPreview(value.toLowerCase());
         } else {
           // no value present
@@ -83,22 +103,123 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  receiveGroups() {
+    this.groupAutoComplete$ = this.groupCtrl.valueChanges.pipe(
+      startWith(''),
+      // delay emits
+      debounceTime(200),
+      switchMap(value => {
+        console.log(value);
+        if (value !== '' && value != null) {
+          return this.groupService.groupPreview(value.toLowerCase());
+        } else {
+          // no value present
+          return of(null);
+        }
+      })
+    );
+  }
+
   submitTagForm() {
-    const input = this.tagInput.value;
-    if (input === '') {
+    if (this.localTags.length === 0) {
       return;
     }
-    let tags: Tag[] = [];
     // append new tags (comma separated)
-    input.split(',').forEach(tag => tags.push({ name: tag }));
-    tags = this.tidyTags(tags);
+    this.localTags = this.tidyTags(this.localTags);
     // post to database
     // add tags
-    this.subscribers = this.mediaService.addTags(this.med.id, tags).subscribe(res => {
+    this.subscribers = this.mediaService.addTags(this.med.id, this.localTags).subscribe(res => {
       if (res.status === 200) {
-        this.tagInput.setValue('');
+        this.tagCtrl.setValue('');
+        this.localTags = [];
         this.med = res.body as Media;
         this.addTagShown = false;
+      }
+    }, err => {
+      console.log('Error:' + err);
+    });
+  }
+
+  addTag(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = input.value;
+
+    // Add tag
+    if ((value || '').trim()) {
+      this.localTags.push({ name: value.trim() });
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+
+    this.tagCtrl.setValue('');
+  }
+
+  addGroup(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = input.value as Group;
+
+    console.log("test");
+    console.log(value);
+    // Add Group
+    if ((value.title || '').trim()) {
+      value.title = value.title.trim();
+      this.localGroups.push(value);
+    }
+
+    //  Reset the input value
+    if (input) {
+      input.value = null;
+    }
+
+    this.groupCtrl.setValue('');
+  }
+
+  removeTag(tag: Tag): void {
+    this.localTags = this.removeItem<Tag>(tag, this.localTags);
+  }
+
+  removeGroup(group: Group) {
+    this.localGroups = this.removeItem<Group>(group, this.localGroups);
+  }
+
+  removeItem<T>(item: T, list: T[]): T[] {
+    const index = list.indexOf(item);
+    if (index >= 0) {
+      list.splice(index, 1);
+    }
+    return list;
+  }
+
+  selectedTag(event: MatAutocompleteSelectedEvent): void {
+    this.localTags.push({ name: event.option.viewValue });
+    this.tagInput.nativeElement.value = '';
+    this.tagCtrl.setValue('');
+  }
+
+  selectedGroup(event: MatAutocompleteSelectedEvent): void {
+    this.localGroups.push(event.option.value);
+    this.groupInput.nativeElement.value = '';
+    this.groupCtrl.setValue('');
+  }
+
+  submitAccessForm(): void {
+    if (this.localGroups.length === 0) {
+      return;
+    }
+    console.log(this.localGroups);
+    // append new tags (comma separated)
+    this.localGroups = this.tidyGroups(this.localGroups);
+    // post to database
+    // add tags
+    this.subscribers = this.mediaService.addGroups(this.med.id, this.localGroups).subscribe(res => {
+      if (res.status === 200) {
+        this.groupCtrl.setValue('');
+        this.localGroups = [];
+        this.med = res.body as Media;
+        this.addAccessShown = false;
       }
     }, err => {
       console.log('Error:' + err);
@@ -162,11 +283,19 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /** Removes trailing and leading whitespaces and ignore duplicates */
+  /** Removes trailing and leading whitespaces and ignore duplicates, lowers case */
   tidyTags(myArr: Tag[]): Tag[] {
     for (const tag of myArr) {
       tag.name = tag.name.trim().toLowerCase();
     }
     return myArr.filter((thing, index, self) => self.findIndex(t => t.name === thing.name) === index);
+  }
+
+  /** Removes trailing and leading whitespaces and ignores duplicates */
+  tidyGroups(groups: Group[]): Group[] {
+    for (const group of groups) {
+      group.title = group.title.trim();
+    }
+    return groups.filter((thing, index, self) => self.findIndex(g => g.title === thing.title) === index);
   }
 }
