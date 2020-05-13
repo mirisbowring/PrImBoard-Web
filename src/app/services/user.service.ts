@@ -12,22 +12,22 @@ export class UserService {
   constructor(private httpClient: HttpClient) { }
 
   public createUser(user: User) {
-    return this.httpClient.post(environment.gateway + '/api/v1/user', user, {withCredentials: true});
+    return this.httpClient.post(environment.gateway + '/api/v1/user', user, { observe: 'response', withCredentials: true });
   }
 
   public getUser(username: string) {
-    return this.httpClient.get(environment.gateway + '/api/v1/user/' + username, {withCredentials: true});
+    return this.httpClient.get(environment.gateway + '/api/v1/user/' + username, { withCredentials: true });
   }
 
   public loginUser(user: User) {
-    return this.httpClient.post(environment.gateway + '/api/v1/login', user, {observe: 'response', withCredentials: true});
+    return this.httpClient.post(environment.gateway + '/api/v1/login', user, { observe: 'response', withCredentials: true });
   }
 
   public loggedIn(user: User) {
-    return this.httpClient.post(environment.gateway + '/api/v1/loggedin', user, {observe: 'response', withCredentials: true});
+    return this.httpClient.post(environment.gateway + '/api/v1/loggedin', user, { observe: 'response', withCredentials: true });
   }
 
   public logoutUser() {
-    return this.httpClient.post(environment.gateway + '/api/v1/logout', null, {observe: 'response', withCredentials: true});
+    return this.httpClient.post(environment.gateway + '/api/v1/logout', null, { observe: 'response', withCredentials: true });
   }
 }
