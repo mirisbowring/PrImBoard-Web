@@ -204,7 +204,7 @@
 
 <ng-template #groups>
   <mat-chip-list aria-label="groups">
-    <mat-chip class="group-chip" *ngFor="let group of med.groups">{{ group.title }}</mat-chip>
+    <mat-chip class="group-chip" *ngFor="let group of med.groups" (click)="showGroup(group)">{{ group.title }}</mat-chip>
   </mat-chip-list>
 </ng-template>
 

@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content>
+  <p>Owner: {{ data.creator }}</p>
+  <mat-list dense>
+    <mat-list-item *ngFor="let user of data.users">
+      {{ user }}
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button class="float-right" (click)="onNoClick()">Close</button>
+</div>

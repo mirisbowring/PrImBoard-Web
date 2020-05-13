@@ -15,6 +15,8 @@ import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscriber
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
+import { MatDialog } from '@angular/material';
+import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 
 @Component({
   selector: 'app-media',
@@ -54,7 +56,8 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     private mediaService: MediaService,
     private tagService: TagService,
     private groupService: GroupService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -276,6 +279,13 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }, err => {
       console.log('Error:' + err);
+    });
+  }
+
+  showGroup(group: Group): void {
+    const dialogRef = this.dialog.open(ModalUserGroupComponent, {
+      width: '250px',
+      data: group,
     });
   }
 

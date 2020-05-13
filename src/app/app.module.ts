@@ -29,6 +29,7 @@ import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { MediaComponent } from './components/media/media.component';
 import { MediaListComponent } from './components/media/media.list.component';
+import { ModalUserGroupComponent } from 'src/app/components/modals/modal.usergroup.component';
 import { CookieService } from 'ngx-cookie-service';
 import { CreateComponent } from './components/event/event.create.component';
 import { ListComponent } from './components/event/event.list.component';
@@ -49,6 +50,7 @@ import { SettingComponent } from './components/setting/setting.component';
     ListComponent,
     ShowComponent,
     SettingComponent,
+    ModalUserGroupComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,6 +78,9 @@ import { SettingComponent } from './components/setting/setting.component';
     MatChipsModule,
   ],
   providers: [ CookieService ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent ],
+  entryComponents: [
+    ModalUserGroupComponent,
+  ]
 })
 export class AppModule { }
