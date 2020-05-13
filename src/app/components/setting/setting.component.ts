@@ -6,6 +6,7 @@ import { Unsubscribable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { User } from 'src/app/models/user';
 import { InviteService } from 'src/app/services/invite.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-setting',
@@ -22,7 +23,7 @@ export class SettingComponent implements OnInit, AfterViewInit {
   newUsers = new FormControl('');
   inviteToken = '';
 
-  constructor(private groupService: GroupService, private inviteService: InviteService) { }
+  constructor(private groupService: GroupService, private inviteService: InviteService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
@@ -43,8 +44,10 @@ export class SettingComponent implements OnInit, AfterViewInit {
       .split(',')
       .forEach(user => users.push({ username: user }));
     // post to api
+    console.log(users);
     this.groupService.addUsersToGroup(users, this.currentGroup).subscribe(res => {
       if (res.status === 200) {
+        this.snackBar.open('Added User/s successfully!', 'Ok', { duration: 2000 });
         this.newUsers.setValue('');
         for (let i = 0; i < this.groups.length; i++) {
           if (this.groups[i].id === this.currentGroup) {
@@ -54,7 +57,11 @@ export class SettingComponent implements OnInit, AfterViewInit {
         this.currentGroup = '';
       }
     }, err => {
-      console.log('Error:' + err);
+      if (err.status === 400) {
+        this.snackBar.open(err.error.error, 'Ok', { duration: 2000 });
+      } else {
+        console.log('Error:' + err);
+      }
     });
   }
 
@@ -67,13 +74,14 @@ export class SettingComponent implements OnInit, AfterViewInit {
 
   getInviteToken(): void {
     this.inviteService.getInviteToken().subscribe(invite => {
-        this.inviteToken = invite.token;
+      this.inviteToken = invite.token;
     });
   }
 
   removeUserFromGroup(user: string, id: string) {
     this.groupService.removeUserFromGroup(user, id).subscribe(res => {
       if (res.status === 200) {
+        this.snackBar.open('Removed User successfully!', 'Ok', { duration: 2000 });
         for (let i = 0; i < this.groups.length; i++) {
           if (this.groups[i].id === id) {
             this.groups[i] = res.body as Group;
