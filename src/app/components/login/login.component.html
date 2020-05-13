@@ -10,7 +10,8 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field class="full-width-input">
-          <input matInput type="password" placeholder="Password" formControlName="password" [type]="show ? 'text' : 'password'" required>
+          <input matInput type="password" placeholder="Password" formControlName="password"
+            [type]="show ? 'text' : 'password'" required>
           <button mat-icon-button matSuffix (click)="show = !show" [attr.aria-label]="'Show password'"
             [attr.aria-pressed]="show" type="button">
             <mat-icon>{{show ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -22,5 +23,8 @@
         <button mat-raised-button color="primary" type="submit">Login</button>
       </form>
     </mat-card-content>
+    <mat-card-footer>
+      Don't have an account? <a routerLink="/register">Register</a>
+    </mat-card-footer>
   </mat-card>
 </div>

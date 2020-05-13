@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
   { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard] },
   { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingComponent, canActivate: [AuthGuard] },

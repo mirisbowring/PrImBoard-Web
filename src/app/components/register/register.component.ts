@@ -19,6 +19,8 @@ export class RegisterComponent implements OnInit {
     token: new FormControl('')
   });
 
+  public hide = true;
+
   constructor(private userService: UserService) { }
 
   ngOnInit() {
