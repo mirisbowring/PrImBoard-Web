@@ -97,7 +97,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       // use switch map to cancel previous subscribed events, before creating new
       switchMap(value => {
         if (value !== '' && value != null) {
-          return this.tagService.tagPreview(value.toLowerCase());
+          return this.tagService.tagPreview(value);
         } else {
           // no value present
           return of(null);
@@ -113,7 +113,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       debounceTime(200),
       switchMap(value => {
         if (value !== '' && value != null) {
-          return this.groupService.groupPreview(value.toLowerCase());
+          return this.groupService.groupPreview(value);
         } else {
           // no value present
           return of(null);
@@ -292,7 +292,8 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Removes trailing and leading whitespaces and ignore duplicates, lowers case */
   tidyTags(myArr: Tag[]): Tag[] {
     for (const tag of myArr) {
-      tag.name = tag.name.trim().toLowerCase();
+      tag.name = tag.name.trim();
+      // tag.name = tag.name.trim().toLowerCase();
     }
     return myArr.filter((thing, index, self) => self.findIndex(t => t.name === thing.name) === index);
   }

@@ -33,18 +33,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     // store authenticated in a local boolean to prevent delay due to cookie access
-    this.subscribers = this.router.events.subscribe(val => {
+    this.subscribers = this.router.events.subscribe(() => {
       this.authenticated = this.authService.isAuthenticated();
       // parse filter from url if authenticated only
       if (this.authenticated) {
         // filter has to be manually parsed because this component is not in scope of router-outlet
         const path = window.location.pathname;
         if (path.startsWith('/home/')) {
-          this.filter = path.split('/')[2];
-          this.tagInput.setValue(this.filter);
+          this.filter = decodeURI(path.split('/')[2]);
+          this.tagInput.setValue(decodeURI(this.filter));
         } else if (path.startsWith('/media/')) {
           const paths = path.split('/');
-          this.filter = paths.length === 4 ? paths[2] : null;
+          this.filter = paths.length === 4 ? decodeURI(paths[2]) : null;
           this.id = paths.length === 4 ? paths[3] : paths[2];
         } else {
           this.tagInput.setValue('');
@@ -86,7 +86,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       // use switch map to cancel previous subscribed events, before creating new
       switchMap(value => {
         if (value !== '') {
-          return this.tagService.tagPreview(value.toLowerCase());
+          return this.tagService.tagPreview(value);
         } else {
           // no value present
           return of(null);
