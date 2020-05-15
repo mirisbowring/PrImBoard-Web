@@ -5,24 +5,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatToolbarModule,
-  MatIconModule,
-  MatCardModule,
-  MatButtonModule,
-  MatProgressSpinnerModule,
-  MatInputModule,
-  MatListModule,
-  MatSelectModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatGridListModule,
-  MatMenuModule,
-  MatAutocompleteModule,
-  MatChipsModule,
-  MatSnackBarModule,
-  MatTooltipModule } from '@angular/material';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './components/register/register.component';
@@ -83,8 +83,8 @@ import { SettingComponent } from './components/setting/setting.component';
     MatSnackBarModule,
     MatTooltipModule,
   ],
-  providers: [ CookieService ],
-  bootstrap: [ AppComponent ],
+  providers: [CookieService],
+  bootstrap: [AppComponent],
   entryComponents: [
     ModalUserGroupComponent,
     ModalTagComponent,

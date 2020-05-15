@@ -15,7 +15,7 @@ import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscriber
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 
 @Component({
