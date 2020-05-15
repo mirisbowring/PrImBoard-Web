@@ -19,7 +19,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @DestroySubscribers()
 export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('mediastream', { read: ElementRef, static: false }) public mediastream: ElementRef;
+  @ViewChild('mediastream', { read: ElementRef }) public mediastream: ElementRef;
 
   @CombineSubscriptions()
   private subscribers: Unsubscribable;

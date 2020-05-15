@@ -22,7 +22,7 @@ export class ModalTagComponent implements AfterViewInit, OnDestroy {
 
   @CombineSubscriptions()
   private subscribers: Unsubscribable;
-  @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   tagAutoComplete$: Observable<Tag> = null;
   tagCtrl = new FormControl('');

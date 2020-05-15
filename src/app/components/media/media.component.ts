@@ -28,8 +28,8 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @CombineSubscriptions()
   private subscribers: Unsubscribable;
-  @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
-  @ViewChild('groupInput', { static: false }) groupInput: ElementRef<HTMLInputElement>;
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('groupInput') groupInput: ElementRef<HTMLInputElement>;
 
   tagAutoComplete$: Observable<Tag> = null;
   groupAutoComplete$: Observable<Group> = null;
