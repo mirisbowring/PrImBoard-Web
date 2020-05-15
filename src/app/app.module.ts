@@ -19,7 +19,8 @@ import { MatToolbarModule,
   MatMenuModule,
   MatAutocompleteModule,
   MatChipsModule,
-  MatSnackBarModule } from '@angular/material';
+  MatSnackBarModule,
+  MatTooltipModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -31,6 +32,7 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { MediaComponent } from './components/media/media.component';
 import { MediaListComponent } from './components/media/media.list.component';
 import { ModalUserGroupComponent } from 'src/app/components/modals/modal.usergroup.component';
+import { ModalTagComponent } from 'src/app/components/modals/modal.tag.component';
 import { CookieService } from 'ngx-cookie-service';
 import { CreateComponent } from './components/event/event.create.component';
 import { ListComponent } from './components/event/event.list.component';
@@ -52,6 +54,7 @@ import { SettingComponent } from './components/setting/setting.component';
     ShowComponent,
     SettingComponent,
     ModalUserGroupComponent,
+    ModalTagComponent,
   ],
   imports: [
     BrowserModule,
@@ -78,11 +81,13 @@ import { SettingComponent } from './components/setting/setting.component';
     InfiniteScrollModule,
     MatChipsModule,
     MatSnackBarModule,
+    MatTooltipModule,
   ],
   providers: [ CookieService ],
   bootstrap: [ AppComponent ],
   entryComponents: [
     ModalUserGroupComponent,
+    ModalTagComponent,
   ]
 })
 export class AppModule { }

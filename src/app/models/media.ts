@@ -11,7 +11,7 @@ export interface Media {
   description: string;
   comments: Comment[];
   creator: string;
-  tags: Tag[];
+  tags: string[];
   events: string[];
   groups: Group[];
   timestamp: number;

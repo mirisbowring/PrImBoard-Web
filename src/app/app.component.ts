@@ -8,6 +8,7 @@ import { startWith, debounceTime, switchMap, filter } from 'rxjs/operators';
 import { TagService } from 'src/app/services/tag.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
+import { MessageService } from './services/message.service';
 
 @Component({
   selector: 'app-root',
@@ -25,11 +26,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   tagAutoComplete$: Observable<Tag> = null;
   tagInput = new FormControl('');
 
+  multiselect = false;
+
   private id: string;
   private filter: string;
 
-  constructor(private userService: UserService, public router: Router, private tagService: TagService, private authService: AuthService) {
-  }
+  constructor(
+    private userService: UserService,
+    public router: Router,
+    private tagService: TagService,
+    private authService: AuthService,
+    private messageService: MessageService,
+  ) { }
 
   ngOnInit() {
     // store authenticated in a local boolean to prevent delay due to cookie access
@@ -101,6 +109,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate(['/home']);
     }
     this.router.navigate(['/home/' + input]);
+  }
+
+  toggleMultiselect(selected: boolean): void{
+    this.multiselect = selected;
+    this.messageService.sendMessage({multiselect: selected});
+  }
+
+  openTagDialog(): void {
+    this.messageService.sendMessage({openTagDialog: true});
   }
 
   doLogout() {

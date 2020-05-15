@@ -5,6 +5,11 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter as fil, withLatestFrom } from 'rxjs/operators';
 import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { Unsubscribable } from 'rxjs';
+import { MessageService } from 'src/app/services/message.service';
+import { SafeHtml } from '@angular/platform-browser';
+import { ModalTagComponent } from '../modals/modal.tag.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-media-list',
@@ -24,8 +29,19 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   filter: string;
   prevID: string;
   private curID: string;
+  // multiselect params
+  multiselect = false;
+  selected = new Set(); // stores the IDs of the selected images
+  rangeStart: Media;
 
-  constructor(private mediaService: MediaService, route: ActivatedRoute, private router: Router) {
+  constructor(
+    private mediaService: MediaService,
+    route: ActivatedRoute,
+    private router: Router,
+    private messageService: MessageService,
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {
     this.subscribers = this.router.events.pipe(
       fil(e => e instanceof NavigationEnd),
       withLatestFrom(route.params, route.fragment)
@@ -50,6 +66,48 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.media = [];
         this.prevID = null;
         this.requestMedia('');
+      }
+    });
+    this.subscribers = this.messageService.getMessage().subscribe(message => {
+      if (message.multiselect !== undefined) {
+        this.multiselect = message.multiselect;
+        if (!this.multiselect) {
+          this.selected = new Set();
+          this.rangeStart = null;
+        }
+      }
+      if (message.openTagDialog !== undefined) {
+        const dialogRef = this.dialog.open(ModalTagComponent, {
+          width: '250px',
+          data: Array.from(this.selected.values()),
+        });
+        dialogRef.afterClosed().subscribe((res: Media[]) => {
+          // iterate over all fetched media
+          for (let i = 0; i < this.media.length; i++) {
+            // create tmp index
+            let index = -1;
+            // iterate over all returned media (updated ones)
+            for (let j = 0; j < res.length; j++) {
+              // set tmp index if match found and break inner loop
+              if (res[j].id === this.media[i].id) {
+                index = j;
+                break;
+              }
+            }
+            // replace element if match found
+            if (index > -1) {
+              this.media[i] = res[index];
+              if ( res.length === 1) {
+                // break outer loop if this was the last matched item from response
+                break;
+              } else {
+                // remove from response to increase iteration performance
+                res = res.splice(index, 1);
+              }
+            }
+          }
+          this.snackBar.open('Mapped tags successfully!', 'Ok', { duration: 2000 });
+        });
       }
     });
   }
@@ -88,6 +146,33 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
   }
 
+  selectMedia(m: Media): void {
+    this.selected.add(m);
+  }
 
+  unselectMedia(m: Media): void {
+    const index = this.selected.delete(m);
+  }
+
+  startRange(m: Media): void {
+    this.rangeStart = m;
+  }
+
+  endRange(m: Media): void {
+    // get index
+    const start = this.media.indexOf(this.rangeStart);
+    const end = this.media.indexOf(m);
+    let tmp: Media[];
+    // check if selected forwards or backwards
+    if (start > end) {
+      tmp = this.media.slice(end, start + 1);
+    } else {
+      tmp = this.media.slice(start, end + 1);
+    }
+    // append selection to set
+    this.selected = new Set([...this.selected, ...tmp]);
+    // disable range selection
+    this.rangeStart = null;
+  }
 
 }

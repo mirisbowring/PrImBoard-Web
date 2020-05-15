@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Tag } from 'src/app/models/tag';
 import { Comment } from 'src/app/models/comment';
 import { Group } from 'src/app/models/group';
+import { TagMediaMap } from '../models/tagmediamap';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,10 @@ export class MediaService {
       tags,
       { observe: 'response', withCredentials: true }
     );
+  }
+
+  public addTagMediaMap(tmm: TagMediaMap) {
+    return this.httpClient.post(environment.gateway + '/api/v1/media/maptags', tmm, { observe: 'response', withCredentials: true });
   }
 
   public createMedia(media: Media) {
