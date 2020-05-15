@@ -23,7 +23,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './components/register/register.component';
 import { UploadComponent } from './components/upload/upload.component';
@@ -75,7 +74,6 @@ import { SettingComponent } from './components/setting/setting.component';
     MatGridListModule,
     MatMenuModule,
     MatAutocompleteModule,
-    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
     InfiniteScrollModule,
