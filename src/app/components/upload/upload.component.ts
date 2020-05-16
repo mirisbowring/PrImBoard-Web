@@ -32,7 +32,7 @@ export class UploadComponent implements OnInit {
     ];
   }
 
-  private submituForm() {
+  submituForm() {
     let med: Media;
     med = this.uForm.getRawValue();
     med.timestamp = Math.round((this.uForm.controls.timestamp.value as Date).getTime() / 1000);

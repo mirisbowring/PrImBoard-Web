@@ -28,8 +28,11 @@
   <span class="spacer"></span>
   <span class="spacer"></span>
   <span class="spacer"></span>
-  <button mat-icon-button aria-label="Add Tags" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openTagDialog()" matTooltip="tag selected items">
+  <button mat-icon-button aria-label="add tags" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openTagDialog()" matTooltip="tag selected items">
     <mat-icon>local_offer</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="map to event" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openEventDialog()" matTooltip="tag selected items">
+    <mat-icon>event_note</mat-icon>
   </button>
   <button mat-icon-button aria-label="cancel multiselect" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" matTooltip="cancel selection">
     <mat-icon>cancel</mat-icon>

@@ -38,6 +38,7 @@ import { ListComponent } from './components/event/event.list.component';
 import { ShowComponent } from './components/event/event.show.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SettingComponent } from './components/setting/setting.component';
+import { ModalEventComponent } from './components/modals/modal.event.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { SettingComponent } from './components/setting/setting.component';
     SettingComponent,
     ModalUserGroupComponent,
     ModalTagComponent,
+    ModalEventComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,6 +88,7 @@ import { SettingComponent } from './components/setting/setting.component';
   entryComponents: [
     ModalUserGroupComponent,
     ModalTagComponent,
+    ModalEventComponent,
   ]
 })
 export class AppModule { }

@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>Map Events</h1>
+<div mat-dialog-content>
+  <form>
+    <mat-form-field class="full-width-input">
+      <mat-chip-list #eventList aria-label="Event selection">
+        <mat-chip
+          *ngFor="let event of localEvents"
+          [selectable]="false"
+          [removable]="true"
+          (removed)="removeEvent(event)">
+          {{ event.title }}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input
+          #eventInput
+          placeholder="Add Event..."
+          [formControl]="eventCtrl"
+          [matAutocomplete]="auto"
+          [matChipInputFor]="eventList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addEvent($event)">
+      </mat-chip-list>
+      <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete" (optionSelected)="selectedEvent($event)">
+        <mat-option *ngFor="let event of eventAutoComplete$ | async; let index = index" [value]="event">
+          {{ event.title }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button class="float-right" (click)="onNoClick()">Close</button>
+  <button mat-button class="float-right" (click)="addEvents()">Save</button>
+</div>

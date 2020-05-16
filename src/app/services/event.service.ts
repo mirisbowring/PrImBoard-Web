@@ -10,10 +10,14 @@ export class EventService {
   constructor(private httpClient: HttpClient) { }
 
   public createEvent(event: Event) {
-    return this.httpClient.post(environment.gateway + '/api/v1/event', event, {observe: 'response', withCredentials: true});
+    return this.httpClient.post(environment.gateway + '/api/v1/event', event, { observe: 'response', withCredentials: true });
   }
 
   public getAllEvents() {
-    return this.httpClient.get(environment.gateway + '/api/v1/events', {withCredentials: true});
+    return this.httpClient.get(environment.gateway + '/api/v1/events', { withCredentials: true });
+  }
+
+  public eventPreview(event: string) {
+    return this.httpClient.get<Event[]>(environment.gateway + '/api/v1/events/' + event, { withCredentials: true });
   }
 }

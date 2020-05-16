@@ -116,6 +116,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.messageService.sendMessage({multiselect: selected});
   }
 
+  openEventDialog(): void {
+    this.messageService.sendMessage({openEventDialog: true});
+  }
+
   openTagDialog(): void {
     this.messageService.sendMessage({openTagDialog: true});
   }

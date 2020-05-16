@@ -8,6 +8,7 @@ import { Tag } from 'src/app/models/tag';
 import { Comment } from 'src/app/models/comment';
 import { Group } from 'src/app/models/group';
 import { TagMediaMap } from '../models/tagmediamap';
+import { MediaEventMap } from '../models/mediaeventmap';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,10 @@ export class MediaService {
       tags,
       { observe: 'response', withCredentials: true }
     );
+  }
+
+  public addMediaEventMap(mem: MediaEventMap) {
+    return this.httpClient.post(environment.gateway + '/api/v1/media/mapevents', mem, { observe: 'response', withCredentials: true });
   }
 
   public addTagMediaMap(tmm: TagMediaMap) {
