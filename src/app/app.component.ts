@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router, NavigationStart } from '@angular/router';
-import { of, Observable, Unsubscribable } from 'rxjs';
+import { of, Observable, Unsubscribable, Subscription } from 'rxjs';
 import { Tag } from 'src/app/models/tag';
 import { FormControl } from '@angular/forms';
-import { startWith, debounceTime, switchMap, filter } from 'rxjs/operators';
+import { startWith, debounceTime, switchMap, filter as fil } from 'rxjs/operators';
 import { TagService } from 'src/app/services/tag.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
@@ -15,11 +15,9 @@ import { MessageService } from './services/message.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-@DestroySubscribers()
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @CombineSubscriptions()
-  private subscribers: Unsubscribable;
+  private subscriptions = new Subscription();
 
   authenticated: boolean;
 
@@ -28,8 +26,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   multiselect = false;
 
-  private id: string;
+  private mediaID: string;
   private filter: string;
+  private eventID: string;
 
   constructor(
     private userService: UserService,
@@ -41,42 +40,66 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     // store authenticated in a local boolean to prevent delay due to cookie access
-    this.subscribers = this.router.events.subscribe(() => {
-      this.authenticated = this.authService.isAuthenticated();
-      // parse filter from url if authenticated only
-      if (this.authenticated) {
-        // filter has to be manually parsed because this component is not in scope of router-outlet
-        const path = window.location.pathname;
-        if (path.startsWith('/home/')) {
-          this.filter = decodeURI(path.split('/')[2]);
-          this.tagInput.setValue(decodeURI(this.filter));
-        } else if (path.startsWith('/media/')) {
-          const paths = path.split('/');
-          this.filter = paths.length === 4 ? decodeURI(paths[2]) : null;
-          this.id = paths.length === 4 ? paths[3] : paths[2];
-        } else {
-          this.tagInput.setValue('');
-          this.filter = null;
+    this.subscriptions.add(
+      this.router.events.subscribe(() => {
+        this.authenticated = this.authService.isAuthenticated();
+        // parse filter from url if authenticated only
+        if (this.authenticated) {
+          // filter has to be manually parsed because this component is not in scope of router-outlet
+          const path = window.location.pathname;
+          if (path.startsWith('/home/')) {
+            this.clear();
+            this.filter = decodeURI(path.split('/')[2]);
+            this.tagInput.setValue(decodeURI(this.filter));
+          } else if (path.startsWith('/event/')) {
+            // e.x.: http://localhost:4200/event/5eef2decd92bfe4db4329d91/myFilter
+            const parts = path.split('/');
+            this.eventID = decodeURI(parts[2]);
+            if (parts.length === 4) {
+              this.filter = decodeURI(parts[3]);
+            }
+          } else if (path.startsWith('/media/')) {
+            const paths = path.split('/');
+            this.filter = paths.length === 4 ? decodeURI(paths[2]) : null;
+            this.mediaID = paths.length === 4 ? paths[3] : paths[2];
+          } else {
+            this.tagInput.setValue('');
+            this.filter = null;
+          }
         }
-      }
-    });
+      })
+    );
 
-    this.subscribers = this.router.events.pipe(
-      filter(event => event instanceof NavigationStart)
-    ).subscribe((event: NavigationStart) => {
-      if (event.restoredState) {
-        if (this.id && this.filter) {
-          this.router.navigate(['/home', this.filter], { fragment: this.id });
-          history.forward();
-        } else if (this.id) {
-          this.router.navigate(['/home'], { fragment: this.id });
-          history.forward();
-        } else if (this.filter) {
-          this.router.navigate(['/home', this.filter]);
-          history.forward();
+    this.subscriptions.add(
+      this.router.events.pipe(
+        fil(event => event instanceof NavigationStart)
+      ).subscribe((event: NavigationStart) => {
+        if (event.restoredState) {
+          if (this.mediaID && this.filter) {
+            if (this.eventID) {
+              this.router.navigate(['/event', this.eventID, this.filter], { fragment: this.mediaID });
+            } else {
+              this.router.navigate(['/home', this.filter], { fragment: this.mediaID });
+            }
+            history.forward();
+          } else if (this.mediaID) {
+            if (this.eventID) {
+              this.router.navigate(['/event', this.eventID], { fragment: this.mediaID });
+            } else {
+              this.router.navigate(['/home'], { fragment: this.mediaID });
+            }
+            history.forward();
+          } else if (this.filter) {
+            if (this.eventID) {
+              this.router.navigate(['/event', this.eventID, this.filter]);
+            } else {
+              this.router.navigate(['/home', this.filter]);
+            }
+            history.forward();
+          }
         }
-      }
-    });
+      })
+    );
   }
 
   ngAfterViewInit() {
@@ -84,7 +107,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.receiveTags();
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   receiveTags() {
     this.tagAutoComplete$ = this.tagInput.valueChanges.pipe(
@@ -106,22 +131,30 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   submitTagForm() {
     const input = this.tagInput.value;
     if (input === '') {
-      this.router.navigate(['/home']);
+      if (this.eventID) {
+        this.router.navigate(['/event', this.eventID]);
+      } else {
+        this.router.navigate(['/home']);
+      }
     }
-    this.router.navigate(['/home/' + input]);
+    if (this.eventID) {
+      this.router.navigate(['/event/' + this.eventID + '/' + input]);
+    } else {
+      this.router.navigate(['/home/' + input]);
+    }
   }
 
-  toggleMultiselect(selected: boolean): void{
+  toggleMultiselect(selected: boolean): void {
     this.multiselect = selected;
-    this.messageService.sendMessage({multiselect: selected});
+    this.messageService.sendMessage({ multiselect: selected });
   }
 
   openEventDialog(): void {
-    this.messageService.sendMessage({openEventDialog: true});
+    this.messageService.sendMessage({ openEventDialog: true });
   }
 
   openTagDialog(): void {
-    this.messageService.sendMessage({openTagDialog: true});
+    this.messageService.sendMessage({ openTagDialog: true });
   }
 
   doLogout() {
@@ -132,5 +165,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     );
+  }
+
+  private clear(): void {
+    this.mediaID = null;
+    this.eventID = null;
+    this.filter = null;
   }
 }

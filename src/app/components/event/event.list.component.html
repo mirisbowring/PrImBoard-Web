@@ -1,4 +1,4 @@
-<mat-card class="example-card" *ngFor="let event of events" [routerLink]="'/event/' + event.id">
+<mat-card class="example-card" *ngFor="let event of events" [routerLink]="['/event/' + event.id]">
   <mat-card-header>
     <div mat-card-avatar class="example-header-image"></div>
     <mat-card-title>{{event.title}}</mat-card-title>

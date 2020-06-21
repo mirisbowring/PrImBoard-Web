@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -53,11 +52,12 @@ export class MediaService {
     return this.httpClient.post(environment.gateway + '/api/v1/media', media, { observe: 'response', withCredentials: true });
   }
 
-  public getMediaPage(id: string, size: number, filter: string, param: string): Observable<Media[]> {
+  public getMediaPage(id: string, size: number, filter: string, param: string, event: string): Observable<Media[]> {
     size = (size != null && size > 0) ? size : environment.defaultPageSize;
     let query = '';
     query += (id) ? param ? '?' + param + '=' + id : '?after=' + id : '';
     query += (query) ? '&size=' + size : '?size=' + size;
+    query += (event) ? '&event=' + event : '';
     query += (filter) ? '&filter=' + filter : '';
     return this.httpClient.get<Media[]>(environment.gateway + '/api/v1/media' + query, { withCredentials: true });
   }

@@ -1,4 +1,4 @@
-<div #mediastream infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="isFullListDisplayed" (scrolled)="onScrollDown()">
+<div #mediastream infiniteScroll [infiniteScrollDistance]="4" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="isFullListDisplayed" (scrolled)="onScrollDown()">
   <div *ngIf="filter" class="grid">
     <div *ngFor="let m of media" class="module">
       <a>

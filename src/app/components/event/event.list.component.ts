@@ -15,12 +15,6 @@ export class ListComponent implements AfterViewInit {
   constructor(private eventService: EventService) { }
 
   ngAfterViewInit() {
-    // this.eventService.getAllEvents().pipe(
-    //   map((data: any[]) => data.map(item => this.adapter.adapt(item)))
-    // ).subscribe((data: any[]) => this.events = data);
-    // this.eventService.getAllEvents().pipe(
-    //   map(data => data.map(Event.adapt))
-    // ).subscribe((data: Event[]) => this.events = data);
     this.eventService.getAllEvents().subscribe((data: Event[]) => this.events = data);
   }
 

@@ -14,7 +14,7 @@ export class EventService {
   }
 
   public getAllEvents() {
-    return this.httpClient.get(environment.gateway + '/api/v1/events', { withCredentials: true });
+    return this.httpClient.get<Event[]>(environment.gateway + '/api/v1/events', { withCredentials: true });
   }
 
   public eventPreview(event: string) {
