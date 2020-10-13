@@ -1,8 +1,7 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
-import { CombineSubscriptions } from 'ngx-destroy-subscribers';
-import { Unsubscribable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { User } from 'src/app/models/user';
 import { InviteService } from 'src/app/services/invite.service';
@@ -13,10 +12,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './setting.component.html',
   styleUrls: ['./setting.component.css']
 })
-export class SettingComponent implements OnInit, AfterViewInit {
+export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @CombineSubscriptions()
-  private subscribers: Unsubscribable;
+  private subscriptions = new Subscription();
 
   groups: Group[] = [];
   currentGroup = '';
@@ -29,11 +27,17 @@ export class SettingComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.subscribers = this.groupService.getAllUserGroups().subscribe((data: Group[]) => {
-      if (data != null) {
-        this.groups = data;
-      }
-    });
+    this.subscriptions.add(
+      this.groupService.getAllUserGroups().subscribe((data: Group[]) => {
+        if (data != null) {
+          this.groups = data;
+        }
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   submitAddUserForm() {
