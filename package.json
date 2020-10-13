@@ -29,7 +29,7 @@
     "ngx-cookie-service": "^3.0.4",
     "ngx-infinite-scroll": "^9.0.0",
     "popper.js": "^1.16.1",
-    "rxjs": "^6.5.5",
+    "rxjs": "^6.6.3",
     "tslib": "^2.0.0",
     "zone.js": "^0.10.3"
   },
