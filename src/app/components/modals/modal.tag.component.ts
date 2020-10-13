@@ -3,10 +3,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Tag } from 'src/app/models/tag';
 import { Media } from 'src/app/models/media';
 import { TagService } from 'src/app/services/tag.service';
-import { Observable, of, Unsubscribable } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
-import { CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MediaService } from 'src/app/services/media.service';
@@ -20,8 +19,7 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes';
 })
 export class ModalTagComponent implements AfterViewInit, OnDestroy {
 
-  @CombineSubscriptions()
-  private subscribers: Unsubscribable;
+  private subscriptions = new Subscription();
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   tagAutoComplete$: Observable<Tag> = null;
@@ -43,7 +41,7 @@ export class ModalTagComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.subscriptions.unsubscribe();
   }
 
   receiveTags() {
@@ -75,11 +73,13 @@ export class ModalTagComponent implements AfterViewInit, OnDestroy {
     }
     // post to database
     // add tags
-    this.subscribers = this.mediaService.addTagMediaMap({ IDs: ids, Tags: this.localTags }).subscribe(res => {
-      if (res.status === 200) {
-        this.dialogRef.close(res.body as Media[]);
-      }
-    }, err => console.log('Error:' + err));
+    this.subscriptions.add(
+      this.mediaService.addTagMediaMap({ IDs: ids, Tags: this.localTags }).subscribe(res => {
+        if (res.status === 200) {
+          this.dialogRef.close(res.body as Media[]);
+        }
+      }, err => console.log('Error:' + err))
+    );
   }
 
   addTag(event: MatChipInputEvent): void {

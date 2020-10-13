@@ -27,7 +27,6 @@
     "jquery": "^3.5.1",
     "ng2-destroy-subscribers": "^1.0.0",
     "ngx-cookie-service": "^3.0.4",
-    "ngx-destroy-subscribers": "^7.0.1",
     "ngx-infinite-scroll": "^9.0.0",
     "popper.js": "^1.16.1",
     "rxjs": "^6.5.5",

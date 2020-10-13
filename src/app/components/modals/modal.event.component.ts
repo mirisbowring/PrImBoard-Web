@@ -2,10 +2,9 @@ import { Component, Inject, AfterViewInit, OnDestroy, ElementRef, ViewChild } fr
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Event } from 'src/app/models/event';
 import { Media } from 'src/app/models/media';
-import { Observable, of, Unsubscribable } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
-import { CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MediaService } from 'src/app/services/media.service';
@@ -19,8 +18,8 @@ import { EventService } from 'src/app/services/event.service';
 })
 export class ModalEventComponent implements AfterViewInit, OnDestroy {
 
-  @CombineSubscriptions()
-  private subscribers: Unsubscribable;
+  private subscriptions = new Subscription();
+
   @ViewChild('eventInput') eventInput: ElementRef<HTMLInputElement>;
 
   eventAutoComplete$: Observable<Event> = null;
@@ -41,7 +40,7 @@ export class ModalEventComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.subscriptions.unsubscribe();
   }
 
   receiveEvents() {
@@ -72,11 +71,13 @@ export class ModalEventComponent implements AfterViewInit, OnDestroy {
       ids.push(m.id);
     }
     // post to database
-    this.subscribers = this.mediaService.addMediaEventMap({ MediaIDs: ids, Events: this.localEvents }).subscribe(res => {
-      if (res.status === 200) {
-        this.dialogRef.close(res.body as Media[]);
-      }
-    }, err => console.log('Error:' + err.error.error));
+    this.subscriptions.add(
+      this.mediaService.addMediaEventMap({ MediaIDs: ids, Events: this.localEvents }).subscribe(res => {
+        if (res.status === 200) {
+          this.dialogRef.close(res.body as Media[]);
+        }
+      }, err => console.log('Error:' + err.error.error))
+    );
   }
 
   addEvent(event: MatChipInputEvent): void {

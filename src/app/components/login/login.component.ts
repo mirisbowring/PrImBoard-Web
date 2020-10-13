@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/models/user';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+
+  private subscriptions = new Subscription();
 
   private formSubmitAttempt: boolean;
   show = false;
@@ -24,18 +26,24 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   submitlForm() {
-    this.userService.loginUser(this.loginForm.getRawValue()).subscribe(
-      res => {
-        if (res.status === 200) {
-          localStorage.setItem('username', this.loginForm.controls.username.value);
-          this.router.navigate(['/home']);
+    this.subscriptions.add(
+      this.userService.loginUser(this.loginForm.getRawValue()).subscribe(
+        res => {
+          if (res.status === 200) {
+            localStorage.setItem('username', this.loginForm.controls.username.value);
+            this.router.navigate(['/home']);
+          }
+        },
+        err => {
+          console.log('Error:' + err);
+          localStorage.removeItem('username');
         }
-      },
-      err => {
-        console.log('Error:' + err);
-        localStorage.removeItem('username');
-      }
+      )
     );
     this.formSubmitAttempt = true;
   }

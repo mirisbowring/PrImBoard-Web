@@ -1,13 +1,12 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router, NavigationStart } from '@angular/router';
-import { of, Observable, Unsubscribable, Subscription } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { Tag } from 'src/app/models/tag';
 import { FormControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap, filter as fil } from 'rxjs/operators';
 import { TagService } from 'src/app/services/tag.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { MessageService } from './services/message.service';
 
 @Component({

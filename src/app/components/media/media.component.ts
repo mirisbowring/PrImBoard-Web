@@ -6,12 +6,11 @@ import { FormControl } from '@angular/forms';
 import { Tag } from 'src/app/models/tag';
 import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
-import { of, Observable, Unsubscribable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute } from '@angular/router';
-import { DestroySubscribers, CombineSubscriptions } from 'ngx-destroy-subscribers';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
@@ -23,11 +22,10 @@ import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
   templateUrl: './media.component.html',
   styleUrls: ['./media.component.css']
 })
-@DestroySubscribers()
 export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @CombineSubscriptions()
-  private subscribers: Unsubscribable;
+  private subscriptions = new Subscription();
+
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('groupInput') groupInput: ElementRef<HTMLInputElement>;
 
@@ -64,21 +62,25 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.subscribers = this.route.params.subscribe(param => {
-      // receive media object
-      this.mediaService.getMediaByID(param.id).subscribe((data: Media) => {
-        this.med = data;
-        this.descriptionInput.setValue(this.med.description);
-        this.titleInput.setValue(this.med.title);
-      });
-    });
+    this.subscriptions.add(
+      this.route.params.subscribe(param => {
+        // receive media object
+        this.mediaService.getMediaByID(param.id).subscribe((data: Media) => {
+          this.med = data;
+          this.descriptionInput.setValue(this.med.description);
+          this.titleInput.setValue(this.med.title);
+        });
+      })
+    );
     // pull tags
     this.receiveTags();
     // pull groups
     this.receiveGroups();
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   getProfileImage(username: string): string {
     this.med.users.forEach(user => {
@@ -130,16 +132,18 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.localTags = this.tidyTags(this.localTags);
     // post to database
     // add tags
-    this.subscribers = this.mediaService.addTags(this.med.id, this.localTags).subscribe(res => {
-      if (res.status === 200) {
-        this.tagCtrl.setValue('');
-        this.localTags = [];
-        this.med = res.body as Media;
-        this.addTagShown = false;
-      }
-    }, err => {
-      console.log('Error:' + err);
-    });
+    this.subscriptions.add(
+      this.mediaService.addTags(this.med.id, this.localTags).subscribe(res => {
+        if (res.status === 200) {
+          this.tagCtrl.setValue('');
+          this.localTags = [];
+          this.med = res.body as Media;
+          this.addTagShown = false;
+        }
+      }, err => {
+        console.log('Error:' + err);
+      })
+    );
   }
 
   addTag(event: MatChipInputEvent): void {
@@ -213,16 +217,18 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.localGroups = this.tidyGroups(this.localGroups);
     // post to database
     // add tags
-    this.subscribers = this.mediaService.addGroups(this.med.id, this.localGroups).subscribe(res => {
-      if (res.status === 200) {
-        this.groupCtrl.setValue('');
-        this.localGroups = [];
-        this.med = res.body as Media;
-        this.addAccessShown = false;
-      }
-    }, err => {
-      console.log('Error:' + err);
-    });
+    this.subscriptions.add(
+      this.mediaService.addGroups(this.med.id, this.localGroups).subscribe(res => {
+        if (res.status === 200) {
+          this.groupCtrl.setValue('');
+          this.localGroups = [];
+          this.med = res.body as Media;
+          this.addAccessShown = false;
+        }
+      }, err => {
+        console.log('Error:' + err);
+      })
+    );
   }
 
   submitCommentForm() {
@@ -230,15 +236,17 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     if (input === '') {
       return;
     }
-    this.subscribers = this.mediaService.addComment(this.med.id, { comment: input }).subscribe(res => {
-      if (res.status === 200) {
-        this.commentInput.setValue('');
-        this.med = res.body as Media;
-        this.addCommentShown = false;
-      }
-    }, err => {
-      console.log('Error:' + err);
-    });
+    this.subscriptions.add(
+      this.mediaService.addComment(this.med.id, { comment: input }).subscribe(res => {
+        if (res.status === 200) {
+          this.commentInput.setValue('');
+          this.med = res.body as Media;
+          this.addCommentShown = false;
+        }
+      }, err => {
+        console.log('Error:' + err);
+      })
+    );
   }
 
   submitDateForm(event: MatDatepickerInputEvent<Date>) {
