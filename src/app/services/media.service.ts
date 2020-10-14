@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Media } from 'src/app/models/media';
 import { Observable } from 'rxjs';
-import { Tag } from 'src/app/models/tag';
 import { Comment } from 'src/app/models/comment';
 import { Group } from 'src/app/models/group';
 import { TagMediaMap } from '../models/tagmediamap';
@@ -32,7 +31,7 @@ export class MediaService {
     );
   }
 
-  public addTags(id: string, tags: Tag[]) {
+  public addTags(id: string, tags: string[]) {
     return this.httpClient.post(
       environment.gateway + '/api/v1/media/' + id + '/tags',
       tags,
@@ -80,6 +79,12 @@ export class MediaService {
 
   public updateMediaByID(id: string, media: Media) {
     return this.httpClient.put(environment.gateway + '/api/v1/media/' + id, media, { observe: 'response', withCredentials: true });
+  }
+
+  public uploadMedia(formData) {
+    return this.httpClient.post(environment.gateway + '/api/v1/media/upload', formData,
+      { reportProgress: true, observe: 'events', withCredentials: true }
+    )
   }
 
   /**

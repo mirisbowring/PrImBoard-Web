@@ -1,7 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
+import { startWith, debounceTime, switchMap, map, catchError } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
+import { HelperService } from 'src/app/services/helper.service';
+import { TagService } from 'src/app/services/tag.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { MatInput } from '@angular/material/input';
+import { HttpEvent, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-upload',
@@ -10,33 +18,190 @@ import { Media } from 'src/app/models/media';
 })
 export class UploadComponent implements OnInit {
 
-  public uForm = new FormGroup({
-    title: new FormControl(''),
-    description: new FormControl(''),
-    creator: new FormControl(''),
-    timestamp: new FormControl(''),
-    url: new FormControl(''),
-    urlThumb: new FormControl(''),
-    type: new FormControl(''),
-    format: new FormControl('')
-  });
+  @ViewChild('fileUpload', { static: false }) fileUpload: ElementRef; files = [];
 
-  constructor(private mediaService: MediaService) { }
+  tagAutoComplete$: Observable<string> = null;
 
-  types;
+  tagCtrl = new FormControl('');
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  globalTags: string[] = [];
+  imgURL = '';
+
+  constructor(private mediaService: MediaService, private tagService: TagService) { }
 
   ngOnInit() {
-    this.types = [
-      { prop: 'Video' },
-      { prop: 'Image' }
-    ];
+    // pull tags
+    this.receiveTags();
   }
 
-  submituForm() {
-    let med: Media;
-    med = this.uForm.getRawValue();
-    med.timestamp = Math.round((this.uForm.controls.timestamp.value as Date).getTime() / 1000);
-    this.mediaService.createMedia(med).subscribe();
+  addTag(input: HTMLInputElement, tags: string[], element?: any): string[] {
+    const value = input.value;
+
+    // Add tag
+    if ((value || '').trim()) {
+      tags.push(value.trim());
+    }
+
+    tags = HelperService.tidyTags(tags);
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+
+    if (element !== undefined) {
+      (element as MatInput).value = '';
+    }
+
+    return tags;
+  }
+
+  loadImage(file) {
+    const mimeType = file.data.type;
+    if (mimeType.match(/image\/*/) == null) {
+      // Only images are supported
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file.data);
+    reader.onload = () => {
+      this.imgURL = reader.result as string;
+    }
+  }
+
+  receiveTags() {
+    this.tagAutoComplete$ = this.tagCtrl.valueChanges.pipe(
+      startWith(''),
+      // delay emits
+      debounceTime(200),
+      // use switch map to cancel previous subscribed events, before creating new
+      switchMap(value => {
+        if (value !== '' && value != null) {
+          return this.tagService.tagPreview(value);
+        } else {
+          // no value present
+          return of(null);
+        }
+      })
+    );
+  }
+
+  removeTag(tag: string, index: number): void {
+    switch (index) {
+      case -1:
+        this.globalTags = HelperService.removeItem<string>(tag, this.globalTags);
+        break;
+      default:
+        this.files[index].media.tags = HelperService.removeItem<string>(tag, this.files[index].media.tags);
+    }
+  }
+
+  selectedTag(event: MatAutocompleteSelectedEvent, index: number, element?: any): void {
+    switch (index) {
+      case -1:
+        this.globalTags.push(event.option.viewValue);
+        element.value = event.option.viewValue;
+        this.set('global-tag', -1, element, element);
+        break;
+      default:
+        this.files[index].media.tags.push(event.option.viewValue);
+    }
+    if (element !== undefined) {
+      (element as MatInput).value = '';
+    }
+    this.tagCtrl.setValue('');
+  }
+
+  set(attr: string, index: number, value: any, element?: any) {
+    switch (attr){
+      case 'title':
+        this.files[index].media.title = value;
+        break;
+      case 'date':
+        this.files[index].media.timestamp = Math.round((value as Date).getTime() / 1000);
+        break;
+      case 'description':
+        this.files[index].media.description = value;
+        break;
+      case 'global-date':
+        for (const file of this.files) {
+          file.media.timestamp = Math.round((value as Date).getTime() / 1000);
+        }
+        break;
+      case 'global-description':
+        for (const file of this.files) {
+          file.media.description = value;
+        }
+        break;
+      case 'tag':
+        this.files[index].media.tags = this.addTag(value, this.files[index].media.tags, element);
+        break;
+      case 'global-tag':
+        this.globalTags = this.addTag(value, this.globalTags, this.tagCtrl);
+        for (const file of this.files) {
+          file.media.tags.splice(0, file.media.tags.length, ...this.globalTags);
+        }
+        break;
+    }
+  }
+
+  parseNgDate(date): Date {
+    return new Date(date*1000);
+  }
+
+  uploadFile(file) {
+    const formData = new FormData();
+
+    formData.append('uploadfile', file.data);
+    formData.append('filemeta', JSON.stringify(file.media));
+    file.inProgress = true;
+
+    this.mediaService.uploadMedia(formData).pipe(
+      map((event: HttpEvent<any>) => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            file.progress = Math.round(event.loaded * 100 / event.total);
+            if (file.progress === 100) {
+              this.files = HelperService.removeItem(file, this.files);
+            }
+            break;
+          case HttpEventType.Response:
+            return event;
+        }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        file.inProgress = false;
+        return of(`${file.media.title} upload failed.`);
+      })).subscribe((event: any) => {
+        if (typeof (event) === 'object') {
+          console.log(event.body);
+        }
+      });
+  }
+
+  uploadFiles() {
+    this.fileUpload.nativeElement.value = '';
+    this.files.forEach(file => {
+      this.uploadFile(file);
+    });
+  }
+
+  chooseFiles() {
+    const fileChooser = this.fileUpload.nativeElement; fileChooser.onchange = () => {
+      for (const file of fileChooser.files) {
+        const media = {
+          title: file.name,
+          timestamp: file.lastModified / 1000,
+          contentType: file.type,
+          format: file.name.split('.').pop(),
+          tags: []
+        } as Media;
+        this.files.push({ data: file, media, inProgress: false, progress: 0 });
+      }
+    };
+    fileChooser.click();
   }
 
 }

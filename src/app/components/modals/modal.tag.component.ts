@@ -1,6 +1,5 @@
 import { Component, Inject, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Tag } from 'src/app/models/tag';
 import { Media } from 'src/app/models/media';
 import { TagService } from 'src/app/services/tag.service';
 import { Observable, of, Subscription } from 'rxjs';
@@ -22,7 +21,7 @@ export class ModalTagComponent implements AfterViewInit, OnDestroy {
   private subscriptions = new Subscription();
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
-  tagAutoComplete$: Observable<Tag> = null;
+  tagAutoComplete$: Observable<string> = null;
   tagCtrl = new FormControl('');
   separatorKeysCodes: number[] = [ENTER, COMMA];
 

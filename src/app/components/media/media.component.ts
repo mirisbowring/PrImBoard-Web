@@ -3,7 +3,6 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } fr
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
 import { FormControl } from '@angular/forms';
-import { Tag } from 'src/app/models/tag';
 import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
 import { of, Observable, Subscription } from 'rxjs';
@@ -16,6 +15,7 @@ import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
+import { HelperService } from 'src/app/services/helper.service';
 
 @Component({
   selector: 'app-media',
@@ -29,7 +29,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('groupInput') groupInput: ElementRef<HTMLInputElement>;
 
-  tagAutoComplete$: Observable<Tag> = null;
+  tagAutoComplete$: Observable<string> = null;
   groupAutoComplete$: Observable<Group> = null;
 
   commentInput = new FormControl('');
@@ -47,7 +47,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   med: Media;
   users: User[] = [];
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  localTags: Tag[] = [];
+  localTags: string[] = [];
   localGroups: Group[] = [];
 
   constructor(
@@ -129,7 +129,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     // append new tags (comma separated)
-    this.localTags = this.tidyTags(this.localTags);
+    this.localTags = HelperService.tidyTags(this.localTags);
     // post to database
     // add tags
     this.subscriptions.add(
@@ -152,7 +152,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Add tag
     if ((value || '').trim()) {
-      this.localTags.push({ name: value.trim() });
+      this.localTags.push(value.trim());
     }
 
     // Reset the input value
@@ -181,24 +181,16 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.groupCtrl.setValue('');
   }
 
-  removeTag(tag: Tag): void {
-    this.localTags = this.removeItem<Tag>(tag, this.localTags);
+  removeTag(tag: string): void {
+    this.localTags = HelperService.removeItem<string>(tag, this.localTags);
   }
 
   removeGroup(group: Group) {
-    this.localGroups = this.removeItem<Group>(group, this.localGroups);
-  }
-
-  removeItem<T>(item: T, list: T[]): T[] {
-    const index = list.indexOf(item);
-    if (index >= 0) {
-      list.splice(index, 1);
-    }
-    return list;
+    this.localGroups = HelperService.removeItem<Group>(group, this.localGroups);
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
-    this.localTags.push({ name: event.option.viewValue });
+    this.localTags.push(event.option.viewValue);
     this.tagInput.nativeElement.value = '';
     this.tagCtrl.setValue('');
   }
@@ -214,7 +206,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     // append new tags (comma separated)
-    this.localGroups = this.tidyGroups(this.localGroups);
+    this.localGroups = HelperService.tidyGroups(this.localGroups);
     // post to database
     // add tags
     this.subscriptions.add(
@@ -297,20 +289,4 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /** Removes trailing and leading whitespaces and ignore duplicates, lowers case */
-  tidyTags(myArr: Tag[]): Tag[] {
-    for (const tag of myArr) {
-      tag.name = tag.name.trim();
-      // tag.name = tag.name.trim().toLowerCase();
-    }
-    return myArr.filter((thing, index, self) => self.findIndex(t => t.name === thing.name) === index);
-  }
-
-  /** Removes trailing and leading whitespaces and ignores duplicates */
-  tidyGroups(groups: Group[]): Group[] {
-    for (const group of groups) {
-      group.title = group.title.trim();
-    }
-    return groups.filter((thing, index, self) => self.findIndex(g => g.title === thing.title) === index);
-  }
 }

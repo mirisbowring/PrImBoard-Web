@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +20,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -62,6 +64,7 @@ import { ModalEventComponent } from './components/modals/modal.event.component';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    MatExpansionModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -80,6 +83,7 @@ import { ModalEventComponent } from './components/modals/modal.event.component';
     ReactiveFormsModule,
     InfiniteScrollModule,
     MatChipsModule,
+    MatProgressBarModule,
     MatSnackBarModule,
     MatTooltipModule,
   ],

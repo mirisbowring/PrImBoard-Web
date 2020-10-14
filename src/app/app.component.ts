@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router, NavigationStart } from '@angular/router';
 import { of, Observable, Subscription } from 'rxjs';
-import { Tag } from 'src/app/models/tag';
 import { FormControl } from '@angular/forms';
 import { startWith, debounceTime, switchMap, filter as fil } from 'rxjs/operators';
 import { TagService } from 'src/app/services/tag.service';
@@ -20,7 +19,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   authenticated: boolean;
 
-  tagAutoComplete$: Observable<Tag> = null;
+  tagAutoComplete$: Observable<string> = null;
   tagInput = new FormControl('');
 
   multiselect = false;
