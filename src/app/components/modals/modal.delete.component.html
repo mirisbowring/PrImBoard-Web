@@ -1,0 +1,16 @@
+<div class="modal-header">
+  <h5 class="modal-title">Delete Media items</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p>You are going to delete {{data.length}} Media-Items.<br>
+    To continue, type the amount as number into the textbox below.</p>
+  <input ngbAutofocus class="form-control" (change)="deleteInput=$event.target.value" placeholder="type number of items" required>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-light" data-dismiss="modal" (click)="onNoClick()">Close</button>
+  <button type="button" [disabled]="deleteInput === ''" class="btn btn-danger"
+    (click)="deleteMedia()">Delete</button>
+</div>

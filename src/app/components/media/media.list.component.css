@@ -63,3 +63,16 @@
   height: 25px;
   width: 25px;
 }
+
+div.thumb {
+  position: relative;
+  display: block;
+  float: left;
+  width: 128px;
+  height: 128px;
+  background-color: #ccc;
+  margin: 0 0 4px 4px;
+}
+div.thumb img {
+  display: block;
+}

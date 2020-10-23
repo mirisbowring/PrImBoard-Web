@@ -22,3 +22,8 @@
 .trash:hover {
   cursor: pointer;
 }
+
+.color-green {
+  background-color: #155724;
+  color: #fff;
+}

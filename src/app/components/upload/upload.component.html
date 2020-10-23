@@ -1,101 +1,58 @@
 <div class="container">
-  <div class="action-buttons">
-    <input type="file" #fileUpload id="fileUpload" name="fileUpload" multiple="multiple" style="display:none;" />
-    <button mat-button color="primary" (click)="chooseFiles()" class="float-left">
-      <mat-icon>file_upload</mat-icon>
-      Select
-    </button>
-    <button type="submit" mat-raised-button color="primary" [disabled]="files.length === 0"
-      class="float-right" (click)="uploadFiles()">Submit</button>
-    <div class="clearfix"></div>
+  <div class="row" *ngIf="alertMessage !== ''">
+    <div class="col-12">
+      <div class="alert alert-warning" role="alert">
+        {{alertMessage}}
+      </div>
+    </div>
   </div>
-  <mat-accordion>
-    <mat-expansion-panel [expanded]="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <b>General Information</b>
-        </mat-panel-title>
-        <mat-panel-description>
-          These information will be applied to all files.
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <div class="container">
-          <div class="row">
-            <div class="col-6">
-              <mat-form-field class="full-width-input">
-                <mat-label>Date</mat-label>
-                <input matInput placeholder="date" [matDatepicker]="picker"
-                  (dateChange)="set('global-date', -1, $event.value)">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
+  <div class="row">
+    <div class="col-12">
+      <div class="action-buttons">
+        <input type="file" #fileUpload id="fileUpload" name="fileUpload" multiple="multiple" style="display:none;" />
+        <button mat-button color="primary" (click)="chooseFiles()" class="float-left">
+          <mat-icon>file_upload</mat-icon>
+          Select
+        </button>
+        <div class="float-right">
+          <div ngbDropdown class="d-inline-block mr-2">
+            <button class="btn btn-outline-secondary" id="nodeSelect" ngbDropdownToggle>{{(selectedNode.id === '') ? 'Select Node' : selectedNode.title}}</button>
+            <div ngbDropdownMenu aria-labelledby="nodeSelect">
+              <button ngbDropdownItem *ngFor="let node of nodes" (click)="selectedNode = {id: node.id, title: node.title}">{{node.title}}</button>
             </div>
           </div>
-          <div class="row">
-            <div class="col-12">
-              <mat-form-field class="full-width-input">
-                <textarea matInput placeholder="Description"
-                  (input)="set('global-description', -1, $event.target.value)"></textarea>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <mat-form-field class="full-width-input">
-                <mat-chip-list #tagList aria-label="Tag selection">
-                  <mat-chip *ngFor="let tag of globalTags" [selectable]="false" [removable]="true"
-                    (removed)="removeTag(tag, -1)">
-                    {{ tag }}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                  </mat-chip>
-                  <input #tagInput placeholder="Add Tag..." [formControl]="tagCtrl" [matAutocomplete]="auto"
-                    [matChipInputFor]="tagList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                    (matChipInputTokenEnd)="set('global-tag', -1, $event.input, tagInput)">
-                </mat-chip-list>
-                <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete"
-                  (optionSelected)="selectedTag($event, -1, tagInput)">
-                  <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag">
-                    {{ tag }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
-          </div>
+          <button type="submit" mat-raised-button color="primary" [disabled]="files.length === 0" class="float-right"
+          (click)="uploadFiles()">Submit</button>
         </div>
-      </ng-template>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel *ngFor="let file of files; index as i;" (opened)="loadImage(file)" (closed)="imgURL = ''">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{file.media.title}}
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-progress-bar [value]="file.progress"></mat-progress-bar>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <div class="container">
-          <div class="row">
-            <div class="col-md-3">
-              <img [src]="imgURL" class="image-preview">
-            </div>
-            <div class="col-md-9">
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <mat-progress-bar [style.display]="(toBeUploaded === 0) ? 'none' : 'block'" [value]="(uploaded / toBeUploaded) * 100"></mat-progress-bar>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <b>General Information</b>
+            </mat-panel-title>
+            <mat-panel-description>
+              These information will be applied to all files.
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <div class="container">
               <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field class="full-width-input">
-                    <input matInput placeholder="Title" value="{{file.media.title}}"
-                      (input)="set('title', i, $event.target.value)" required minlength="1">
-                    <!-- <input matInput placeholder="Title" formControlName="title" required minlength="1"> -->
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
+                <div class="col-6">
                   <mat-form-field class="full-width-input">
                     <mat-label>Date</mat-label>
-                    <!-- <input matInput placeholder="date" formControlName="timestamp" [matDatepicker]="picker"> -->
                     <input matInput placeholder="date" [matDatepicker]="picker"
-                      (dateChange)="set('date', i, $event.value)" [value]="parseNgDate(file.media.timestamp)">
+                      (dateChange)="set('global-date', -1, $event.value)">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
@@ -104,8 +61,8 @@
               <div class="row">
                 <div class="col-12">
                   <mat-form-field class="full-width-input">
-                    <textarea matInput placeholder="Description" value="{{file.media.description}}"
-                      (input)="set('description', i, $event.target.value)"></textarea>
+                    <textarea matInput placeholder="Description"
+                      (input)="set('global-description', -1, $event.target.value)"></textarea>
                   </mat-form-field>
                 </div>
               </div>
@@ -113,17 +70,17 @@
                 <div class="col-12">
                   <mat-form-field class="full-width-input">
                     <mat-chip-list #tagList aria-label="Tag selection">
-                      <mat-chip *ngFor="let tag of file.media.tags" [selectable]="false" [removable]="true"
-                        (removed)="removeTag(tag, i)">
+                      <mat-chip *ngFor="let tag of globalTags" [selectable]="false" [removable]="true"
+                        (removed)="removeTag(tag, -1)">
                         {{ tag }}
                         <mat-icon matChipRemove>cancel</mat-icon>
                       </mat-chip>
                       <input #tagInput placeholder="Add Tag..." [formControl]="tagCtrl" [matAutocomplete]="auto"
                         [matChipInputFor]="tagList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        (matChipInputTokenEnd)="set('tag', i, $event.input, tagInput)">
+                        (matChipInputTokenEnd)="set('global-tag', -1, $event.input, tagInput)">
                     </mat-chip-list>
                     <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete"
-                      (optionSelected)="selectedTag($event, i, tagInput)">
+                      (optionSelected)="selectedTag($event, -1, tagInput)">
                       <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag">
                         {{ tag }}
                       </mat-option>
@@ -132,9 +89,84 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </ng-template>
-    </mat-expansion-panel>
-  </mat-accordion>
+          </ng-template>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngFor="let file of files; index as i;" (opened)="loadImage(file)" (closed)="imgURL = ''">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{file.media.title}}
+            </mat-panel-title>
+            <mat-panel-description>
+              <!-- <mat-progress-bar [value]="file.progress"></mat-progress-bar> -->
+              <mat-progress-spinner diameter="24" [style.display]="(file.progress === 100 || toBeUploaded === 0) ? 'none' : 'block'"
+                [mode]="(file.inProgress) ? 'determinate' : 'indeterminate'" [value]="file.progress">
+              </mat-progress-spinner>
+              <mat-icon [style.display]="(file.progress === 100) ? 'block' : 'none'" aria-hidden="false" aria-label="done">check_circle_outline</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+            <div class="container">
+              <div class="row">
+                <div class="col-md-3">
+                  <img [src]="imgURL" class="image-preview">
+                </div>
+                <div class="col-md-9">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <mat-form-field class="full-width-input">
+                        <input matInput placeholder="Title" value="{{file.media.title}}"
+                          (input)="set('title', i, $event.target.value)" required minlength="1">
+                        <!-- <input matInput placeholder="Title" formControlName="title" required minlength="1"> -->
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                      <mat-form-field class="full-width-input">
+                        <mat-label>Date</mat-label>
+                        <!-- <input matInput placeholder="date" formControlName="timestamp" [matDatepicker]="picker"> -->
+                        <input matInput placeholder="date" [matDatepicker]="picker"
+                          (dateChange)="set('date', i, $event.value)" [value]="parseNgDate(file.media.timestamp)">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <mat-form-field class="full-width-input">
+                        <textarea matInput placeholder="Description" value="{{file.media.description}}"
+                          (input)="set('description', i, $event.target.value)"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <mat-form-field class="full-width-input">
+                        <mat-chip-list #tagList aria-label="Tag selection">
+                          <mat-chip *ngFor="let tag of file.media.tags" [selectable]="false" [removable]="true"
+                            (removed)="removeTag(tag, i)">
+                            {{ tag }}
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                          </mat-chip>
+                          <input #tagInput placeholder="Add Tag..." [formControl]="tagCtrl" [matAutocomplete]="auto"
+                            [matChipInputFor]="tagList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="set('tag', i, $event.input, tagInput)">
+                        </mat-chip-list>
+                        <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete"
+                          (optionSelected)="selectedTag($event, i, tagInput)">
+                          <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag">
+                            {{ tag }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
 </div>

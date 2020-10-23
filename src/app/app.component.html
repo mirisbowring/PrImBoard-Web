@@ -9,7 +9,6 @@
   </h1>
   <button mat-button routerLink="/">Home</button>
   <button mat-button routerLink="/events">Events</button>
-  <button mat-button routerLink="/upload">Upload</button>
   <span class="spacer"></span>
   <form (ngSubmit)="submitTagForm()">
     <mat-form-field class="full-width-input">
@@ -34,6 +33,9 @@
   <button mat-icon-button aria-label="map to event" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openEventDialog()" matTooltip="tag selected items">
     <mat-icon>event_note</mat-icon>
   </button>
+  <button mat-icon-button aria-label="delete" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openDeleteDialog()" matTooltip="delete selected items">
+    <mat-icon>delete_forever</mat-icon>
+  </button>
   <button mat-icon-button aria-label="cancel multiselect" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" matTooltip="cancel selection">
     <mat-icon>cancel</mat-icon>
   </button>
@@ -47,6 +49,10 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/upload">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>Upload</span>
+    </button>
     <button mat-menu-item routerLink="/settings">
       <mat-icon>settings</mat-icon>
       <span>Settings</span>

@@ -5,4 +5,19 @@ export interface User {
   password?: string;
   urlImage?: string;
   token?: string;
+  settings?: Settings;
+}
+
+export interface Settings {
+  ipfsNodes?: IPFSNode[];
+}
+
+export interface IPFSNode {
+  title?: string;
+  username?: string;
+  password?: string;
+  address?: string;
+  ipfsApiPort?: number;
+  ipfsApiUrl?: string;
+  ipfsGateway?: string;
 }

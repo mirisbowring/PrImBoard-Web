@@ -23,10 +23,13 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './components/register/register.component';
+import { NgxScrollEventModule } from 'ngx-scroll-event';
 import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
@@ -41,6 +44,8 @@ import { ShowComponent } from './components/event/event.show.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SettingComponent } from './components/setting/setting.component';
 import { ModalEventComponent } from './components/modals/modal.event.component';
+import { ModalDeleteComponent } from './components/modals/modal.delete.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
@@ -86,6 +91,11 @@ import { ModalEventComponent } from './components/modals/modal.event.component';
     MatProgressBarModule,
     MatSnackBarModule,
     MatTooltipModule,
+    NgbDropdownModule,
+    NgbModalModule,
+    NgScrollbarModule,
+    NgxScrollEventModule,
+    ScrollingModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent],
@@ -93,6 +103,7 @@ import { ModalEventComponent } from './components/modals/modal.event.component';
     ModalUserGroupComponent,
     ModalTagComponent,
     ModalEventComponent,
+    ModalDeleteComponent,
   ]
 })
 export class AppModule { }

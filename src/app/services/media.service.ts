@@ -51,13 +51,18 @@ export class MediaService {
     return this.httpClient.post(environment.gateway + '/api/v1/media', media, { observe: 'response', withCredentials: true });
   }
 
-  public getMediaPage(id: string, size: number, filter: string, param: string, event: string): Observable<Media[]> {
+  public deleteMediaByID(id: string) {
+    return this.httpClient.delete(environment.gateway + '/api/v1/media/' + id, { observe: 'response', withCredentials: true });
+  }
+
+  public getMediaPage(id: string, size: number, filter: string, param: string, event: string, asc: boolean): Observable<Media[]> {
     size = (size != null && size > 0) ? size : environment.defaultPageSize;
     let query = '';
     query += (id) ? param ? '?' + param + '=' + id : '?after=' + id : '';
     query += (query) ? '&size=' + size : '?size=' + size;
     query += (event) ? '&event=' + event : '';
     query += (filter) ? '&filter=' + filter : '';
+    query += (asc) ? '&asc=' + asc : '';
     return this.httpClient.get<Media[]>(environment.gateway + '/api/v1/media' + query, { withCredentials: true });
   }
 

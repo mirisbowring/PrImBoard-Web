@@ -3,9 +3,11 @@ import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
 import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { User } from 'src/app/models/user';
+import { User, Settings } from 'src/app/models/user';
 import { InviteService } from 'src/app/services/invite.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from 'src/app/services/user.service';
+import { Node } from 'src/app/models/node';
 
 @Component({
   selector: 'app-setting',
@@ -17,11 +19,13 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscriptions = new Subscription();
 
   groups: Group[] = [];
+  nodes: Node[] = [];
   currentGroup = '';
   newUsers = new FormControl('');
   inviteToken = '';
 
-  constructor(private groupService: GroupService, private inviteService: InviteService, private snackBar: MatSnackBar) { }
+  // tslint:disable-next-line: max-line-length
+  constructor(private groupService: GroupService, private inviteService: InviteService, private snackBar: MatSnackBar, private userService: UserService) { }
 
   ngOnInit() {
   }
@@ -34,10 +38,49 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     );
+    this.subscriptions.add(
+      this.userService.getNodes().subscribe((data: Node[]) => {
+        if (data != null) {
+          this.nodes = data;
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  parseNumber(num: string, system: number): number {
+    return parseInt(num, system);
+  }
+
+  deleteNode(index: number): void {
+    const id = this.nodes[index].id;
+    this.userService.deleteNode(id).subscribe(res => {
+      if (res.status === 200) {
+        this.nodes.splice(index, 1);
+      }
+    })
+  }
+
+  saveNode(index: number): void {
+    const node = this.nodes[index];
+    if (node.id == null) {
+      this.userService.createNode(node).subscribe(res => {
+        if (res.status === 201) {
+          this.nodes[index] = res.body as Node;
+        }
+      }, err => {
+        console.log(err);
+      })
+    } else {
+      this.userService.updateNode(node.id, node).subscribe((data: Node) => {
+        if (data != null) {
+          this.nodes[index] = data;
+        }
+      })
+    }
   }
 
   submitAddUserForm() {

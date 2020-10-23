@@ -1,15 +1,17 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MediaService } from 'src/app/services/media.service';
 import { Media } from 'src/app/models/media';
 import { startWith, debounceTime, switchMap, map, catchError } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { HelperService } from 'src/app/services/helper.service';
 import { TagService } from 'src/app/services/tag.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { MatInput } from '@angular/material/input';
 import { HttpEvent, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { UserService } from 'src/app/services/user.service';
+import { Node } from 'src/app/models/node';
 
 @Component({
   selector: 'app-upload',
@@ -21,18 +23,26 @@ export class UploadComponent implements OnInit {
   @ViewChild('fileUpload', { static: false }) fileUpload: ElementRef; files = [];
 
   tagAutoComplete$: Observable<string> = null;
+  private subscriptions = new Subscription();
 
   tagCtrl = new FormControl('');
 
+  alertMessage = '';
+
   separatorKeysCodes: number[] = [ENTER, COMMA];
   globalTags: string[] = [];
+  nodes: Node[] = [];
+  selectedNode: Node = {id: ''};
   imgURL = '';
+  uploaded = 0;
+  toBeUploaded = 0;
 
-  constructor(private mediaService: MediaService, private tagService: TagService) { }
+  constructor(private mediaService: MediaService, private tagService: TagService, private userService: UserService) { }
 
   ngOnInit() {
     // pull tags
     this.receiveTags();
+    this.receiveNodes();
   }
 
   addTag(input: HTMLInputElement, tags: string[], element?: any): string[] {
@@ -69,6 +79,16 @@ export class UploadComponent implements OnInit {
     reader.onload = () => {
       this.imgURL = reader.result as string;
     }
+  }
+
+  receiveNodes() {
+    this.subscriptions.add(
+      this.userService.getNodes().subscribe((data: Node[]) => {
+        if (data != null) {
+          this.nodes = data;
+        }
+      })
+    );
   }
 
   receiveTags() {
@@ -154,6 +174,7 @@ export class UploadComponent implements OnInit {
   uploadFile(file) {
     const formData = new FormData();
 
+    formData.append('node', JSON.stringify(this.selectedNode));
     formData.append('uploadfile', file.data);
     formData.append('filemeta', JSON.stringify(file.media));
     file.inProgress = true;
@@ -164,7 +185,7 @@ export class UploadComponent implements OnInit {
           case HttpEventType.UploadProgress:
             file.progress = Math.round(event.loaded * 100 / event.total);
             if (file.progress === 100) {
-              this.files = HelperService.removeItem(file, this.files);
+              this.uploaded += 1;
             }
             break;
           case HttpEventType.Response:
@@ -182,7 +203,14 @@ export class UploadComponent implements OnInit {
   }
 
   uploadFiles() {
+    if (this.selectedNode.id === '') {
+      this.alertMessage = 'Please select a Node first!';
+      return
+    } else {
+      this.alertMessage = '';
+    }
     this.fileUpload.nativeElement.value = '';
+    this.toBeUploaded = this.files.length;
     this.files.forEach(file => {
       this.uploadFile(file);
     });

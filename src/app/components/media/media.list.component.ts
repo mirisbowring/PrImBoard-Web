@@ -10,6 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Message } from 'src/app/models/message';
 import { ModalEventComponent } from '../modals/modal.event.component';
+import { ModalDeleteComponent } from '../modals/modal.delete.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxScrollEvent } from 'ngx-scroll-event';
 
 @Component({
   selector: 'app-media-list',
@@ -19,13 +22,27 @@ import { ModalEventComponent } from '../modals/modal.event.component';
 export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('mediastream', { read: ElementRef }) public mediastream: ElementRef;
+  @ViewChild('mainView') mainView: ElementRef;
+
+  meta = {
+    reload: true,
+    rowItems: 0,
+    rows: 15,
+    viewWidth: 0,
+    viewHeight: 0,
+    thumbnailSize: 132, // inclusive margins
+    endIndex: 0,
+  };
+
+  initialized = false;
+  refreshing = false;
+  reachedTop = false;
+  reachedBottom = false;
 
   private subscriptions = new Subscription();
 
-  isFullListDisplayed = false;
   media: Media[] = [];
   filter: string;
-  prevID: string;
   private curID: string;
   private eventID: string;
   // multiselect params
@@ -40,8 +57,8 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     private messageService: MessageService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private modalService: NgbModal,
   ) {
-    console.log('init');
     // route parser
     this.subscriptions.add(
       this.router.events.pipe(
@@ -50,7 +67,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
       ).subscribe(([e, params, fragment]) => {
         // show items for event
         this.eventID = null;
-        console.log(e);
         if ((e as NavigationEnd).urlAfterRedirects.startsWith('/event/')) {
           this.eventID = params.id;
         } else if ((e as NavigationEnd).urlAfterRedirects.startsWith('/home')) {
@@ -59,16 +75,15 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if (this.curID !== fragment) {
           this.curID = fragment;
-          this.prevID = fragment;
         }
         if (this.filter !== params.filter) {
           this.filter = params.filter;
-          if (!this.curID) {
-            this.prevID = null;
-          }
         }
-        this.media = [];
-        this.requestMedia(this.prevID ? 'from' : '');
+        if (this.initialized) {
+          this.media = [];
+          this.requestMedia(this.curID ? 'from' : '', this.curID, true, false);
+        }
+        console.log(this.reachedBottom);
       })
     );
     // message listener
@@ -99,45 +114,143 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
             this.updateMediaCache(res, 'Mapped event successfully!');
           });
         }
+        if (message.openDeleteDialog !== undefined) {
+          const modalRef = this.modalService.open(ModalDeleteComponent)
+          modalRef.componentInstance.data = Array.from(this.selected.values());
+          modalRef.result.then((res: Media[]) => {
+            for (const m of res as Media[]) {
+              const index = this.media.findIndex(med => med.id === m.id);
+              this.media.splice(index, 1);
+            }
+          });
+        }
       })
     );
   }
 
   ngOnInit() { }
 
-  ngAfterViewInit() { }
+  ngAfterViewInit() {
+    this.onResize();
+    this.requestMedia('from', this.curID, false, false);
+    this.initialized = true;
+  }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
 
-  requestMedia(param: string) {
-    console.log('call');
-    this.mediaService.getMediaPage(this.prevID, 0, this.filter, param, this.eventID).subscribe((data: Media[]) => {
-      if (data == null || data.length === 0) {
-        this.isFullListDisplayed = true;
-      } else {
-        this.media = this.media.concat(data);
-        this.prevID = this.media[this.media.length - 1].id;
-        this.callbackUntilScrollable();
-      }
-    });
+  counter(i: number): number[] {
+    if (this.media.length > 0 && this.media.length > this.meta.rows * this.meta.rowItems) {
+      return new Array(i);
+    } else {
+      return new Array(0);
+    }
   }
 
-  onScrollDown() {
-    this.requestMedia('after');
+  onResize() {
+    this.meta.viewWidth = this.mainView.nativeElement.offsetWidth;
+    this.meta.rowItems = this.meta.viewWidth / this.meta.thumbnailSize;
+    this.meta.rows = Math.ceil(window.innerHeight / this.meta.thumbnailSize * 1.5);
   }
 
-  onScrollUp() {
-    this.requestMedia('before');
+  onScroll(event: NgxScrollEvent) {
+    if (this.refreshing || (this.reachedBottom && this.reachedTop)) {
+      return
+    }
+    if (event.isReachingBottom && ! this.reachedBottom) {
+      const id = (this.media.length > 0) ? this.media[this.media.length - 1].id : '';
+      this.requestMedia('after', id, false, false);
+    }
+    if (event.isReachingTop && this.reachedTop !== true) {
+      console.log(this.reachedTop);
+      const id = (this.media.length > 0) ? this.media[0].id : '';
+      this.requestMedia('before', id, false, true);
+    }
   }
 
-  private callbackUntilScrollable() {
-    window.setTimeout(() => {
-      if (this.mediastream.nativeElement.clientHeight <= window.innerHeight + 500) {
-        this.onScrollDown();
-      }
-    }, 0);
+  requestMedia(param: string, id: string, fill: boolean, asc: boolean) {
+    if (this.refreshing) {
+      return;
+    }
+    this.refreshing = true;
+    if (id == null) {
+      id = '';
+    }
+    const size = (this.meta.rowItems * this.meta.rows);
+    this.mediaService.getMediaPage(id, size, this.filter, param, this.eventID, asc)
+      .subscribe((data: Media[]) => {
+        if (asc) {
+          data = data.reverse();
+        }
+        switch (param) {
+          case 'after':
+            this.reachedBottom = (data == null || data.length < size);
+            if (data == null) {
+              break;
+            }
+            if (this.media.length === 0 && data != null && data.length < size) {
+              this.fillTop(data);
+            }
+            this.media = this.media.concat(data);
+            break;
+          case 'before':
+            this.reachedTop = (data == null || data.length < size );
+            if (data == null) {
+              break;
+            }
+            if (this.media.length === 0 && data != null && data.length < size) {
+              this.fillBottom(data);
+            }
+            this.media = data.concat(this.media);
+            break;
+          case 'from':
+            this.reachedBottom = (data == null || data.length < size);
+            if (data == null) {
+              break;
+            }
+            if (this.media.length === 0 && data != null && data.length < size) {
+              this.fillTop(data);
+            }
+            this.media = this.media.concat(data);
+            break;
+          case 'until':
+            this.reachedTop = (data == null || data.length < size);
+            if (data == null) {
+              break;
+            }
+            if (this.media.length === 0 && data != null && data.length < size) {
+              this.fillBottom(data);
+            }
+            this.media = data.concat(this.media);
+            break;
+          case '':
+            this.reachedBottom = (data == null || data.length < size);
+            if (data == null) {
+              break;
+            }
+            if (this.media.length === 0 && data != null && data.length < size) {
+              this.fillTop(data);
+            }
+            this.media = this.media.concat(data);
+            break;
+        }
+        this.refreshing = false;
+      });
+  }
+
+  fillBottom(response: Media[]): void {
+    if (response.length > 0 && this.reachedBottom === false) {
+      this.refreshing = false;
+      this.requestMedia('after', response[response.length - 1].id, false, false);
+    }
+  }
+
+  fillTop(response: Media[]): void {
+    if (response.length > 0 && this.reachedTop === false) {
+      this.refreshing = false;
+      this.requestMedia('before', response[0].id, false, true);
+    }
   }
 
   selectMedia(m: Media): void {
@@ -170,6 +283,9 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateMediaCache(updates: Media[], message: string): void {
+    if (updates === undefined) {
+      return;
+    }
     // iterate over all fetched media
     for (let i = 0; i < this.media.length; i++) {
       // create tmp index
