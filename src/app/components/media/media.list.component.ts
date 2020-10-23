@@ -180,7 +180,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     const size = (this.meta.rowItems * this.meta.rows);
     this.mediaService.getMediaPage(id, size, this.filter, param, this.eventID, asc)
       .subscribe((data: Media[]) => {
-        if (asc) {
+        if (asc && data != null) {
           data = data.reverse();
         }
         switch (param) {
