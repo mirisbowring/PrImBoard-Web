@@ -13,11 +13,19 @@ export class EventService {
     return this.httpClient.post(environment.gateway + '/api/v1/event', event, { observe: 'response', withCredentials: true });
   }
 
+  public deleteEvent(id: string) {
+    return this.httpClient.delete(environment.gateway + '/api/v1/event/' + id, { observe: 'response', withCredentials: true });
+  }
+
   public getAllEvents() {
     return this.httpClient.get<Event[]>(environment.gateway + '/api/v1/events', { withCredentials: true });
   }
 
   public eventPreview(event: string) {
     return this.httpClient.get<Event[]>(environment.gateway + '/api/v1/events/' + event, { withCredentials: true });
+  }
+
+  public updateEvent(id: string, event: Event) {
+    return this.httpClient.put(environment.gateway + '/api/v1/event/' + id, event, { observe: 'response', withCredentials: true });
   }
 }

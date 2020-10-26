@@ -3,4 +3,5 @@ export interface Message {
   openDeleteDialog?: boolean;
   openTagDialog?: boolean;
   openEventDialog?: boolean;
+  openEventEditDialog?: boolean;
 }

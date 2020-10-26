@@ -1,11 +1,24 @@
 <div class="container-xl">
   <div class="row m-0">
-    <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-1" *ngFor="let event of events" [routerLink]="['/event/' + event.id]">
-      <div class="card" style="height: 100%;">
+    <!-- <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-1" *ngFor="let event of events" [routerLink]="['/event/' + event.id]"> -->
+    <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-1" *ngFor="let event of events" >
+      <div role="button" class="card" style="height: 100%;">
         <img src="{{event.urlThumb}}" class="card-img-top" alt="{{event.urlThumb}}">
         <div class="card-body">
-          <h5 class="card-title">{{event.title}}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{event.timestampStart * 1000 | date: 'dd.MM.yyy'}} - {{event.timestampEnd * 1000 | date: 'dd.MM.yyy'}}</h6>
+          <div class="row">
+            <div class="col-11">
+              <h5 class="card-title">{{event.title}}</h5>
+            </div>
+            <div class="col-1">
+              <div class="clearfix">
+                <span role="button" class="material-icons float-right event-card-edit-button" ngbTooltip="Edit Event"
+                [openDelay]="300" [closeDelay]="500" (click)="openEventEditDialog(event)">
+                  edit
+                </span>
+              </div>
+            </div>
+          </div>
+          <h6 class="card-subtitle mb-2 mt-0 text-muted">{{event.timestampStart * 1000 | date: 'dd.MM.yyy'}} - {{event.timestampEnd * 1000 | date: 'dd.MM.yyy'}}</h6>
           <p class="card-text">{{event.description}}</p>
         </div>
       </div>

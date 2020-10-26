@@ -23,9 +23,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbDatepicker, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './components/register/register.component';
@@ -47,6 +47,7 @@ import { ModalEventComponent } from './components/modals/modal.event.component';
 import { ModalDeleteComponent } from './components/modals/modal.delete.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { ModalEventEditComponent } from './components/modals/modal.event.edit.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     ModalUserGroupComponent,
     ModalTagComponent,
     ModalEventComponent,
+    ModalEventEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -93,6 +95,7 @@ import { VirtualScrollerModule } from 'ngx-virtual-scroller';
     MatSnackBarModule,
     MatTooltipModule,
     NgbModule,
+    NgbDatepickerModule,
     NgScrollbarModule,
     NgxScrollEventModule,
     ScrollingModule,
