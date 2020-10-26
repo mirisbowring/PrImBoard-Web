@@ -23,7 +23,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,6 +46,7 @@ import { SettingComponent } from './components/setting/setting.component';
 import { ModalEventComponent } from './components/modals/modal.event.component';
 import { ModalDeleteComponent } from './components/modals/modal.delete.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
 @NgModule({
   declarations: [
@@ -91,11 +92,11 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatProgressBarModule,
     MatSnackBarModule,
     MatTooltipModule,
-    NgbDropdownModule,
-    NgbModalModule,
+    NgbModule,
     NgScrollbarModule,
     NgxScrollEventModule,
     ScrollingModule,
+    VirtualScrollerModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent],

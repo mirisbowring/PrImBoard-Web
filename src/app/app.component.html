@@ -1,68 +1,54 @@
-<mat-toolbar *ngIf="!authenticated" class="app-toolbar" color="primary">
-  <h1>
-    PrImBoard
-  </h1>
-</mat-toolbar>
-<mat-toolbar *ngIf="authenticated" class="app-toolbar" color="primary">
-  <h1>
-    PrImBoard
-  </h1>
-  <button mat-button routerLink="/">Home</button>
-  <button mat-button routerLink="/events">Events</button>
-  <span class="spacer"></span>
-  <form (ngSubmit)="submitTagForm()">
-    <mat-form-field class="full-width-input">
-      <input matInput placeholder="Filter" type="text" [formControl]="tagInput"
-        [matAutocomplete]="auto">
-      <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete">
-        <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag">
-          {{ tag }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-    <button mat-icon-button color="white" type="submit">
-      <mat-icon>search</mat-icon>
-    </button>
-  </form>
-  <span class="spacer"></span>
-  <span class="spacer"></span>
-  <span class="spacer"></span>
-  <button mat-icon-button aria-label="add tags" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openTagDialog()" matTooltip="tag selected items">
-    <mat-icon>local_offer</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="map to event" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openEventDialog()" matTooltip="tag selected items">
-    <mat-icon>event_note</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="delete" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openDeleteDialog()" matTooltip="delete selected items">
-    <mat-icon>delete_forever</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="cancel multiselect" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" matTooltip="cancel selection">
-    <mat-icon>cancel</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="multiselect" *ngIf="router.url.startsWith('/home') && !multiselect" (click)="toggleMultiselect(true)" matTooltip="enable multiselect">
-    <mat-icon>flip_to_front</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="Add Event" routerLink="/event/new" *ngIf="router.url == '/events'">
-    <mat-icon>add</mat-icon>
-  </button>
-  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="vert_menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/upload">
-      <mat-icon>cloud_upload</mat-icon>
-      <span>Upload</span>
-    </button>
-    <button mat-menu-item routerLink="/settings">
-      <mat-icon>settings</mat-icon>
-      <span>Settings</span>
-    </button>
-    <button mat-menu-item (click)="doLogout()">
-      <mat-icon>logout</mat-icon>
-      <span>Logout</span>
-    </button>
-  </mat-menu>
-</mat-toolbar>
+<nav #navb class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+  <div class="container-xl">
+    <a class="navbar-brand ml-2" href="#">PrImBoard</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" *ngIf="authenticated">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" routerLink="/">Home<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" routerLink="/events">Events<span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+      <form (ngSubmit)="submitTagForm()" class="form-inline my-2 my-lg-0 mr-2">
+        <input id="typeahead-basic" type="text" class="form-control mr-sm-2" placeholder="Search" [formControl]="tagInput" [ngbTypeahead]="search"/>
+        <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <button mat-icon-button aria-label="add tags" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openTagDialog()" matTooltip="tag selected items">
+        <mat-icon>local_offer</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="map to event" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openEventDialog()" matTooltip="tag selected items">
+        <mat-icon>event_note</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="delete" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openDeleteDialog()" matTooltip="delete selected items">
+        <mat-icon>delete_forever</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="cancel multiselect" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" matTooltip="cancel selection">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="multiselect" *ngIf="router.url.startsWith('/home') && !multiselect" (click)="toggleMultiselect(true)" matTooltip="enable multiselect">
+        <mat-icon>flip_to_front</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Add Event" *ngIf="router.url == '/events'">
+        <mat-icon>add</mat-icon>
+      </button>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item" ngbDropdown display="dynamic" placement="bottom-right">
+          <a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown3" role="button">
+            <mat-icon>more_vert</mat-icon>
+          </a>
+          <div ngbDropdownMenu aria-labelledby="navbarDropdown3" class="dropdown-menu">
+            <a ngbDropdownItem href="#" routerLink="/upload">Upload</a>
+            <a ngbDropdownItem href="#" routerLink="/settings">Settings</a>
+            <a ngbDropdownItem href="#" (click)="doLogout()">Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <!-- <app-home></app-home> -->
 <router-outlet></router-outlet>
 <!-- <app-footer></app-footer> -->

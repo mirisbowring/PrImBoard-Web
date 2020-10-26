@@ -4,3 +4,12 @@
 .full-width-input {
   width: 100%;
 }
+
+.container-xl {
+  max-width: 1614px;
+}
+
+html, body {
+  /* height: 100%; */
+  padding-top: 35px;
+}

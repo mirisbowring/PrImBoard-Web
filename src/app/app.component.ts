@@ -3,7 +3,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Router, NavigationStart } from '@angular/router';
 import { of, Observable, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { startWith, debounceTime, switchMap, filter as fil } from 'rxjs/operators';
+import { startWith, debounceTime, switchMap, filter as fil, map, distinctUntilChanged } from 'rxjs/operators';
 import { TagService } from 'src/app/services/tag.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { MessageService } from './services/message.service';
@@ -108,6 +108,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term => term !== '' ? this.tagService.tagPreview(term) : [])
+    )
 
   receiveTags() {
     this.tagAutoComplete$ = this.tagInput.valueChanges.pipe(

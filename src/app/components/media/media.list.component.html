@@ -1,6 +1,8 @@
-<div libScrollEvent #mainView class="container-xl" style="max-width: 1584px;" (window:resize)="onResize()" (onscroll)="onScroll($event)" [bottomOffset]="500 " [topOffset]="500">
-  <div class="row">
-    <div href="#" class="thumb" *ngFor="let m of media">
+<div libScrollEvent #mainView class="container-xl" (window:resize)="onResize()"
+  (onscroll)="onScroll($event)" [bottomOffset]="500 " [topOffset]="500">
+  <virtual-scroller #scroll [items]="media" [style]="getHeight()" [parentScroll]="scroll.window"
+    [bufferAmount]="meta.rowItems * meta.rows / 2">
+    <div href="#" class="thumb" *ngFor="let m of scroll.viewPortItems; trackBy: mediaTrackBy">
       <div class="select-overlay" *ngIf="multiselect">
         <ng-template [ngIf]="!selected.has(m)" [ngIfElse]="chosen">
           <svg class="bi bi-square" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
@@ -36,5 +38,5 @@
       </div>
       <img src="{{m.urlThumb}}" alt="{{m.title}}" [routerLink]="['/media/' + m.id]" />
     </div>
-  </div>
+  </virtual-scroller>
 </div>
