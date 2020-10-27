@@ -21,15 +21,18 @@
       <button mat-icon-button aria-label="map to event" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openEventDialog()" matTooltip="tag selected items">
         <mat-icon>event_note</mat-icon>
       </button>
+      <span role="button" aria-label="grant access" *ngIf="(router.url == '/home' || router.url == '/events') && multiselect" (click)="openAccessDialog()" class="material-icons">
+        group_add
+      </span>
       <button mat-icon-button aria-label="delete" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openDeleteDialog()" matTooltip="delete selected items">
         <mat-icon>delete_forever</mat-icon>
       </button>
       <button mat-icon-button aria-label="cancel multiselect" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" matTooltip="cancel selection">
         <mat-icon>cancel</mat-icon>
       </button>
-      <button mat-icon-button aria-label="multiselect" *ngIf="router.url.startsWith('/home') && !multiselect" (click)="toggleMultiselect(true)" matTooltip="enable multiselect">
-        <mat-icon>flip_to_front</mat-icon>
-      </button>
+      <span role="button" aria-label="multiselect" *ngIf="(router.url == '/home' || router.url == '/events') && !multiselect" (click)="toggleMultiselect(true)" class="material-icons">
+        flip_to_front
+      </span>
       <button mat-icon-button aria-label="Add Event" *ngIf="router.url == '/events'">
         <mat-icon>add</mat-icon>
       </button>

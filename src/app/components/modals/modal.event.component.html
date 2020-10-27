@@ -1,34 +1,30 @@
-<h1 mat-dialog-title>Map Events</h1>
-<div mat-dialog-content>
+<div class="modal-header">
+  <h5 class="modal-title">Map Events</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
   <form>
-    <mat-form-field class="full-width-input">
-      <mat-chip-list #eventList aria-label="Event selection">
-        <mat-chip
-          *ngFor="let event of localEvents"
-          [selectable]="false"
-          [removable]="true"
-          (removed)="removeEvent(event)">
-          {{ event.title }}
-          <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
-        <input
-          #eventInput
-          placeholder="Add Event..."
-          [formControl]="eventCtrl"
-          [matAutocomplete]="auto"
-          [matChipInputFor]="eventList"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="addEvent($event)">
-      </mat-chip-list>
-      <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete" (optionSelected)="selectedEvent($event)">
-        <mat-option *ngFor="let event of eventAutoComplete$ | async; let index = index" [value]="event">
-          {{ event.title }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+    <div class="form-group">
+      <h6 *ngFor="let event of localEvents; let i = index" class="d-inline mr-1">
+        <span class="badge badge-pill badge-secondary">
+          <label class="align-middle ml-1 mb-0 mr-1 font-14 font-weight-normal">{{event.title}}</label>
+          <span role="button" id="chip-{{i}}" class="material-icons align-middle font-20 p-1"
+            (mouseenter)="toggleChipCancel('chip-'+i)" (mouseleave)="toggleChipCancel('chip-'+i)"
+            (click)="removeEvent(event)">
+            close
+          </span>
+        </span>
+      </h6>
+    </div>
+    <div class="form-group">
+      <input #ngbTypeahead type="text" class="form-control mr-sm-2" placeholder="Search for events"
+        [ngbTypeahead]="events" [resultFormatter]="formatter" (selectItem)="selectedEvent($event)" />
+    </div>
   </form>
 </div>
-<div mat-dialog-actions>
-  <button mat-button class="float-right" (click)="onNoClick()">Close</button>
-  <button mat-button class="float-right" (click)="addEvents()">Save</button>
+<div class="modal-footer">
+  <button type="button" class="btn btn-light" data-dismiss="modal" (click)="onNoClick()">Close</button>
+  <button type="button" class="btn btn-outline-success" (click)="addEvents()">Save</button>
 </div>

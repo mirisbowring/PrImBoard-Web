@@ -1,71 +1,69 @@
-import { Component, Inject, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, Inject, AfterViewInit, OnDestroy, ElementRef, ViewChild, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Event } from 'src/app/models/event';
 import { Media } from 'src/app/models/media';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { startWith, debounceTime, switchMap } from 'rxjs/operators';
+import { startWith, debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MediaService } from 'src/app/services/media.service';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { EventService } from 'src/app/services/event.service';
+import { NgbActiveModal, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { MediaMessage } from 'src/app/models/message';
+import { HelperService } from 'src/app/services/helper.service';
 
 @Component({
   selector: 'app-modal-event',
   templateUrl: './modal.event.component.html',
   styleUrls: ['./modal.event.component.css']
 })
-export class ModalEventComponent implements AfterViewInit, OnDestroy {
+export class ModalEventComponent implements OnDestroy {
 
+  @Input() data: Media[] = [];
   private subscriptions = new Subscription();
+  @ViewChild(NgbTypeahead) ngbTypeahead: NgbTypeahead;
 
-  @ViewChild('eventInput') eventInput: ElementRef<HTMLInputElement>;
-
-  eventAutoComplete$: Observable<Event> = null;
-  eventCtrl = new FormControl('');
-  separatorKeysCodes: number[] = [ENTER, COMMA];
+  chipCancelHover = false;
 
   localEvents: Event[] = [];
 
   constructor(
-    public dialogRef: MatDialogRef<ModalEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Media[],
+    public activeModal: NgbActiveModal,
     private eventService: EventService,
     private mediaService: MediaService,
   ) { }
-
-  ngAfterViewInit() {
-    this.receiveEvents();
-  }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
 
-  receiveEvents() {
-    this.eventAutoComplete$ = this.eventCtrl.valueChanges.pipe(
+  events = (text$: Observable<string>) =>
+    text$.pipe(
       startWith(''),
-      // delay emits
       debounceTime(200),
-      // use switch map to cancel previous subscribed events, before creating new
-      switchMap(value => {
-        if (value !== '' && value != null) {
-          return this.eventService.eventPreview(value);
+      distinctUntilChanged(),
+      switchMap(term => {
+        if (term === '' || term == null) {
+          return [];
+        } else if (term.endsWith(',')) {
+          this.addEvent(term);
+          return [];
         } else {
-          // no value present
-          return of(null);
+          return this.eventService.eventPreview(term);
         }
       })
     );
-  }
+
+  formatter = (event: Event) => event.title;
 
   addEvents(): void {
     if (this.localEvents.length === 0) {
       return;
     }
     // append events
-    this.localEvents = this.tidyEvents(this.localEvents);
+    this.localEvents = HelperService.tidyEvents(this.localEvents);
     const ids: string[] = [];
     for (const m of this.data) {
       ids.push(m.id);
@@ -74,53 +72,40 @@ export class ModalEventComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.add(
       this.mediaService.addMediaEventMap({ MediaIDs: ids, Events: this.localEvents }).subscribe(res => {
         if (res.status === 200) {
-          this.dialogRef.close(res.body as Media[]);
+          this.activeModal.close({updated: true, media: res.body as Media[]} as MediaMessage);
         }
       }, err => console.log('Error:' + err.error.error))
     );
   }
 
-  addEvent(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = input.value;
-
-    if ((value || '').trim()) {
-      this.localEvents.push({title: value.trim()});
+  addEvent(input: string): void {
+    const tmp = input.trim().split(',').join('');
+    if (tmp.length >= 1) {
+      this.localEvents.push({title: tmp});
     }
 
     // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-
-    this.eventCtrl.setValue('');
+    this.ngbTypeahead.writeValue('');
+    this.ngbTypeahead.dismissPopup();
   }
 
   removeEvent(event: Event): void {
-    this.localEvents = this.removeItem<Event>(event, this.localEvents);
+    this.localEvents = HelperService.removeItem<Event>(event, this.localEvents);
   }
 
-  removeItem<T>(item: T, list: T[]): T[] {
-    const index = list.indexOf(item);
-    if (index >= 0) {
-      list.splice(index, 1);
-    }
-    return list;
+  selectedEvent(event: NgbTypeaheadSelectItemEvent): void {
+    this.localEvents.push(event.item);
+    this.ngbTypeahead.writeValue('');
+    // prevent from appending after this method
+    event.preventDefault();
   }
 
-  selectedEvent(event: MatAutocompleteSelectedEvent): void {
-    this.localEvents.push(event.option.value);
-    this.eventInput.nativeElement.value = '';
-    this.eventCtrl.setValue('');
-  }
-
-  /** Removes trailing and leading whitespaces and ignore duplicates, lowers case */
-  tidyEvents(myArr: Event[]): Event[] {
-    return myArr.filter((thing, index, self) => self.findIndex(t => t.id === thing.id) === index);
+  toggleChipCancel(chip: string): void {
+    HelperService.toggleChipCancel(chip);
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.activeModal.close({canceled: true, media: this.data} as MediaMessage);
   }
 
 }

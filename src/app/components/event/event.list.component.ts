@@ -1,11 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { EventService } from 'src/app/services/event.service';
-import { map } from 'rxjs/operators';
-import { Event, EventMessage } from 'src/app/models/event';
+import { Event } from 'src/app/models/event';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/services/message.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Message } from 'src/app/models/message';
+import { EventMessage, Message } from 'src/app/models/message';
 import { ModalEventEditComponent } from 'src/app/components/modals/modal.event.edit.component';
 
 @Component({

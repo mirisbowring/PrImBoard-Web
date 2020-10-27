@@ -8,7 +8,7 @@ import { MessageService } from 'src/app/services/message.service';
 import { ModalTagComponent } from '../modals/modal.tag.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Message } from 'src/app/models/message';
+import { MediaMessage, Message } from 'src/app/models/message';
 import { ModalEventComponent } from '../modals/modal.event.component';
 import { ModalDeleteComponent } from '../modals/modal.delete.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -97,22 +97,14 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
         if (message.openTagDialog !== undefined) {
-          const dialogRef = this.dialog.open(ModalTagComponent, {
-            width: '400px',
-            data: Array.from(this.selected.values()),
-          });
-          dialogRef.afterClosed().subscribe((res: Media[]) => {
-            this.updateMediaCache(res, 'Mapped tags successfully!');
-          });
+          const modalRef = this.modalService.open(ModalTagComponent);
+          modalRef.componentInstance.data = Array.from(this.selected.values());
+          modalRef.result.then((res: MediaMessage) => res.updated ? this.updateMediaCache(res.media, 'Mapped tags successfully!') : '');
         }
         if (message.openEventDialog !== undefined) {
-          const dialogRef = this.dialog.open(ModalEventComponent, {
-            width: '400px',
-            data: Array.from(this.selected.values()),
-          });
-          dialogRef.afterClosed().subscribe((res: Media[]) => {
-            this.updateMediaCache(res, 'Mapped event successfully!');
-          });
+          const modalRef = this.modalService.open(ModalEventComponent);
+          modalRef.componentInstance.data = Array.from(this.selected.values());
+          modalRef.result.then((res: MediaMessage) => res.updated ? this.updateMediaCache(res.media, 'Mapped events successfully!') : '');
         }
         if (message.openDeleteDialog !== undefined) {
           const modalRef = this.modalService.open(ModalDeleteComponent)

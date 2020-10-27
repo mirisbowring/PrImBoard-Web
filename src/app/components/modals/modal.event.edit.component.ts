@@ -1,9 +1,10 @@
 import { Component, AfterViewInit, OnDestroy, Input, ViewChild } from '@angular/core';
-import { Event, EventMessage } from 'src/app/models/event';
+import { Event } from 'src/app/models/event';
 import { Subscription } from 'rxjs';
 import { EventService } from 'src/app/services/event.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { EventMessage } from 'src/app/models/message';
 
 @Component({
   selector: 'app-modal-event-edit',

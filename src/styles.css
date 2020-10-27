@@ -12,4 +12,18 @@
 html, body {
   /* height: 100%; */
   padding-top: 35px;
+  /* needed to prevent viewport movement on ngb-modal-open */
+  padding-right: 0px !important;
+}
+
+.modal-open {
+  overflow: visible;
+}
+
+.font-14 {
+  font-size: 14px;
+}
+
+.font-20 {
+  font-size: 20px;
 }

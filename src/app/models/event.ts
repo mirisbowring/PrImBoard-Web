@@ -11,10 +11,3 @@ export interface Event {
    url?: string;
    urlThumb?: string;
 }
-
-export interface EventMessage{
-  deleted?: boolean;
-  updated?: boolean;
-  canceled?: boolean;
-  event: Event;
-}

@@ -48,6 +48,7 @@ import { ModalDeleteComponent } from './components/modals/modal.delete.component
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { ModalEventEditComponent } from './components/modals/modal.event.edit.component';
+import { HelperService } from './services/helper.service';
 
 @NgModule({
   declarations: [
