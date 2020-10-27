@@ -12,7 +12,6 @@ import { HelperService } from 'src/app/services/helper.service';
 @Component({
   selector: 'app-modal-tag',
   templateUrl: './modal.tag.component.html',
-  styleUrls: ['./modal.tag.component.css']
 })
 export class ModalTagComponent implements OnDestroy {
 

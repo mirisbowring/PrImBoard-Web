@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Media } from 'src/app/models/media';
+import { Media, MediaEventMap, MediaGroupMap } from 'src/app/models/media';
 import { Observable } from 'rxjs';
 import { Comment } from 'src/app/models/comment';
 import { Group } from 'src/app/models/group';
 import { TagMediaMap } from '../models/tagmediamap';
-import { MediaEventMap } from '../models/mediaeventmap';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +40,10 @@ export class MediaService {
 
   public addMediaEventMap(mem: MediaEventMap) {
     return this.httpClient.post(environment.gateway + '/api/v1/media/mapevents', mem, { observe: 'response', withCredentials: true });
+  }
+
+  public addMediaGroupMap(mgm: MediaGroupMap) {
+    return this.httpClient.post(environment.gateway + '/api/v1/media/mapgroups', mgm, { observe: 'response', withCredentials: true });
   }
 
   public addTagMediaMap(tmm: TagMediaMap) {

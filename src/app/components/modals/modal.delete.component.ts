@@ -1,17 +1,14 @@
-import { Component, Inject, OnDestroy, Input, ElementRef, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnDestroy, Input } from '@angular/core';
 import { Media } from 'src/app/models/media';
 import { Subscription } from 'rxjs';
 import { MediaService } from 'src/app/services/media.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { catchError } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
+import { MediaMessage } from 'src/app/models/message';
 
 
 @Component({
   selector: 'app-modal-delete',
   templateUrl: './modal.delete.component.html',
-  styleUrls: ['./modal.delete.component.css']
 })
 export class ModalDeleteComponent implements OnDestroy {
 
@@ -20,11 +17,8 @@ export class ModalDeleteComponent implements OnDestroy {
   deleteInput = '';
 
   private subscriptions = new Subscription();
-  // @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   constructor(
-    // public dialogRef: MatDialogRef<ModalDeleteComponent>,
-    // @Inject(MAT_DIALOG_DATA) public data: Media[],
     public activeModal: NgbActiveModal,
     private mediaService: MediaService,
   ) { }
@@ -35,17 +29,19 @@ export class ModalDeleteComponent implements OnDestroy {
 
   deleteMedia(): void {
     for (const m of this.data) {
-      this.mediaService.deleteMediaByID(m.id).subscribe(res => {
-        if (res.status === 200) {
-          this.deleted.push(m);
-        }
-      });
+      this.subscriptions.add(
+        this.mediaService.deleteMediaByID(m.id).subscribe(res => {
+          if (res.status === 200) {
+            this.deleted.push(m);
+          }
+        })
+      );
     }
-    this.activeModal.close(this.deleted);
+    this.activeModal.close({ deleted: true, media: this.deleted } as MediaMessage);
   }
 
   onNoClick(): void {
-    this.activeModal.close();
+    this.activeModal.close({ canceled: true, media: this.deleted } as MediaMessage);
   }
 
 }

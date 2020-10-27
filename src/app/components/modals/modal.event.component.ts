@@ -1,14 +1,9 @@
-import { Component, Inject, AfterViewInit, OnDestroy, ElementRef, ViewChild, Input } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnDestroy, ViewChild, Input } from '@angular/core';
 import { Event } from 'src/app/models/event';
-import { Media } from 'src/app/models/media';
-import { Observable, of, Subscription } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { Media, MediaEventMap } from 'src/app/models/media';
+import { Observable, Subscription } from 'rxjs';
 import { startWith, debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MediaService } from 'src/app/services/media.service';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { EventService } from 'src/app/services/event.service';
 import { NgbActiveModal, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { MediaMessage } from 'src/app/models/message';
@@ -17,7 +12,6 @@ import { HelperService } from 'src/app/services/helper.service';
 @Component({
   selector: 'app-modal-event',
   templateUrl: './modal.event.component.html',
-  styleUrls: ['./modal.event.component.css']
 })
 export class ModalEventComponent implements OnDestroy {
 
@@ -70,7 +64,7 @@ export class ModalEventComponent implements OnDestroy {
     }
     // post to database
     this.subscriptions.add(
-      this.mediaService.addMediaEventMap({ MediaIDs: ids, Events: this.localEvents }).subscribe(res => {
+      this.mediaService.addMediaEventMap({ MediaIDs: ids, Events: this.localEvents } as MediaEventMap).subscribe(res => {
         if (res.status === 200) {
           this.activeModal.close({updated: true, media: res.body as Media[]} as MediaMessage);
         }

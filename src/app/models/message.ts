@@ -27,7 +27,9 @@ export interface EventMessage{
 
 export interface MediaMessage{
   deleted?: boolean;
-  updated?: boolean;
+  updatedEvents?: boolean;
+  updatedGroups?: boolean;
+  updatedTags?: boolean;
   canceled?: boolean;
   media: Media[];
 }

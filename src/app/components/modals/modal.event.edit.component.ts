@@ -9,7 +9,6 @@ import { EventMessage } from 'src/app/models/message';
 @Component({
   selector: 'app-modal-event-edit',
   templateUrl: './modal.event.edit.component.html',
-  styleUrls: ['./modal.event.edit.component.css']
 })
 export class ModalEventEditComponent implements AfterViewInit, OnDestroy {
 

@@ -67,6 +67,7 @@ import { HelperService } from './services/helper.service';
     ModalTagComponent,
     ModalEventComponent,
     ModalEventEditComponent,
+    ModalUserGroupComponent,
   ],
   imports: [
     BrowserModule,

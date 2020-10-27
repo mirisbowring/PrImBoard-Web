@@ -11,8 +11,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MediaMessage, Message } from 'src/app/models/message';
 import { ModalEventComponent } from '../modals/modal.event.component';
 import { ModalDeleteComponent } from '../modals/modal.delete.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgxScrollEvent } from 'ngx-scroll-event';
+import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 
 @Component({
   selector: 'app-media-list',
@@ -96,23 +97,30 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
             this.rangeStart = null;
           }
         }
+        let modalRef: NgbModalRef;
         if (message.openTagDialog !== undefined) {
-          const modalRef = this.modalService.open(ModalTagComponent);
-          modalRef.componentInstance.data = Array.from(this.selected.values());
-          modalRef.result.then((res: MediaMessage) => res.updated ? this.updateMediaCache(res.media, 'Mapped tags successfully!') : '');
+          modalRef = this.modalService.open(ModalTagComponent);
+        } else if (message.openEventDialog !== undefined) {
+          modalRef = this.modalService.open(ModalEventComponent);
+        } else if (message.openDeleteDialog !== undefined) {
+          modalRef = this.modalService.open(ModalDeleteComponent);
+        } else if (message.openAccessDialog !== undefined) {
+          modalRef = this.modalService.open(ModalUserGroupComponent);
         }
-        if (message.openEventDialog !== undefined) {
-          const modalRef = this.modalService.open(ModalEventComponent);
+        if (modalRef != null) {
           modalRef.componentInstance.data = Array.from(this.selected.values());
-          modalRef.result.then((res: MediaMessage) => res.updated ? this.updateMediaCache(res.media, 'Mapped events successfully!') : '');
-        }
-        if (message.openDeleteDialog !== undefined) {
-          const modalRef = this.modalService.open(ModalDeleteComponent)
-          modalRef.componentInstance.data = Array.from(this.selected.values());
-          modalRef.result.then((res: Media[]) => {
-            for (const m of res as Media[]) {
-              const index = this.media.findIndex(med => med.id === m.id);
-              this.media.splice(index, 1);
+          modalRef.result.then((res: MediaMessage) => {
+            if (res.updatedTags) {
+              this.updateMediaCache(res.media, 'Mapped tags successfully!')
+            } else if (res.updatedEvents) {
+              this.updateMediaCache(res.media, 'Mapped events successfully!')
+            } else if (res.updatedGroups) {
+              this.updateMediaCache(res.media, 'Granted access to specified groups!')
+            }else if (res.deleted) {
+              for (const m of res.media) {
+                const index = this.media.findIndex(med => med.id === m.id);
+                this.media.splice(index, 1);
+              }
             }
           });
         }

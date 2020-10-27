@@ -11,6 +11,6 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-light" data-dismiss="modal" (click)="onNoClick()">Close</button>
-  <button type="button" [disabled]="deleteInput === ''" class="btn btn-danger"
+  <button type="button" [disabled]="deleteInput === '' && deleteInput !== data.length.toString()" class="btn btn-danger"
     (click)="deleteMedia()">Delete</button>
 </div>

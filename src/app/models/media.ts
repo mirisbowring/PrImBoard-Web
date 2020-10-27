@@ -21,3 +21,13 @@ export interface Media {
   contentType: string;
   users?: User[];
 }
+
+export interface MediaEventMap {
+  Events: Event[];
+  MediaIDs: string[];
+}
+
+export interface MediaGroupMap {
+  Groups: Group[];
+  MediaIDs: string[];
+}
