@@ -28,10 +28,10 @@
         delete_forever
       </span>
       <span role="button" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" class="material-icons" ngbTooltip="cancel selection">
-        cancel
+        highlight_off
       </span>
       <span role="button" *ngIf="(router.url == '/home' || router.url == '/events') && !multiselect" (click)="toggleMultiselect(true)" class="material-icons" ngbTooltip="enable multiselect">
-        flip_to_front
+        highlight_alt
       </span>
       <span role="button" *ngIf="router.url == '/events'" class="material-icons" ngbTooltip="create new event">
         add

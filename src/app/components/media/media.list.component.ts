@@ -149,7 +149,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getHeight() {
-    return window.innerHeight - 70;
+    return 'height:'+(window.innerHeight - 70)+'px;';
   }
 
   mediaTrackBy(index: number, med: Media): string {
@@ -273,6 +273,17 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   startRange(m: Media): void {
     this.rangeStart = m;
+  }
+
+  thumbURL(m: Media): string {
+    // console.log(m);
+    if (m.thumbnailSha1 != null && m.thumbnailSha1.length > 0 && m.nodes != null && m.nodes.length > 0) {
+      const node = m.nodes[0]
+      const tmp = node.dataEndpoint + '/' + node.userSession + '/own/thumb/' + m.thumbnailSha1 + '.jpg';
+      console.log(tmp);
+      return tmp;
+    }
+    return m.urlThumb;
   }
 
   endRange(m: Media): void {

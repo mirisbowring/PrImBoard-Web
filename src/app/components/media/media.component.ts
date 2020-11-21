@@ -181,6 +181,13 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.groupCtrl.setValue('');
   }
 
+  isVideo(): boolean {
+    if (this.med.contentType.startsWith('video')) {
+      return true;
+    }
+    return false
+  }
+
   removeTag(tag: string): void {
     this.localTags = HelperService.removeItem<string>(tag, this.localTags);
   }
@@ -287,6 +294,17 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       width: '250px',
       data: group,
     });
+  }
+
+  url(): string {
+    // console.log(m);
+    if (this.med.sha1 != null && this.med.sha1.length > 0 && this.med.nodes != null && this.med.nodes.length > 0) {
+      const node = this.med.nodes[0]
+      const tmp = node.dataEndpoint + '/' + node.userSession + '/own/' + this.med.sha1 + '.' + this.med.format;
+      console.log(tmp);
+      return tmp;
+    }
+    return this.med.sha1;
   }
 
 }

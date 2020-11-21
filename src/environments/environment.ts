@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  gateway: 'http://localhost:8765',
+  gateway: 'https://10.101.1.2/gateway/',
   defaultPageSize: 30
 };
 

@@ -1,7 +1,45 @@
 <div *ngIf="med != null" class="container">
   <div class="row">
     <div class="col-md-12">
-      <img style="max-width:100%;max-height: 100%;" src="{{med.url}}">
+      <ng-container *ngIf="isVideo(); then video; else image">
+
+      </ng-container>
+      <ng-template #video>
+        <vg-player>
+          <vg-controls>
+              <vg-play-pause></vg-play-pause>
+              <vg-playback-button></vg-playback-button>
+
+              <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+
+              <vg-scrub-bar>
+                  <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                  <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+              </vg-scrub-bar>
+
+              <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+
+              <vg-mute></vg-mute>
+              <vg-volume></vg-volume>
+              <a class="vg-download" [href]="url()" download>
+                <div>
+                  <span role="button" class="material-icons" >
+                    get_app
+
+                  </span>
+                </div>
+              </a>
+              <vg-fullscreen></vg-fullscreen>
+          </vg-controls>
+
+          <video #media [vgMedia]="media" id="singleVideo" preload="auto">
+            <source [src]="url()" type="{{med.contentType}}">
+          </video>
+       </vg-player>
+      </ng-template>
+      <ng-template #image>
+        <img style="max-width:100%;max-height: 100%;" [src]="url()">
+      </ng-template>
     </div>
   </div>
   <div class="row">

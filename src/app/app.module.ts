@@ -49,6 +49,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import { ModalEventEditComponent } from './components/modals/modal.event.edit.component';
 import { HelperService } from './services/helper.service';
+import {VgCoreModule} from '@videogular/ngx-videogular/core';
+import {VgControlsModule} from '@videogular/ngx-videogular/controls';
+import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
+import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
 
 @NgModule({
   declarations: [
@@ -102,6 +106,10 @@ import { HelperService } from './services/helper.service';
     NgxScrollEventModule,
     ScrollingModule,
     VirtualScrollerModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent],

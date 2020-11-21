@@ -74,3 +74,29 @@ form.tag-form {
 .tag-chip {
   cursor: pointer;
 }
+
+.vg-download {
+  color: white;
+  margin-left: 15px;
+}
+
+.vg-download:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.vg-download > div {
+  height: 50px;
+  width: 50px;
+  line-height: 20px;
+  display: table;
+}
+
+.vg-download > div > span {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+
+  font-size: 20px;
+  padding-top: 2px;
+}

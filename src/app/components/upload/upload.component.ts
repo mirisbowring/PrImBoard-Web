@@ -221,7 +221,7 @@ export class UploadComponent implements OnInit {
       for (const file of fileChooser.files) {
         const media = {
           title: file.name,
-          timestamp: file.lastModified / 1000,
+          timestamp: Math.round(file.lastModified / 1000),
           contentType: file.type,
           format: file.name.split('.').pop(),
           tags: []

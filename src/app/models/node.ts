@@ -5,8 +5,10 @@ export interface Node {
   type?: string;
   username?: string;
   password?: string;
-  address?: string;
+  APIEndpoint?: string;
+  dataEndpoint?: string;
   ipfsApiPort?: number;
   ipfsApiUrl?: string;
   ipfsGateway?: string;
+  userSession?: string;
 }

@@ -1,10 +1,12 @@
 import { Comment } from 'src/app/models/comment';
 import { User } from 'src/app/models/user';
 import { Group } from './group';
+import { Node } from './node';
 
 export interface Media {
   id: string;
   sha1: string;
+  thumbnailSha1?: string;
   title: string;
   description: string;
   comments: Comment[];
@@ -20,6 +22,7 @@ export interface Media {
   format: string;
   contentType: string;
   users?: User[];
+  nodes?: Node[];
 }
 
 export interface MediaEventMap {
