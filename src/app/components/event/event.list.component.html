@@ -1,7 +1,7 @@
 <div class="container-xl">
   <div class="row m-0">
     <!-- <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-1" *ngFor="let event of events" [routerLink]="['/event/' + event.id]"> -->
-    <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-1" *ngFor="let event of events" >
+    <div class="col-xl-3 col-lg-4 col-md-6 col-12 p-1" *ngFor="let event of events" [routerLink]="['/event/' + event.id]">
       <div role="button" class="card" style="height: 100%;">
         <img src="{{event.urlThumb}}" class="card-img-top" alt="{{event.urlThumb}}">
         <div class="card-body">

@@ -1,13 +1,16 @@
 <nav #navb class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <div class="container-xl">
-    <a class="navbar-brand ml-2" href="#">PrImBoard</a>
+    <a class="navbar-brand" href="#">PrImBoard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent" *ngIf="authenticated">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" routerLink="/">Home<span class="sr-only">(current)</span></a>
+      <ul ngbNav [(activeId)]="activeRoute" class="navbar-nav mr-auto">
+        <li ngbNavItem [ngbNavItem]="'home'">
+          <a ngbNavLink routerLink="/">Home</a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" routerLink="/events">Events<span class="sr-only">(current)</span></a>
+        <li ngbNavItem [ngbNavItem]="'events'">
+          <a ngbNavLink routerLink="/events">Events</a>
         </li>
       </ul>
       <form (ngSubmit)="submitTagForm()" class="form-inline my-2 my-lg-0 mr-2">
@@ -15,32 +18,52 @@
         <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
-      <span role="button" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openTagDialog()" class="material-icons" ngbTooltip="tag selected items">
-        local_offer
-      </span>
-      <span role="button" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openEventDialog()" class="material-icons" ngbTooltip="map to events">
-        event_note
-      </span>
-      <span role="button" *ngIf="(router.url == '/home' || router.url == '/events') && multiselect" (click)="openAccessDialog()" class="material-icons" ngbTooltip="map group access">
-        group_add
-      </span>
-      <span role="button" *ngIf="router.url.startsWith('/home') && multiselect" (click)="openDeleteDialog()" class="material-icons" ngbTooltip="delete selected items">
-        delete_forever
-      </span>
-      <span role="button" *ngIf="router.url.startsWith('/home') && multiselect" (click)="toggleMultiselect(false)" class="material-icons" ngbTooltip="cancel selection">
-        highlight_off
-      </span>
-      <span role="button" *ngIf="(router.url == '/home' || router.url == '/events') && !multiselect" (click)="toggleMultiselect(true)" class="material-icons" ngbTooltip="enable multiselect">
-        highlight_alt
-      </span>
-      <span role="button" *ngIf="router.url == '/events'" class="material-icons" ngbTooltip="create new event">
-        add
-      </span>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item" ngbDropdown display="dynamic" placement="bottom-right">
-          <a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown3" role="button">
+      <ul class="navbar-nav  ml-auto">
+        <li class="nav-item" *ngIf="router.url.startsWith('/home') && multiselect">
+          <span role="button" (click)="openTagDialog()" class="material-icons  nav-link" ngbTooltip="tag selected items">
+            local_offer
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="router.url.startsWith('/home') && multiselect">
+          <span role="button" (click)="openEventDialog()" class="material-icons  nav-link" ngbTooltip="map to events">
+            event_note
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="(router.url == '/home' || router.url == '/events') && multiselect">
+          <span role="button" (click)="openAccessDialog()" class="material-icons  nav-link" ngbTooltip="map group access">
+            group_add
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="router.url.startsWith('/home') && multiselect">
+          <span role="button" (click)="openDeleteDialog()" class="material-icons  nav-link" ngbTooltip="delete selected items">
+            delete_forever
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="router.url.startsWith('/home') && multiselect">
+          <span role="button" (click)="toggleMultiselect(false)" class="material-icons  nav-link" ngbTooltip="cancel selection">
+            highlight_off
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="(router.url == '/home' || router.url == '/events') && !multiselect">
+          <span role="button" (click)="toggleMultiselect(true)" class="material-icons nav-link" ngbTooltip="enable multiselect">
+            highlight_alt
+          </span>
+        </li>
+        <li class="nav-item" *ngIf="router.url == '/events'">
+          <span role="button" class="material-icons nav-link" ngbTooltip="create new event">
+            add
+          </span>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav">
+        <li ngbDropdown class="nav-item" ngbDropdown display="dynamic" placement="bottom-right">
+          <span role="button" id="navbarDropdown3" tabindex="0" class="material-icons nav-link" ngbDropdownToggle>
+            more_vert
+          </span>
+          <!-- <a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown3" role="button">
             <mat-icon>more_vert</mat-icon>
-          </a>
+          </a> -->
           <div ngbDropdownMenu aria-labelledby="navbarDropdown3" class="dropdown-menu">
             <a ngbDropdownItem routerLink="/upload">Upload</a>
             <a ngbDropdownItem routerLink="/settings">Settings</a>

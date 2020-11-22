@@ -28,6 +28,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   private filter: string;
   private eventID: string;
 
+  activeRoute: string;
+
   constructor(
     private userService: UserService,
     public router: Router,
@@ -43,13 +45,22 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.authenticated = this.authService.isAuthenticated();
         // parse filter from url if authenticated only
         if (this.authenticated) {
-          // filter has to be manually parsed because this component is not in scope of router-outlet
+          // parse current route
           const path = window.location.pathname;
+          if (path.startsWith('/home')){
+            this.activeRoute = 'home';
+          } else if (path.startsWith('/events')) {
+            this.activeRoute = 'events';
+          } else if (path.startsWith('/media')) {
+            this.activeRoute = 'media';
+          }
+          // filter has to be manually parsed because this component is not in scope of router-outlet
           if (path.startsWith('/home/')) {
             this.clear();
             this.filter = decodeURI(path.split('/')[2]);
             this.tagInput.setValue(decodeURI(this.filter));
           } else if (path.startsWith('/event/')) {
+            this.activeRoute = 'event';
             // e.x.: http://localhost:4200/event/5eef2decd92bfe4db4329d91/myFilter
             const parts = path.split('/');
             this.eventID = decodeURI(parts[2]);
@@ -57,6 +68,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
               this.filter = decodeURI(parts[3]);
             }
           } else if (path.startsWith('/media/')) {
+            this.activeRoute = 'media';
             const paths = path.split('/');
             this.filter = paths.length === 4 ? decodeURI(paths[2]) : null;
             this.mediaID = paths.length === 4 ? paths[3] : paths[2];
