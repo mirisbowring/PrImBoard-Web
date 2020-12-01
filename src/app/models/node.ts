@@ -1,14 +1,13 @@
+import { Group } from './group';
+
 export interface Node {
   id?: string;
   title?: string;
   creator?: string;
+  groupIDs?: string[];
+  groups?: Group[];
   type?: string;
-  username?: string;
-  password?: string;
   APIEndpoint?: string;
   dataEndpoint?: string;
-  ipfsApiPort?: number;
-  ipfsApiUrl?: string;
-  ipfsGateway?: string;
   userSession?: string;
 }

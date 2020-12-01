@@ -300,7 +300,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log(m);
     if (this.med.sha1 != null && this.med.sha1.length > 0 && this.med.nodes != null && this.med.nodes.length > 0) {
       const node = this.med.nodes[0]
-      const tmp = node.dataEndpoint + '/' + node.userSession + '/own/' + this.med.sha1 + '.' + this.med.format;
+      const tmp = node.dataEndpoint + '/' + node.userSession + '/own/' + this.med.filename;
       console.log(tmp);
       return tmp;
     }

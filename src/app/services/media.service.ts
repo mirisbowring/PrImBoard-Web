@@ -39,11 +39,15 @@ export class MediaService {
   }
 
   public addMediaEventMap(mem: MediaEventMap) {
-    return this.httpClient.post(environment.gateway + '/api/v1/media/mapevents', mem, { observe: 'response', withCredentials: true });
+    return this.httpClient.post(
+      environment.gateway + '/api/v1/media/mapevents',
+      mem,
+      { observe: 'response', withCredentials: true }
+    );
   }
 
   public addMediaGroupMap(mgm: MediaGroupMap) {
-    return this.httpClient.post(environment.gateway + '/api/v1/media/mapgroups', mgm, { observe: 'response', withCredentials: true });
+    return this.httpClient.post(environment.gateway + '/api/v1/media/addgroups', mgm, { observe: 'response', withCredentials: true });
   }
 
   public addTagMediaMap(tmm: TagMediaMap) {
@@ -56,6 +60,10 @@ export class MediaService {
 
   public deleteMediaByID(id: string) {
     return this.httpClient.delete(environment.gateway + '/api/v1/media/' + id, { observe: 'response', withCredentials: true });
+  }
+
+  public deleteMediaByIDs(ids: string[]) {
+    return this.httpClient.post(environment.gateway + '/api/v1/media/remove', ids, { observe: 'response', withCredentials: true });
   }
 
   public getMediaPage(id: string, size: number, filter: string, param: string, event: string, asc: boolean): Observable<Media[]> {
@@ -71,10 +79,6 @@ export class MediaService {
 
   public getAllMedia() {
     return this.httpClient.get(environment.gateway + '/api/v1/media', { withCredentials: true });
-  }
-
-  public getMediaByHash(hash: string) {
-    return this.httpClient.get(environment.gateway + '/api/v1/mediaByHash/' + hash, { withCredentials: true });
   }
 
   public getMediaByID(id: string) {

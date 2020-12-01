@@ -2,12 +2,16 @@ import { Component, Inject, Input, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subscription } from 'rxjs';
 import { startWith, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Event } from 'src/app/models/event';
 import { Group } from 'src/app/models/group';
+import { Node } from 'src/app/models/node';
 import { Media, MediaGroupMap } from 'src/app/models/media';
-import { MediaMessage } from 'src/app/models/message';
+import { MediaMessage, ModalMessage } from 'src/app/models/message';
 import { GroupService } from 'src/app/services/group.service';
 import { HelperService } from 'src/app/services/helper.service';
 import { MediaService } from 'src/app/services/media.service';
+import { UserService } from 'src/app/services/user.service';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-modal-usergroup',
@@ -15,7 +19,8 @@ import { MediaService } from 'src/app/services/media.service';
 })
 export class ModalUserGroupComponent {
 
-  @Input() data: Media[] = [];
+  @Input() data: Media[]|Group[]|Event[]|Node[] = [];
+  @Input() typ: string;
   @ViewChild(NgbTypeahead) ngbTypeahead: NgbTypeahead;
   private subscriptions = new Subscription();
 
@@ -25,7 +30,8 @@ export class ModalUserGroupComponent {
     public activeModal: NgbActiveModal,
     private groupService: GroupService,
     private mediaService: MediaService,
-  ) { }
+    private nodeService: NodeService,
+  ) {}
 
   formatter = (group: Group) => group.title;
 
@@ -48,20 +54,45 @@ export class ModalUserGroupComponent {
       return;
     }
 
-    // collect media ids
-    const ids: string[] = [];
-    for (const m of this.data) {
-      ids.push(m.id);
-    }
     // append Groups
     this.localGroups = HelperService.tidyGroups(this.localGroups);
-    this.subscriptions.add(
-      this.mediaService.addMediaGroupMap({ MediaIDs: ids, Groups: this.localGroups} as MediaGroupMap).subscribe(res => {
-        if (res.status === 200) {
-          this.activeModal.close({updatedGroups: true, media: res.body} as MediaMessage)
+    switch(this.typ) {
+      case 'media':
+        // collect media ids
+        const mIDs: string[] = [];
+        for (const m of this.data) {
+          mIDs.push(m.id);
         }
-      }, err => console.log('Error: ' + err.error.error))
-    );
+        this.subscriptions.add(
+          this.mediaService.addMediaGroupMap({ MediaIDs: mIDs, Groups: this.localGroups} as MediaGroupMap).subscribe(res => {
+            if (res.status === 200) {
+              this.activeModal.close({updatedGroups: true, media: res.body} as MediaMessage);
+            }
+          }, err => console.log('Error: ' + err.error.error))
+        );
+        break;
+      case 'event':
+        break;
+      case 'node':
+        if (this.data.length !== 1) {
+          this.activeModal.close({canceled: true, data: null} as ModalMessage<Node>)
+        }
+        const gIDs: string[] = [];
+        for (const g of this.localGroups) {
+          gIDs.push(g.id)
+        }
+        this.subscriptions.add(
+          this.nodeService.addGroups(this.data[0].id, gIDs).subscribe(res => {
+            if (res.status === 200) {
+              this.activeModal.close({updated: true, data: res.body} as ModalMessage<Node>);
+            }
+          }, err => console.error('Error: '+ err.error.error))
+        );
+        break;
+      default:
+        console.error('unknown type %s specified for modal', this.typ)
+    }
+
   }
 
   removeGroup(group: Group): void {

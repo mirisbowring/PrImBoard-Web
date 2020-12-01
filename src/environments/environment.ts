@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  gateway: 'https://10.101.1.2/gateway/',
+  gateway: 'https://10.101.1.8/gateway/',
   defaultPageSize: 30
 };
 

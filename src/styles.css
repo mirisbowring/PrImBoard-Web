@@ -27,3 +27,9 @@ html, body {
 .font-20 {
   font-size: 20px;
 }
+
+.scrollable-content{
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+}

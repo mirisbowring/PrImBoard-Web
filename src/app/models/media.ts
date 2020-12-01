@@ -6,7 +6,8 @@ import { Node } from './node';
 export interface Media {
   id: string;
   sha1: string;
-  thumbnailSha1?: string;
+  filename: string;
+  filenameThumb?: string;
   title: string;
   description: string;
   comments: Comment[];
@@ -19,7 +20,7 @@ export interface Media {
   url: string;
   urlThumb: string;
   type: string;
-  format: string;
+  extension: string;
   contentType: string;
   users?: User[];
   nodes?: Node[];

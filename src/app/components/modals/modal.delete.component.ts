@@ -14,6 +14,9 @@ export class ModalDeleteComponent implements OnDestroy {
 
   @Input() data: Media[];
   private deleted: Media[] = [];
+
+  private finishedRequests = 0;
+
   deleteInput = '';
 
   private subscriptions = new Subscription();
@@ -34,10 +37,17 @@ export class ModalDeleteComponent implements OnDestroy {
           if (res.status === 200) {
             this.deleted.push(m);
           }
+          this.increment();
         })
       );
     }
-    this.activeModal.close({ deleted: true, media: this.deleted } as MediaMessage);
+  }
+
+  increment(): void {
+    this.finishedRequests++;
+    if (this.finishedRequests === this.data.length) {
+      this.activeModal.close({ deleted: true, media: this.deleted } as MediaMessage);
+    }
   }
 
   onNoClick(): void {

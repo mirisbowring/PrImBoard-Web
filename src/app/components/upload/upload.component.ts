@@ -12,6 +12,7 @@ import { MatInput } from '@angular/material/input';
 import { HttpEvent, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { UserService } from 'src/app/services/user.service';
 import { Node } from 'src/app/models/node';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-upload',
@@ -37,7 +38,9 @@ export class UploadComponent implements OnInit {
   uploaded = 0;
   toBeUploaded = 0;
 
-  constructor(private mediaService: MediaService, private tagService: TagService, private userService: UserService) { }
+  constructor(private mediaService: MediaService,
+    private tagService: TagService,
+    private nodeService: NodeService) { }
 
   ngOnInit() {
     // pull tags
@@ -83,7 +86,7 @@ export class UploadComponent implements OnInit {
 
   receiveNodes() {
     this.subscriptions.add(
-      this.userService.getNodes().subscribe((data: Node[]) => {
+      this.nodeService.getNodes().subscribe((data: Node[]) => {
         if (data != null) {
           this.nodes = data;
         }
@@ -223,7 +226,7 @@ export class UploadComponent implements OnInit {
           title: file.name,
           timestamp: Math.round(file.lastModified / 1000),
           contentType: file.type,
-          format: file.name.split('.').pop(),
+          extension: file.name.split('.').pop(),
           tags: []
         } as Media;
         this.files.push({ data: file, media, inProgress: false, progress: 0 });

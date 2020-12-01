@@ -71,7 +71,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="float-left">
-            <h2>IPFSNodes</h2>
+            <h2>Nodes</h2>
           </div>
           <div class="float-right">
             <button mat-icon-button aria-label="Add Node" (click)="nodes.unshift({title:'&lt;New Node&gt;'})">
@@ -103,22 +103,8 @@
                       <mat-form-field class="full-width-input">
                         <mat-label>Select type</mat-label>
                         <mat-select disableRipple [(value)]="node.type">
-                          <mat-option value="ipfs">IPFS</mat-option>
                           <mat-option value="web">WEB</mat-option>
                         </mat-select>
-                      </mat-form-field>
-
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="Username" [value]="node.username" (input)="node.username = $event.target.value">
-                      </mat-form-field>
-                    </div>
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="Password" [value]="node.password" (input)="node.password = $event.target.value">
                       </mat-form-field>
                     </div>
                   </div>
@@ -135,20 +121,25 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="IPFS API URL" [value]="node.ipfsApiUrl" (input)="node.ipfsApiUrl = $event.target.value">
-                      </mat-form-field>
-                    </div>
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="IPFS Gateway" [value]="node.ipfsGateway" (input)="node.ipfsGateway = $event.target.value">
-                      </mat-form-field>
+                  <div class="col-12">
+                    <div class="form-group">
+                      <h6 *ngFor="let group of node.groups; let i = index" class="d-inline mr-1">
+                        <span class="badge badge-pill badge-secondary">
+                          <label class="align-middle ml-1 mb-0 mr-1 font-14 font-weight-normal">{{group.title}}</label>
+                          <!-- <span role="button" id="chip-{{i}}" class="material-icons align-middle font-20 p-1"
+                            (mouseenter)="toggleChipCancel('chip-'+i)" (mouseleave)="toggleChipCancel('chip-'+i)"
+                            (click)="removeGroup(group)">
+                            close
+                          </span> -->
+                        </span>
+                      </h6>
                     </div>
                   </div>
+                </div>
                   <div class="row">
                     <div class="col-12">
                       <div class="float-right">
+                        <button type="button" class="btn btn-outline-secondary mr-2 material-icons" (click)="openGroupNodeModal(node)" ngbTooltip="map group access">group_add</button>
                         <button type="button" class="btn btn-outline-success mr-2" (click)="saveNode(i)">Save</button>
                         <button type="button" class="btn btn-outline-danger" (click)="deleteNode(i)">Delete</button>
                       </div>

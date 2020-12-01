@@ -3,11 +3,16 @@ import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
 import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { User, Settings } from 'src/app/models/user';
+import { User } from 'src/app/models/user';
 import { InviteService } from 'src/app/services/invite.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
 import { Node } from 'src/app/models/node';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDeleteComponent } from '../modals/modal.delete.component';
+import { ModalMessage } from 'src/app/models/message';
+import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-setting',
@@ -25,7 +30,13 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
   inviteToken = '';
 
   // tslint:disable-next-line: max-line-length
-  constructor(private groupService: GroupService, private inviteService: InviteService, private snackBar: MatSnackBar, private userService: UserService) { }
+  constructor(private groupService: GroupService,
+    private inviteService: InviteService,
+    private snackBar: MatSnackBar,
+    private userService: UserService,
+    private modalService: NgbModal,
+    private nodeService: NodeService,
+    ) { }
 
   ngOnInit() {
   }
@@ -39,7 +50,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     );
     this.subscriptions.add(
-      this.userService.getNodes().subscribe((data: Node[]) => {
+      this.nodeService.getNodes().subscribe((data: Node[]) => {
         if (data != null) {
           this.nodes = data;
         }
@@ -57,9 +68,24 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   deleteNode(index: number): void {
     const id = this.nodes[index].id;
-    this.userService.deleteNode(id).subscribe(res => {
+    this.nodeService.deleteNode(id).subscribe(res => {
       if (res.status === 200) {
         this.nodes.splice(index, 1);
+      }
+    })
+  }
+
+  openGroupNodeModal(node: Node): void {
+    const modalRef = this.modalService.open(ModalUserGroupComponent);
+    modalRef.componentInstance.data = [node];
+    modalRef.componentInstance.typ = 'node';
+    modalRef.result.then((res: ModalMessage<Node>) => {
+      if (res.deleted) {
+        this.updateNode(res.data, 'Deleted node successfully!');
+      } else if (res.updated) {
+        this.updateNode(res.data, 'Updated node successfully!');
+      } else if (res.canceled) {
+        this.updateNode(null, 'Canceled');
       }
     })
   }
@@ -67,7 +93,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
   saveNode(index: number): void {
     const node = this.nodes[index];
     if (node.id == null) {
-      this.userService.createNode(node).subscribe(res => {
+      this.nodeService.createNode(node).subscribe(res => {
         if (res.status === 201) {
           this.nodes[index] = res.body as Node;
         }
@@ -75,12 +101,25 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log(err);
       })
     } else {
-      this.userService.updateNode(node.id, node).subscribe((data: Node) => {
+      this.nodeService.updateNode(node.id, node).subscribe((data: Node) => {
         if (data != null) {
           this.nodes[index] = data;
         }
       })
     }
+  }
+
+  updateNode(node: Node, message: string): void {
+    if (node != null) {
+      for (let i = 0; i < this.nodes.length; i++) {
+        const n = this.nodes[i];
+        if (n.id === node.id) {
+          this.nodes[i] = node;
+          break;
+        }
+      }
+    }
+    this.snackBar.open(message, 'Ok', {duration: 2000 });
   }
 
   submitAddUserForm() {

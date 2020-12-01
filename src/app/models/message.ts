@@ -33,3 +33,10 @@ export interface MediaMessage{
   canceled?: boolean;
   media: Media[];
 }
+
+export interface ModalMessage<T>{
+  deleted?: boolean;
+  updated?: boolean
+  canceled?: boolean;
+  data: T;
+}

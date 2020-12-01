@@ -109,6 +109,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if (modalRef != null) {
           modalRef.componentInstance.data = Array.from(this.selected.values());
+          modalRef.componentInstance.typ = 'media';
           modalRef.result.then((res: MediaMessage) => {
             if (res.updatedTags) {
               this.updateMediaCache(res.media, 'Mapped tags successfully!')
@@ -276,11 +277,15 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   thumbURL(m: Media): string {
-    // console.log(m);
-    if (m.thumbnailSha1 != null && m.thumbnailSha1.length > 0 && m.nodes != null && m.nodes.length > 0) {
+    if (m.filenameThumb != null && m.filename.length > 0 && m.nodes != null && m.nodes.length > 0) {
       const node = m.nodes[0]
-      const tmp = node.dataEndpoint + '/' + node.userSession + '/own/thumb/' + m.thumbnailSha1 + '.jpg';
-      console.log(tmp);
+      let tmp: string;
+      if (m.creator === localStorage.getItem('username')) {
+        tmp = node.dataEndpoint + '/' + node.userSession + '/own/thumb/' + m.filenameThumb;
+      } else {
+        tmp = node.dataEndpoint + '/' + node.userSession + '/groups/' + m.groups[0].id + '/thumb/' + m.filenameThumb;
+      }
+
       return tmp;
     }
     return m.urlThumb;
