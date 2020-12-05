@@ -161,7 +161,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.meta.viewWidth = this.mainView.nativeElement.offsetWidth;
     this.meta.rowItems = Math.ceil(this.meta.viewWidth / this.meta.thumbnailSize);
     this.meta.rows = Math.ceil(window.innerHeight / this.meta.thumbnailSize * 1.5);
-    console.log(this.meta);
   }
 
   onScroll(event: NgxScrollEvent) {
@@ -173,14 +172,12 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.requestMedia('after', id, false, false);
     }
     if (event.isReachingTop && this.reachedTop !== true) {
-      console.log(this.reachedTop);
       const id = (this.media.length > 0) ? this.media[0].id : '';
       this.requestMedia('before', id, false, true);
     }
   }
 
   requestMedia(param: string, id: string, fill: boolean, asc: boolean) {
-    console.log('wäää');
     if (this.refreshing) {
       return;
     }
