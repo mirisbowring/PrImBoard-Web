@@ -67,11 +67,12 @@
           <div ngbDropdownMenu aria-labelledby="navbarDropdown3" class="dropdown-menu">
             <a ngbDropdownItem routerLink="/upload">Upload</a>
             <a ngbDropdownItem routerLink="/settings">Settings</a>
-            <a ngbDropdownItem (click)="doLogout()">Logout</a>
+            <a ngbDropdownItem routerLink="" (click)="logout()">Logout</a>
           </div>
         </li>
       </ul>
     </div>
+    <button *ngIf="!authenticated" (click)="login()" class="btn btn-outline-success my-2 my-sm-0" type="button">Login</button>
   </div>
 </nav>
 

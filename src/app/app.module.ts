@@ -1,9 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
+import { initializeKeycloak } from 'src/app/utils/utils';
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -53,10 +55,12 @@ import {VgCoreModule} from '@videogular/ngx-videogular/core';
 import {VgControlsModule} from '@videogular/ngx-videogular/controls';
 import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
 import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
+import { AuthImagePipe } from './services/pipes/authImage.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
+    AuthImagePipe,
     MediaListComponent,
     RegisterComponent,
     UploadComponent,
@@ -78,6 +82,7 @@ import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    KeycloakAngularModule,
     MatExpansionModule,
     MatToolbarModule,
     MatIconModule,
@@ -111,7 +116,15 @@ import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
     VgOverlayPlayModule,
     VgBufferingModule,
   ],
-  providers: [CookieService],
+  providers: [
+    CookieService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService],
+    },
+  ],
   bootstrap: [AppComponent],
   entryComponents: [
     ModalUserGroupComponent,

@@ -3,6 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     password: new FormControl('')
   });
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private readonly keycloak: KeycloakService) { }
 
   ngOnInit() {
   }
@@ -46,6 +47,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       )
     );
     this.formSubmitAttempt = true;
+  }
+
+  public login() {
+    this.keycloak.login();
   }
 
   isFieldInvalid(field: string) {

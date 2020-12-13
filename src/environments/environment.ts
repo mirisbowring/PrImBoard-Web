@@ -5,7 +5,18 @@
 export const environment = {
   production: false,
   gateway: 'https://10.101.1.8/gateway/',
-  defaultPageSize: 30
+  defaultPageSize: 30,
+  keycloak: {
+    // Url of the Identity Provider
+    issuer: 'https://10.101.1.8/keycloak/auth',
+
+    // Realm
+    realm: 'primboard',
+
+    // The SPA's id.
+    // The SPA is registerd with this id at the auth-serverß
+    clientId: 'web-client',
+  }
 };
 
 /*

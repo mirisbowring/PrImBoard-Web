@@ -31,4 +31,8 @@ export class UserService {
     return this.httpClient.post(environment.gateway + '/api/v1/logout', null, { observe: 'response', withCredentials: true });
   }
 
+  public preauthNode(node: Node) {
+    return this.httpClient.get(node.APIEndpoint + '/api/v1/session', {withCredentials: true} );
+  }
+
 }

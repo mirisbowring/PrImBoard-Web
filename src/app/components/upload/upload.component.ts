@@ -177,12 +177,11 @@ export class UploadComponent implements OnInit {
   uploadFile(file) {
     const formData = new FormData();
 
-    formData.append('node', JSON.stringify(this.selectedNode));
     formData.append('uploadfile', file.data);
     formData.append('filemeta', JSON.stringify(file.media));
     file.inProgress = true;
 
-    this.mediaService.uploadMedia(formData).pipe(
+    this.mediaService.uploadMedia(this.selectedNode.APIEndpoint, formData).pipe(
       map((event: HttpEvent<any>) => {
         switch (event.type) {
           case HttpEventType.UploadProgress:

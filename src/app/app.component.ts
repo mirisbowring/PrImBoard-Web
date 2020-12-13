@@ -7,6 +7,9 @@ import { startWith, debounceTime, switchMap, filter as fil, map, distinctUntilCh
 import { TagService } from 'src/app/services/tag.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { MessageService } from './services/message.service';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +20,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscriptions = new Subscription();
 
-  authenticated: boolean;
+  public authenticated = false;
+  public userProfile: KeycloakProfile | null = null;
 
   tagAutoComplete$: Observable<string> = null;
   tagInput = new FormControl('');
@@ -36,13 +40,24 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private tagService: TagService,
     private authService: AuthService,
     private messageService: MessageService,
+    private readonly keycloak: KeycloakService,
+    private cookieService: CookieService,
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    window.onpopstate = function(event) {
+      console.log('deleting cookie');
+      this.cookieService.set('keycloak-jwt', '');
+    };
+    this.authenticated = await this.keycloak.isLoggedIn();
+
+    if (this.authenticated) {
+      this.userProfile = await this.keycloak.loadUserProfile();
+    }
     // store authenticated in a local boolean to prevent delay due to cookie access
     this.subscriptions.add(
       this.router.events.subscribe(() => {
-        this.authenticated = this.authService.isAuthenticated();
+        // this.authenticated = this.authService.isAuthenticated();
         // parse filter from url if authenticated only
         if (this.authenticated) {
           // parse current route
@@ -190,6 +205,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     );
+  }
+
+  public login() {
+    this.keycloak.login();
+  }
+
+  public logout() {
+    this.keycloak.logout();
   }
 
   private clear(): void {

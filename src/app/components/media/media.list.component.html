@@ -36,7 +36,7 @@
           </svg>
         </ng-template>
       </div>
-      <img [src]="thumbURL(m)" alt="{{m.title}}" [routerLink]="['/media/' + m.id]" />
+      <img [src]="thumbURL(m) | authImage | async" [routerLink]="['/media/' + m.id]" />
       <!-- <img src="{{m.urlThumb}}" alt="{{m.title}}" [routerLink]="['/media/' + m.id]" /> -->
     </div>
   </virtual-scroller>

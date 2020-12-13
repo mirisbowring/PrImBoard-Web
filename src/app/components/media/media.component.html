@@ -22,7 +22,7 @@
 
               <vg-mute class="ml-auto"></vg-mute>
               <vg-volume></vg-volume>
-              <a class="vg-download" [href]="url()" download>
+              <a class="vg-download" [href]="url(true)" download>
                 <div>
                   <span role="button" class="material-icons">
                     get_app
@@ -33,12 +33,13 @@
           </vg-controls>
 
           <video #media [vgMedia]="media" id="singleVideo" preload="auto">
-            <source [src]="url()" type="{{med.contentType}}">
+            <source *ngIf="sourceURL" src="{{sourceURL}}" type="{{med.contentType}}">
+            <!-- <source [src]="aurl()" type="{{med.contentType}}"> -->
           </video>
        </vg-player>
       </ng-template>
       <ng-template #image>
-        <img style="max-width:100%;max-height: 100%;" [src]="url()">
+        <img style="max-width:100%;max-height: 100%;" [src]="url(false) | authImage | async">
       </ng-template>
     </div>
   </div>

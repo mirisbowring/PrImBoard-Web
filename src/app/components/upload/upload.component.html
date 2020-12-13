@@ -18,7 +18,7 @@
           <div ngbDropdown class="d-inline-block mr-2">
             <button class="btn btn-outline-secondary" id="nodeSelect" ngbDropdownToggle>{{(selectedNode.id === '') ? 'Select Node' : selectedNode.title}}</button>
             <div ngbDropdownMenu aria-labelledby="nodeSelect">
-              <button ngbDropdownItem *ngFor="let node of nodes" (click)="selectedNode = {id: node.id, title: node.title}">{{node.title}}</button>
+              <button ngbDropdownItem *ngFor="let node of nodes" (click)="selectedNode = node">{{node.title}}</button>
             </div>
           </div>
           <button type="submit" mat-raised-button color="primary" [disabled]="files.length === 0" class="float-right"

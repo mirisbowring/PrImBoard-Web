@@ -85,6 +85,11 @@ export class MediaService {
     return this.httpClient.get(environment.gateway + '/api/v1/media/' + id, { withCredentials: true });
   }
 
+  public async getResource(apiEndpoint: string, identifier: string, file: string, group: boolean, thumb: boolean) {
+    let path = apiEndpoint + '/api/v1/file/' + identifier + '/' + file + '?group=' + (group? 'true':'false') + '&thumb=' + (thumb? 'true': 'false')
+    return this.httpClient.get(path , { withCredentials: true }).toPromise();
+  }
+
   public updateMediaByHash(hash: string, media: Media) {
     return this.httpClient.put(environment.gateway + '/api/v1/mediaByHash/' + hash, media, { observe: 'response', withCredentials: true });
   }
@@ -93,8 +98,10 @@ export class MediaService {
     return this.httpClient.put(environment.gateway + '/api/v1/media/' + id, media, { observe: 'response', withCredentials: true });
   }
 
-  public uploadMedia(formData) {
-    return this.httpClient.post(environment.gateway + '/api/v1/media/upload', formData,
+  public uploadMedia(endpoint: string, formData) {
+    console.log(endpoint);
+    endpoint = (endpoint == null || endpoint === "")? environment.gateway : endpoint;
+    return this.httpClient.post(endpoint + '/api/v1/file', formData,
       { reportProgress: true, observe: 'events', withCredentials: true }
     )
   }

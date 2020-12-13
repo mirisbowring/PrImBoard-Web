@@ -16,6 +16,9 @@ import { GroupService } from 'src/app/services/group.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 import { HelperService } from 'src/app/services/helper.service';
+import { KeycloakService } from 'keycloak-angular';
+import { UserService } from 'src/app/services/user.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-media',
@@ -28,6 +31,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('groupInput') groupInput: ElementRef<HTMLInputElement>;
+  @ViewChild('')
 
   tagAutoComplete$: Observable<string> = null;
   groupAutoComplete$: Observable<Group> = null;
@@ -49,6 +53,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   localTags: string[] = [];
   localGroups: Group[] = [];
+  sourceURL: string = "";
 
   constructor(
     private mediaService: MediaService,
@@ -56,6 +61,9 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     private groupService: GroupService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
+    private keycloakService: KeycloakService,
+    private userService: UserService,
+    private cookieService: CookieService,
   ) { }
 
   ngOnInit() {
@@ -65,10 +73,26 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(
       this.route.params.subscribe(param => {
         // receive media object
-        this.mediaService.getMediaByID(param.id).subscribe((data: Media) => {
+        this.mediaService.getMediaByID(param.id).subscribe(async (data: Media) => {
           this.med = data;
           this.descriptionInput.setValue(this.med.description);
           this.titleInput.setValue(this.med.title);
+          const url = this.url(true);
+          let path = url.substring(url.indexOf("://") + 3);
+          let domain = path.split("/", 1)[0];
+          path = path.replace(domain, "").split("?", 1)[0];
+          console.log(domain + '     ' + path);
+          this.cookieService.set(
+            "keycloak-jwt",
+            await this.keycloakService.getToken(),
+            1,
+            path,
+            domain,
+            true,
+            'Lax',
+            );
+            this.sourceURL = url;
+          // this.subscriptions.add(this.userService.preauthNode(this.med.nodes[0]).subscribe(() => this.sourceURL = this.url(true)));
         });
       })
     );
@@ -296,15 +320,13 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  url(): string {
-    // console.log(m);
-    if (this.med.sha1 != null && this.med.sha1.length > 0 && this.med.nodes != null && this.med.nodes.length > 0) {
-      const node = this.med.nodes[0]
-      const tmp = node.dataEndpoint + '/' + node.userSession + '/own/' + this.med.filename;
-      console.log(tmp);
-      return tmp;
-    }
-    return this.med.sha1;
+  url(cookieAuth: boolean): string {
+    return HelperService.resourceURL(this.med, this.keycloakService.getUsername(), cookieAuth);
   }
+
+  // async aurl(): Promise<string> {
+  //   await this.userService.preauthNode(this.med.nodes[0]).toPromise();
+  //   return HelperService.resourceURL(this.med, this.keycloakService.getUsername(), true);
+  // }
 
 }

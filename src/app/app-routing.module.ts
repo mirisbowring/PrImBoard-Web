@@ -14,19 +14,19 @@ import { SettingComponent } from './components/setting/setting.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'event/:id', component: MediaListComponent, canActivate: [AuthGuard] },
-  { path: 'event/:id/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
-  { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard] },
-  { path: 'events', component: ListComponent, canActivate: [AuthGuard] },
-  { path: 'home', component: MediaListComponent, canActivate: [AuthGuard] },
-  { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard] },
-  { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard] },
-  { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard] },
+  { path: 'event/:id', component: MediaListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'event/:id/:filter', component: MediaListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'event/new', component: CreateComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'events', component: ListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'home', component: MediaListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
-  { path: 'settings', component: SettingComponent, canActivate: [AuthGuard] },
-  { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
+  { path: 'logout', component: LogoutComponent },
+  { path: 'settings', component: SettingComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'upload', component: UploadComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
   { path: '**', redirectTo: 'home' }
 ];
 

@@ -14,6 +14,9 @@ import { ModalDeleteComponent } from '../modals/modal.delete.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgxScrollEvent } from 'ngx-scroll-event';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
+import { KeycloakService } from 'keycloak-angular';
+import { AuthImagePipe } from 'src/app/services/pipes/authImage.pipe';
+import { HelperService } from 'src/app/services/helper.service';
 
 @Component({
   selector: 'app-media-list',
@@ -59,6 +62,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private modalService: NgbModal,
+    private keyCloakService: KeycloakService,
   ) {
     // route parser
     this.subscriptions.add(
@@ -274,18 +278,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   thumbURL(m: Media): string {
-    if (m.filenameThumb != null && m.filename.length > 0 && m.nodes != null && m.nodes.length > 0) {
-      const node = m.nodes[0]
-      let tmp: string;
-      if (m.creator === localStorage.getItem('username')) {
-        tmp = node.dataEndpoint + '/' + node.userSession + '/own/thumb/' + m.filenameThumb;
-      } else {
-        tmp = node.dataEndpoint + '/' + node.userSession + '/groups/' + m.groups[0].id + '/thumb/' + m.filenameThumb;
-      }
-
-      return tmp;
-    }
-    return m.urlThumb;
+    return HelperService.thumbURL(m, this.keyCloakService.getUsername(), false)
   }
 
   endRange(m: Media): void {
