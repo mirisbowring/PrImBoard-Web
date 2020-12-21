@@ -1,7 +1,7 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
-import { Media } from 'src/app/models/media';
+import { Media, MediaGroupMap } from 'src/app/models/media';
 import { FormControl } from '@angular/forms';
 import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
@@ -81,7 +81,6 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
           let path = url.substring(url.indexOf("://") + 3);
           let domain = path.split("/", 1)[0];
           path = path.replace(domain, "").split("?", 1)[0];
-          console.log(domain + '     ' + path);
           this.cookieService.set(
             "keycloak-jwt",
             await this.keycloakService.getToken(),
@@ -165,7 +164,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
           this.addTagShown = false;
         }
       }, err => {
-        console.log('Error:' + err);
+        console.error('Error:' + err);
       })
     );
   }
@@ -241,15 +240,15 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     // post to database
     // add tags
     this.subscriptions.add(
-      this.mediaService.addGroups(this.med.id, this.localGroups).subscribe(res => {
+      this.mediaService.addMediaGroupMap({MediaIDs: [this.med.id], Groups: this.localGroups} as MediaGroupMap).subscribe(res => {
         if (res.status === 200) {
           this.groupCtrl.setValue('');
           this.localGroups = [];
-          this.med = res.body as Media;
+          this.med = (res.body as Media[])[0];
           this.addAccessShown = false;
         }
       }, err => {
-        console.log('Error:' + err);
+        console.error('Error:' + err);
       })
     );
   }
@@ -267,7 +266,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
           this.addCommentShown = false;
         }
       }, err => {
-        console.log('Error:' + err);
+        console.error('Error:' + err);
       })
     );
   }
@@ -280,7 +279,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setDateShown = false;
       }
     }, err => {
-      console.log('Error' + err);
+      console.error('Error' + err);
     });
   }
 
@@ -293,7 +292,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
         this.addDescriptionShown = false;
       }
     }, err => {
-      console.log('Error:' + err);
+      console.error('Error:' + err);
     });
   }
 
@@ -309,7 +308,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
         this.addTitleShown = false;
       }
     }, err => {
-      console.log('Error:' + err);
+      console.error('Error:' + err);
     });
   }
 

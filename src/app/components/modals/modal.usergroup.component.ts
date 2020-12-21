@@ -58,6 +58,9 @@ export class ModalUserGroupComponent {
     this.localGroups = HelperService.tidyGroups(this.localGroups);
     switch(this.typ) {
       case 'media':
+        if (this.data.length !== 1) {
+          this.activeModal.close({canceled: true, data: null} as ModalMessage<Node>)
+        }
         // collect media ids
         const mIDs: string[] = [];
         for (const m of this.data) {
@@ -66,9 +69,9 @@ export class ModalUserGroupComponent {
         this.subscriptions.add(
           this.mediaService.addMediaGroupMap({ MediaIDs: mIDs, Groups: this.localGroups} as MediaGroupMap).subscribe(res => {
             if (res.status === 200) {
-              this.activeModal.close({updatedGroups: true, media: res.body} as MediaMessage);
+              this.activeModal.close({updatedGroups: true, media: res.body as Media[]} as MediaMessage);
             }
-          }, err => console.log('Error: ' + err.error.error))
+          }, err => console.error('Error: ' + err))
         );
         break;
       case 'event':

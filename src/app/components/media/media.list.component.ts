@@ -12,7 +12,7 @@ import { MediaMessage, Message } from 'src/app/models/message';
 import { ModalEventComponent } from '../modals/modal.event.component';
 import { ModalDeleteComponent } from '../modals/modal.delete.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { NgxScrollEvent } from 'ngx-scroll-event';
+import { NgxScrollEvent } from '../../directives/ngx-scroll-event.directive';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 import { KeycloakService } from 'keycloak-angular';
 import { AuthImagePipe } from 'src/app/services/pipes/authImage.pipe';
@@ -27,6 +27,8 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('mediastream', { read: ElementRef }) public mediastream: ElementRef;
   @ViewChild('mainView') mainView: ElementRef;
+
+  vScrollerHeight = 0;
 
   meta = {
     reload: true,
@@ -88,7 +90,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
           this.media = [];
           this.requestMedia(this.curID ? 'from' : '', this.curID, true, false);
         }
-        console.log(this.reachedBottom);
       })
     );
     // message listener
@@ -153,18 +154,15 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  getHeight() {
-    return 'height:'+(window.innerHeight - 70)+'px;';
-  }
-
   mediaTrackBy(index: number, med: Media): string {
     return med.id;
   }
 
-  onResize() {
+  async onResize() {
     this.meta.viewWidth = this.mainView.nativeElement.offsetWidth;
     this.meta.rowItems = Math.ceil(this.meta.viewWidth / this.meta.thumbnailSize);
     this.meta.rows = Math.ceil(window.innerHeight / this.meta.thumbnailSize * 1.5);
+    this.vScrollerHeight = (window.innerHeight - 70);
   }
 
   onScroll(event: NgxScrollEvent) {

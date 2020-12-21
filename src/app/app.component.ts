@@ -46,7 +46,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit() {
     window.onpopstate = function(event) {
-      console.log('deleting cookie');
       this.cookieService.set('keycloak-jwt', '');
     };
     this.authenticated = await this.keycloak.isLoggedIn();

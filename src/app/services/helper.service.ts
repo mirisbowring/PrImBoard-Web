@@ -16,9 +16,9 @@ export class HelperService {
     return list;
   }
 
-  /** Removes trailing and leading whitespaces and ignore duplicates, lowers case */
+  /** Removes duplicates (if id set) */
   static tidyEvents(myArr: Event[]): Event[] {
-    return myArr.filter((thing, index, self) => self.findIndex(t => t.id === thing.id) === index);
+    return myArr.filter((thing, index, self) => thing.id == null || self.findIndex(t => t.id === thing.id) === index);
   }
 
   /** Removes trailing and leading whitespaces and ignores duplicates */

@@ -98,7 +98,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
           this.nodes[index] = res.body as Node;
         }
       }, err => {
-        console.log(err);
+        console.error(err);
       })
     } else {
       this.nodeService.updateNode(node.id, node).subscribe((data: Node) => {
@@ -130,7 +130,6 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
       .split(',')
       .forEach(user => users.push({ username: user }));
     // post to api
-    console.log(users);
     this.groupService.addUsersToGroup(users, this.currentGroup).subscribe(res => {
       if (res.status === 200) {
         this.snackBar.open('Added User/s successfully!', 'Ok', { duration: 2000 });
@@ -146,7 +145,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
       if (err.status === 400) {
         this.snackBar.open(err.error.error, 'Ok', { duration: 2000 });
       } else {
-        console.log('Error:' + err);
+        console.error('Error:' + err);
       }
     });
   }
@@ -175,7 +174,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }, err => {
-      console.log('Error:' + err);
+      console.error('Error:' + err);
     });
   }
 

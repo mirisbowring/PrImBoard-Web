@@ -1,6 +1,6 @@
 <div libScrollEvent #mainView class="container-xl" (window:resize)="onResize()"
   (onscroll)="onScroll($event)" [bottomOffset]="500 " [topOffset]="500">
-  <virtual-scroller #scroll class="v-scroller" [items]="media" [style]="getHeight()" [parentScroll]="scroll.window"
+  <virtual-scroller #scroll class="v-scroller" [style.height.px]="vScrollerHeight" [items]="media" [parentScroll]="scroll.window"
     [bufferAmount]="meta.rowItems * meta.rows / 2">
     <div href="#" class="thumb" *ngFor="let m of scroll.viewPortItems; trackBy: mediaTrackBy">
       <div class="select-overlay" *ngIf="multiselect">

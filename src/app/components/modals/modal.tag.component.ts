@@ -65,7 +65,7 @@ export class ModalTagComponent implements OnDestroy {
         if (res.status === 200) {
           this.activeModal.close({updated: true, media: res.body as Media[]} as MediaMessage);
         }
-      }, err => console.log('Error:' + err))
+      }, err => console.error('Error:' + err))
     );
   }
 

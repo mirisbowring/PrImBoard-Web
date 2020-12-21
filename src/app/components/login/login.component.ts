@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         },
         err => {
-          console.log('Error:' + err);
+          console.error('Error:' + err);
           localStorage.removeItem('username');
         }
       )

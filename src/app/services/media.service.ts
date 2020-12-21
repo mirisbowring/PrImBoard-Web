@@ -47,7 +47,11 @@ export class MediaService {
   }
 
   public addMediaGroupMap(mgm: MediaGroupMap) {
-    return this.httpClient.post(environment.gateway + '/api/v1/media/addgroups', mgm, { observe: 'response', withCredentials: true });
+    return this.httpClient.post(
+      environment.gateway + '/api/v1/media/addgroups',
+      mgm,
+      { observe: 'response', withCredentials: true }
+    );
   }
 
   public addTagMediaMap(tmm: TagMediaMap) {
@@ -99,7 +103,6 @@ export class MediaService {
   }
 
   public uploadMedia(endpoint: string, formData) {
-    console.log(endpoint);
     endpoint = (endpoint == null || endpoint === "")? environment.gateway : endpoint;
     return this.httpClient.post(endpoint + '/api/v1/file', formData,
       { reportProgress: true, observe: 'events', withCredentials: true }

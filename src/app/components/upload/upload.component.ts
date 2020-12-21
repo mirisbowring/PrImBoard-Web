@@ -199,7 +199,7 @@ export class UploadComponent implements OnInit {
         return of(`${file.media.title} upload failed.`);
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
-          console.log(event.body);
+          // console.log(event.body);
         }
       });
   }

@@ -27,11 +27,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './components/register/register.component';
-import { NgxScrollEventModule } from 'ngx-scroll-event';
+import { NgxScrollEventDirective } from '../app/directives/ngx-scroll-event.directive';
 import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
@@ -43,12 +42,11 @@ import { CookieService } from 'ngx-cookie-service';
 import { CreateComponent } from './components/event/event.create.component';
 import { ListComponent } from './components/event/event.list.component';
 import { ShowComponent } from './components/event/event.show.component';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SettingComponent } from './components/setting/setting.component';
 import { ModalEventComponent } from './components/modals/modal.event.component';
 import { ModalDeleteComponent } from './components/modals/modal.delete.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { VirtualScrollerModule } from '@michaukrieg/ngx-virtual-scroller';
 import { ModalEventEditComponent } from './components/modals/modal.event.edit.component';
 import { HelperService } from './services/helper.service';
 import {VgCoreModule} from '@videogular/ngx-videogular/core';
@@ -76,6 +74,7 @@ import { AuthImagePipe } from './services/pipes/authImage.pipe';
     ModalEventComponent,
     ModalEventEditComponent,
     ModalUserGroupComponent,
+    NgxScrollEventDirective,
   ],
   imports: [
     BrowserModule,
@@ -100,15 +99,12 @@ import { AuthImagePipe } from './services/pipes/authImage.pipe';
     MatAutocompleteModule,
     FormsModule,
     ReactiveFormsModule,
-    InfiniteScrollModule,
     MatChipsModule,
     MatProgressBarModule,
     MatSnackBarModule,
     MatTooltipModule,
     NgbModule,
     NgbDatepickerModule,
-    NgScrollbarModule,
-    NgxScrollEventModule,
     ScrollingModule,
     VirtualScrollerModule,
     VgCoreModule,
