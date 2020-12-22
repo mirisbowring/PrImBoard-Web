@@ -3,19 +3,19 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  gateway: 'https://10.101.1.8/gateway/',
-  defaultPageSize: 30,
+  production: window["env"]["gatewayURL"] || true,
+  gateway: window["env"]["gatewayURL"] || "",
+  defaultPageSize: window["env"]["defaultPageSize"] || 30,
   keycloak: {
     // Url of the Identity Provider
-    issuer: 'https://10.101.1.8/keycloak/auth',
+    issuer: window["env"]["keycloak_issuer"] || "https://keycloak.com/auth",
 
     // Realm
-    realm: 'primboard',
+    realm: window["env"]["keycloak_realm"] || "master",
 
     // The SPA's id.
     // The SPA is registerd with this id at the auth-serverß
-    clientId: 'web-client',
+    clientId: window["env"]["keycloak_clientID"] || "clientID",
   }
 };
 
