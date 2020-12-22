@@ -9,6 +9,7 @@ export interface Message {
   openTagDialog?: boolean;
   openEventDialog?: boolean;
   openEventEditDialog?: boolean;
+  openMediaCarouselDialog?: boolean;
 }
 
 export interface AccessMessage {

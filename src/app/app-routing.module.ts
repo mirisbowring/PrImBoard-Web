@@ -5,7 +5,7 @@ import { RegisterComponent } from 'src/app/components/register/register.componen
 import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { LoginComponent } from 'src/app/components/login/login.component';
 import { LogoutComponent } from 'src/app/components/logout/logout.component';
-import { MediaComponent } from 'src/app/components/media/media.component';
+import { ModalMediaViewComponent } from 'src/app/components/modals/modal.media.view.component';
 import { ListComponent } from 'src/app/components/event/event.list.component';
 import { CreateComponent } from 'src/app/components/event/event.create.component';
 import { MediaListComponent } from 'src/app/components/media/media.list.component';
@@ -20,8 +20,8 @@ const routes: Routes = [
   { path: 'events', component: ListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
   { path: 'home', component: MediaListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
   { path: 'home/:filter', component: MediaListComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
-  { path: 'media/:id', component: MediaComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
-  { path: 'media/:filter/:id', component: MediaComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'media/:id', component: ModalMediaViewComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
+  { path: 'media/:filter/:id', component: ModalMediaViewComponent, canActivate: [AuthGuard], data: { roles: ['user']} },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent },

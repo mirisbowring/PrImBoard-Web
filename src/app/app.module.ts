@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { initializeKeycloak } from 'src/app/utils/utils';
+import { SwiperModule } from 'swiper/angular';
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -34,7 +35,7 @@ import { NgxScrollEventDirective } from '../app/directives/ngx-scroll-event.dire
 import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
-import { MediaComponent } from './components/media/media.component';
+import { ModalMediaViewComponent } from './components/modals/modal.media.view.component';
 import { MediaListComponent } from './components/media/media.list.component';
 import { ModalUserGroupComponent } from 'src/app/components/modals/modal.usergroup.component';
 import { ModalTagComponent } from 'src/app/components/modals/modal.tag.component';
@@ -64,7 +65,7 @@ import { AuthImagePipe } from './services/pipes/authImage.pipe';
     UploadComponent,
     LoginComponent,
     LogoutComponent,
-    MediaComponent,
+    ModalMediaViewComponent,
     CreateComponent,
     ListComponent,
     ShowComponent,
@@ -106,6 +107,7 @@ import { AuthImagePipe } from './services/pipes/authImage.pipe';
     NgbModule,
     NgbDatepickerModule,
     ScrollingModule,
+    SwiperModule,
     VirtualScrollerModule,
     VgCoreModule,
     VgControlsModule,

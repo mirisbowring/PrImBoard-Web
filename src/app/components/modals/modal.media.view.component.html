@@ -1,0 +1,291 @@
+<div class="modal-header">
+  <h5 class="modal-title">
+    <span *ngIf="!addTitleShown" role="button" (click)="addTitleShown=true">
+      {{(med != null && med.title != null) ? med.title : "&lt;unknown title&gt;"}}
+    </span>
+    <form (ngSubmit)="submitTitleForm()" *ngIf="addTitleShown" class="form-inline">
+      <div class="form-group">
+        <label for="inputPassword2" class="sr-only">Password</label>
+        <input class="form-control" [formControl]="titleInput" placeholder="{{med.title}}">
+      </div>
+      <button class="btn btn-outline-success mx-3" type="submit">Save</button>
+      <button class="btn btn-outline-secondary" (click)="addTitleShown=false">Cancel</button>
+    </form>
+  </h5>
+  <span role="button" class="material-icons ml-auto" (click)="openSource()">
+    launch
+  </span>
+  <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close" (click)="onNoClick()">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+<!-- <a role="button" class="carousel-control-prev" style="top:63px;justify-content: flex-end;width:7%" (click)="previous()">
+  <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+  <span class="sr-only">Previous</span>
+</a>
+<a role="button" class="carousel-control-next" style="top:63px;justify-content: flex-start;width:7%" (click)="next()">
+  <span aria-hidden="true" class="carousel-control-next-icon"></span>
+  <span class="sr-only">Next</span>
+</a> -->
+<div class="modal-body" style="padding:1rem 0;">
+  <swiper [slidesPerView]="1" [virtual]="true" [navigation]="{}" (swiper)="onSwiper($event)"
+    (slideChange)="onSlideChange()">
+    <ng-container *ngFor="let m of data; index as i">
+
+      <ng-template swiperSlide style="width: 100%!important;">
+        <div class="container" style="margin:0" *ngIf="this.med != null">
+        <div class="row">
+          <div class="col-md-12">
+            <ng-container *ngIf="isVideo(); then video; else image">
+
+            </ng-container>
+            <ng-template #video>
+              <vg-player>
+                <vg-scrub-bar>
+                  <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                  <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+                </vg-scrub-bar>
+                <vg-controls [vgAutohide]="true" [vgAutohideTime]="2">
+                  <vg-play-pause></vg-play-pause>
+                  <vg-playback-button></vg-playback-button>
+
+                  <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+                  <div class="vg-control-text">
+                    <span role="button" class="">/</span>
+                  </div>
+                  <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+
+                  <vg-mute class="ml-auto"></vg-mute>
+                  <vg-volume></vg-volume>
+                  <a class="vg-download" [href]="url(true)" download>
+                    <div>
+                      <span role="button" class="material-icons">
+                        get_app
+                      </span>
+                    </div>
+                  </a>
+                  <vg-fullscreen></vg-fullscreen>
+                </vg-controls>
+
+                <video #media [vgMedia]="media" id="singleVideo" preload="auto">
+                  <source *ngIf="sourceURL" src="{{sourceURL}}" type="{{med.contentType}}">
+                  <!-- <source [src]="aurl()" type="{{med.contentType}}"> -->
+                </video>
+              </vg-player>
+            </ng-template>
+            <ng-template #image>
+              <img style="width: 100%;" [src]="url(false) | authImage | async">
+            </ng-template>
+          </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col-md-12">
+              <h2 class="no-margin-bottom">
+                <div *ngIf="!addTitleShown">
+                  {{med.title != null ? med.title : "&lt;unknown title&gt;"}}
+                  <button class="edit-button" aria-label="edit" (click)="addTitleShown=true">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+                <form (ngSubmit)="submitTitleForm()" *ngIf="addTitleShown">
+                  <mat-form-field class="full-width-input">
+                    <input matInput placeholder="Title" [formControl]="titleInput">
+                  </mat-form-field>
+                  <button mat-flat-button color="primary" type="submit">{{med.title != null ? "Edit Title" : "Add Title"}}</button>
+                  <button mat-flat-button type="button" (click)="addTitleShown=false">Cancel</button>
+                </form>
+              </h2>
+            </div>
+          </div> -->
+        <div class="row">
+          <div class="col-12">
+            <p>
+              <ng-container
+                *ngIf="setDateShown === true; then setDate; else (med.timestamp != null && knownDate) || (unknownDate)">
+              </ng-container>
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p *ngIf="med.description != null && !addDescriptionShown">{{med.description}}</p>
+            <p (click)="addDescriptionShown=true" *ngIf="!addDescriptionShown" class="edit-description">
+              {{med.description == null ? "Add description" : "Edit Description"}}</p>
+            <form (ngSubmit)="submitDescriptionForm()" *ngIf="addDescriptionShown">
+              <mat-form-field class="full-width-input">
+                <textarea matInput placeholder="Description" [formControl]="descriptionInput"></textarea>
+              </mat-form-field>
+              <button mat-flat-button color="primary" type="submit">Send Comment</button>
+              <button mat-flat-button type="button" (click)="addDescriptionShown=false">Cancel</button>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-sm-12 first-sm">
+            <div class="box box-container">
+              <div class="row">
+                <div class="col-md-12">
+                  <h3>Kommentare</h3>
+                </div>
+              </div>
+              <div class="row" *ngIf="med.comments != null">
+                <div class="col-md-12">
+                  <div class="comment" *ngFor="let comment of med.comments">
+                    <div class="comment-profile">
+                      <div class="comment-profile-img">
+                        <img src="{{ getProfileImage(comment.username) }}">
+                      </div>
+                    </div>
+                    <div class="comment-content">{{ comment.comment }}</div>
+                    <div class="comment-footer">{{ comment.timestamp * 1000 | date: 'dd.MM.yyyy hh:mm' }} - {{
+                      comment.username }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <button mat-flat-button color="primary" (click)="addCommentShown=true" *ngIf="!addCommentShown">
+                    Comment
+                  </button>
+                  <form (ngSubmit)="submitCommentForm()" *ngIf="addCommentShown">
+                    <mat-form-field class="full-width-input">
+                      <textarea matInput placeholder="Kommentar" [formControl]="commentInput"></textarea>
+                    </mat-form-field>
+                    <button mat-flat-button color="primary" type="submit">Send Comment</button>
+                    <button mat-flat-button type="button" (click)="addCommentShown=false">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-12 first-xs">
+            <div class="box box-container">
+              <div class="row">
+                <div class="col-md-12">
+                  <h3>
+                    Tags
+                    <button class="tag-button" (click)="addTagShown=true" *ngIf="!addTagShown">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </h3>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <ng-container *ngIf="med.tags == null else tags">
+                  </ng-container>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <form (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
+                    <mat-form-field class="full-width-input">
+                      <mat-chip-list #tagList aria-label="Tag selection">
+                        <mat-chip *ngFor="let tag of localTags" [selectable]="false" [removable]="true"
+                          (removed)="removeTag(tag)">
+                          {{ tag }}
+                          <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input #tagInput placeholder="Add Tag..." [formControl]="tagCtrl" [matAutocomplete]="auto"
+                          [matChipInputFor]="tagList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          (matChipInputTokenEnd)="addTag($event)">
+                      </mat-chip-list>
+                      <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete"
+                        (optionSelected)="selectedTag($event)">
+                        <mat-option *ngFor="let tag of tagAutoComplete$ | async; let index = index" [value]="tag">
+                          {{ tag }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <button mat-flat-button color="primary" type="submit">Save Tags</button>
+                    <button mat-flat-button type="button" (click)="addTagShown=false">Cancel</button>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <h3>
+                    Access
+                    <button class="tag-button" (click)="addAccessShown=true" *ngIf="!addAccessShown">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </h3>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <ng-container *ngIf="med.groups == null else groups">
+                  </ng-container>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <form (ngSubmit)="submitAccessForm()" *ngIf="addAccessShown">
+                    <mat-form-field class="full-width-input">
+                      <mat-chip-list #groupList aria-label="Group selection">
+                        <mat-chip *ngFor="let group of localGroups" [selectable]="false" [removable]="true"
+                          (removed)="removeGroup(group)">
+                          {{ group.title }}
+                          <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input #groupInput placeholder="Add Group..." [formControl]="groupCtrl" [matAutocomplete]="auto"
+                          [matChipInputFor]="groupList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          (matChipInputTokenEnd)="addGroup($event)">
+                      </mat-chip-list>
+                      <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete"
+                        (optionSelected)="selectedGroup($event)">
+                        <mat-option *ngFor="let group of groupAutoComplete$ | async; let index = index" [value]="group">
+                          {{ group.title }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <button mat-flat-button color="primary" type="submit">Save Groupss</button>
+                    <button mat-flat-button type="button" (click)="addAccessShown=false">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #knownDate>
+          Taken on <span (click)="setDateShown=true">{{med.timestamp * 1000 | date: 'dd. MMMM yyyy'}}</span> and
+          uploaded
+          on
+          {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
+        </ng-template>
+
+        <ng-template #unknownDate>
+          Taken on <i (click)="setDateShown=true">&lt;unknown&gt;</i> and uploaded on {{med.timestampUpload * 1000 |
+          date:
+          'dd. MMMM yyyy'}}
+        </ng-template>
+
+        <ng-template #setDate>
+          Taken on
+          <mat-form-field>
+            <input matInput placeholder="date" [formControl]="med.timestamp * 1000" formControlName="timestamp"
+              [matDatepicker]="timestamp" (dateChange)="submitDateForm($event)">
+            <mat-datepicker-toggle matSuffix [for]="timestamp"></mat-datepicker-toggle>
+            <mat-datepicker #timestamp></mat-datepicker>
+          </mat-form-field>
+          and uploaded on {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
+        </ng-template>
+
+        <ng-template #tags>
+          <mat-chip-list aria-label="tags">
+            <mat-chip class="tag-chip" *ngFor="let tag of med.tags" routerLink="/home/{{tag}}">{{tag}}</mat-chip>
+          </mat-chip-list>
+        </ng-template>
+
+        <ng-template #groups>
+          <mat-chip-list aria-label="groups">
+            <mat-chip class="group-chip" *ngFor="let group of med.groups" (click)="showGroup(group)">{{ group.title }}
+            </mat-chip>
+          </mat-chip-list>
+        </ng-template>
+        </div>
+      </ng-template>
+    </ng-container>
+  </swiper>
+</div>

@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
 import { MediaService } from 'src/app/services/media.service';
 import { Media, MediaGroupMap } from 'src/app/models/media';
 import { FormControl } from '@angular/forms';
@@ -14,24 +14,46 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
+import { ModalUserGroupComponent } from './modal.usergroup.component';
 import { HelperService } from 'src/app/services/helper.service';
 import { KeycloakService } from 'keycloak-angular';
 import { UserService } from 'src/app/services/user.service';
 import { CookieService } from 'ngx-cookie-service';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { MediaMessage } from 'src/app/models/message';
+import SwiperCore, { Navigation, Virtual } from 'swiper/core';
+
+// install Swiper components
+SwiperCore.use([Navigation, Virtual]);
 
 @Component({
   selector: 'app-media',
-  templateUrl: './media.component.html',
-  styleUrls: ['./media.component.css']
+  templateUrl: './modal.media.view.component.html',
+  styleUrls: ['./modal.media.view.component.css']
 })
-export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  private swiper: SwiperCore;
+  public initDone: boolean = false;
+  onSwiper(swiper: SwiperCore) {
+    if (!this.initDone){
+      this.swiper = swiper;
+    }
+  }
+  onSlideChange() {
+    if (this.initDone && (this.swiper.activeIndex == this.dataIndex+1 || this.swiper.activeIndex == this.dataIndex-1)) {
+      this.dataIndex = this.swiper.activeIndex;
+      this.med = this.data[this.dataIndex];
+    } else {
+      this.swiper.slideTo(this.dataIndex);
+    }
+  }
+  @Input() public data: Media[] = [];
+  @Input() dataIndex: number;
   private subscriptions = new Subscription();
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('groupInput') groupInput: ElementRef<HTMLInputElement>;
-  @ViewChild('')
 
   tagAutoComplete$: Observable<string> = null;
   groupAutoComplete$: Observable<Group> = null;
@@ -46,7 +68,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   addCommentShown = false;
   addDescriptionShown = false;
   addTagShown = false;
-  addTitleShown = false;
+  public addTitleShown = false;
   setDateShown = false;
   med: Media;
   users: User[] = [];
@@ -56,6 +78,7 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   sourceURL: string = "";
 
   constructor(
+    public activeModal: NgbActiveModal,
     private mediaService: MediaService,
     private tagService: TagService,
     private groupService: GroupService,
@@ -66,39 +89,76 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
     private cookieService: CookieService,
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.med = this.data[this.dataIndex];
+    this.descriptionInput.setValue(this.med.description);
+    this.titleInput.setValue(this.med.title);
+    const url = this.url(true);
+    let path = url.substring(url.indexOf("://") + 3);
+    let domain = path.split("/", 1)[0];
+    path = path.replace(domain, "").split("?", 1)[0];
+    this.cookieService.set(
+      "keycloak-jwt",
+      await this.keycloakService.getToken(),
+      1,
+      path,
+      domain,
+      true,
+      'Lax',
+      );
+    this.sourceURL = url;
+    this.swiper.slideTo(this.dataIndex);
+    this.initDone = true;
   }
 
-  ngAfterViewInit() {
-    this.subscriptions.add(
-      this.route.params.subscribe(param => {
-        // receive media object
-        this.mediaService.getMediaByID(param.id).subscribe(async (data: Media) => {
-          this.med = data;
-          this.descriptionInput.setValue(this.med.description);
-          this.titleInput.setValue(this.med.title);
-          const url = this.url(true);
-          let path = url.substring(url.indexOf("://") + 3);
-          let domain = path.split("/", 1)[0];
-          path = path.replace(domain, "").split("?", 1)[0];
-          this.cookieService.set(
-            "keycloak-jwt",
-            await this.keycloakService.getToken(),
-            1,
-            path,
-            domain,
-            true,
-            'Lax',
-            );
-            this.sourceURL = url;
-          // this.subscriptions.add(this.userService.preauthNode(this.med.nodes[0]).subscribe(() => this.sourceURL = this.url(true)));
-        });
-      })
-    );
+  async ngAfterViewInit() {
+    // prepare view
+    // this.descriptionInput.setValue(this.med.description);
+    // this.titleInput.setValue(this.med.title);
+    // const url = this.url(true);
+    // let path = url.substring(url.indexOf("://") + 3);
+    // let domain = path.split("/", 1)[0];
+    // path = path.replace(domain, "").split("?", 1)[0];
+    // this.cookieService.set(
+    //   "keycloak-jwt",
+    //   await this.keycloakService.getToken(),
+    //   1,
+    //   path,
+    //   domain,
+    //   true,
+    //   'Lax',
+    //   );
+    //   this.sourceURL = url;
+    // this.subscriptions.add(
+    //   // this.route.params.subscribe(param => {
+    //     // receive media object
+    //     this.mediaService.getMediaByID(this.data[this.dataIndex].id).subscribe(async (data: Media) => {
+    //       this.med = data;
+    //       this.descriptionInput.setValue(this.med.description);
+    //       this.titleInput.setValue(this.med.title);
+    //       const url = this.url(true);
+    //       let path = url.substring(url.indexOf("://") + 3);
+    //       let domain = path.split("/", 1)[0];
+    //       path = path.replace(domain, "").split("?", 1)[0];
+    //       this.cookieService.set(
+    //         "keycloak-jwt",
+    //         await this.keycloakService.getToken(),
+    //         1,
+    //         path,
+    //         domain,
+    //         true,
+    //         'Lax',
+    //         );
+    //         this.sourceURL = url;
+    //       // this.subscriptions.add(this.userService.preauthNode(this.med.nodes[0]).subscribe(() => this.sourceURL = this.url(true)));
+    //     })
+    //   // })
+    // );
     // pull tags
     this.receiveTags();
     // pull groups
     this.receiveGroups();
+
   }
 
   ngOnDestroy() {
@@ -106,11 +166,13 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getProfileImage(username: string): string {
-    this.med.users.forEach(user => {
-      if (user.username === username) {
-        return user.urlImage;
-      }
-    });
+    if (this.med.users != null) {
+      this.med.users.forEach(user => {
+        if (user.username === username) {
+          return user.urlImage;
+        }
+      });
+    }
     return 'assets/profile.svg';
   }
 
@@ -209,6 +271,14 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
       return true;
     }
     return false
+  }
+
+  onNoClick(): void {
+    this.activeModal.close({canceled: true, media: this.data} as MediaMessage);
+  }
+
+  openSource(): void {
+    window.open(this.url(true));
   }
 
   removeTag(tag: string): void {
@@ -327,5 +397,13 @@ export class MediaComponent implements OnInit, AfterViewInit, OnDestroy {
   //   await this.userService.preauthNode(this.med.nodes[0]).toPromise();
   //   return HelperService.resourceURL(this.med, this.keycloakService.getUsername(), true);
   // }
+
+  next(): void {
+    this.med = this.data[++this.dataIndex];
+  }
+
+  previous(): void {
+    this.med = this.data[--this.dataIndex];
+  }
 
 }

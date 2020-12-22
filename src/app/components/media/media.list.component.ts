@@ -17,6 +17,7 @@ import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 import { KeycloakService } from 'keycloak-angular';
 import { AuthImagePipe } from 'src/app/services/pipes/authImage.pipe';
 import { HelperService } from 'src/app/services/helper.service';
+import { ModalMediaViewComponent } from '../modals/modal.media.view.component';
 
 @Component({
   selector: 'app-media-list',
@@ -55,6 +56,8 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   multiselect = false;
   selected = new Set(); // stores the IDs of the selected images
   rangeStart: Media;
+  // carousel init data
+  private selectedIndex: number;
 
   constructor(
     private mediaService: MediaService,
@@ -92,6 +95,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     );
+    let status = 0;
     // message listener
     this.subscriptions.add(
       this.messageService.getMessage().subscribe((message: Message) => {
@@ -111,10 +115,24 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
           modalRef = this.modalService.open(ModalDeleteComponent);
         } else if (message.openAccessDialog !== undefined) {
           modalRef = this.modalService.open(ModalUserGroupComponent);
+        } else if (message.openMediaCarouselDialog !== undefined) {
+          modalRef = this.modalService.open(ModalMediaViewComponent, {scrollable: true, size: 'xl'});
+          status = 1;
         }
         if (modalRef != null) {
-          modalRef.componentInstance.data = Array.from(this.selected.values());
-          modalRef.componentInstance.typ = 'media';
+          switch (status) {
+            case 0:
+              modalRef.componentInstance.data = Array.from(this.selected.values());
+              modalRef.componentInstance.typ = 'media';
+              break;
+            case 1:
+              modalRef.componentInstance.dataIndex = this.selectedIndex;
+              modalRef.componentInstance.data = this.media;
+              modalRef.componentInstance.typ = 'media';
+              break;
+            default:
+          }
+
           modalRef.result.then((res: MediaMessage) => {
             if (res.updatedTags) {
               this.updateMediaCache(res.media, 'Mapped tags successfully!')
@@ -177,6 +195,11 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
       const id = (this.media.length > 0) ? this.media[0].id : '';
       this.requestMedia('before', id, false, true);
     }
+  }
+
+  openCarouselDialog(index: number): void {
+    this.selectedIndex = index;
+    this.messageService.sendMessage({ openMediaCarouselDialog: true });
   }
 
   requestMedia(param: string, id: string, fill: boolean, asc: boolean) {

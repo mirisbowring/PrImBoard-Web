@@ -2,7 +2,7 @@
   (onscroll)="onScroll($event)" [bottomOffset]="500 " [topOffset]="500">
   <virtual-scroller #scroll class="v-scroller" [style.height.px]="vScrollerHeight" [items]="media" [parentScroll]="scroll.window"
     [bufferAmount]="meta.rowItems * meta.rows / 2">
-    <div href="#" class="thumb" *ngFor="let m of scroll.viewPortItems; trackBy: mediaTrackBy">
+    <div href="#" class="thumb" *ngFor="let m of scroll.viewPortItems; let i = index; trackBy: mediaTrackBy" [attr.data-index]="i">
       <div class="select-overlay" *ngIf="multiselect">
         <ng-template [ngIf]="!selected.has(m)" [ngIfElse]="chosen">
           <svg class="bi bi-square" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +36,8 @@
           </svg>
         </ng-template>
       </div>
-      <img [src]="thumbURL(m) | authImage | async" [routerLink]="['/media/' + m.id]" />
+      <!-- <img [src]="thumbURL(m) | authImage | async" [routerLink]="['/media/' + m.id]" /> -->
+      <img [src]="thumbURL(m) | authImage | async" (click)="openCarouselDialog(i)" />
       <!-- <img src="{{m.urlThumb}}" alt="{{m.title}}" [routerLink]="['/media/' + m.id]" /> -->
     </div>
   </virtual-scroller>

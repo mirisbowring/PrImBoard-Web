@@ -27,9 +27,11 @@
     "@videogular/ngx-videogular": "~2.1.0",
     "bootstrap": "~4.5.3",
     "jquery": "~3.5.1",
-    "keycloak-angular": "~8.0.1",
+    "keycloak-angular": "^8.1.0",
+    "keycloak-js": "^12.0.1",
     "ngx-cookie-service": "~10.1.1",
-    "rxjs": "~6.6.3"
+    "rxjs": "~6.6.3",
+    "swiper": "^6.4.5"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1002.0",
