@@ -12,7 +12,7 @@ RUN npm install -g @angular/cli
 
 RUN ng build --configuration production --output-path=/dist
 
-FROM nginx:1.17.1-alpine as run
+FROM nginx:1.19-alpine as run
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
