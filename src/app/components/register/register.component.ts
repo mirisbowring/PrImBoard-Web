@@ -32,15 +32,15 @@ export class RegisterComponent implements OnInit {
     }
     this.cuForm.removeControl('password_rep');
     // pass uform and check against contract
-    this.userService.createUser(this.cuForm.getRawValue()).subscribe(res => {
-      if (res.status === 201) {
-        this.snackBar.open(
-          'User created!',
-          'Ok',
-          { duration: 2000 }
-        );
-      }
-    });
+    // this.userService.createUser(this.cuForm.getRawValue()).subscribe(res => {
+    //   if (res.status === 201) {
+    //     this.snackBar.open(
+    //       'User created!',
+    //       'Ok',
+    //       { duration: 2000 }
+    //     );
+    //   }
+    // });
   }
 
 }

@@ -3,7 +3,7 @@ import { Group } from 'src/app/models/group';
 import { GroupService } from 'src/app/services/group.service';
 import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { User } from 'src/app/models/user';
+// import { User } from 'src/app/models/user';
 import { InviteService } from 'src/app/services/invite.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
@@ -13,6 +13,7 @@ import { ModalDeleteComponent } from '../modals/modal.delete.component';
 import { ModalMessage } from 'src/app/models/message';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 import { NodeService } from 'src/app/services/node.service';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-setting',
@@ -36,6 +37,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
     private userService: UserService,
     private modalService: NgbModal,
     private nodeService: NodeService,
+    private keycloakService: KeycloakService,
     ) { }
 
   ngOnInit() {
@@ -123,12 +125,12 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   submitAddUserForm() {
-    const users: User[] = [];
+    const users: string[] = [];
     // parse input
     this.newUsers.value
       .replace(/\s/g, '')
       .split(',')
-      .forEach(user => users.push({ username: user }));
+      .forEach(user => users.push(user));
     // post to api
     this.groupService.addUsersToGroup(users, this.currentGroup).subscribe(res => {
       if (res.status === 200) {
@@ -151,7 +153,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isOwner(owner: string): boolean {
-    if (owner === localStorage.getItem('username')) {
+    if (owner === this.keycloakService.getUsername()) {
       return true;
     }
     return false;

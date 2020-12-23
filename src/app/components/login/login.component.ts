@@ -33,18 +33,18 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   submitlForm() {
     this.subscriptions.add(
-      this.userService.loginUser(this.loginForm.getRawValue()).subscribe(
-        res => {
-          if (res.status === 200) {
-            localStorage.setItem('username', this.loginForm.controls.username.value);
-            this.router.navigate(['/home']);
-          }
-        },
-        err => {
-          console.error('Error:' + err);
-          localStorage.removeItem('username');
-        }
-      )
+      // this.userService.loginUser(this.loginForm.getRawValue()).subscribe(
+      //   res => {
+      //     if (res.status === 200) {
+      //       localStorage.setItem('username', this.loginForm.controls.username.value);
+      //       this.router.navigate(['/home']);
+      //     }
+      //   },
+      //   err => {
+      //     console.error('Error:' + err);
+      //     localStorage.removeItem('username');
+      //   }
+      // )
     );
     this.formSubmitAttempt = true;
   }

@@ -1,5 +1,5 @@
 import { Comment } from 'src/app/models/comment';
-import { User } from 'src/app/models/user';
+// import { User } from 'src/app/models/user';
 import { Group } from './group';
 import { Node } from './node';
 
@@ -22,7 +22,7 @@ export interface Media {
   type: string;
   extension: string;
   contentType: string;
-  users?: User[];
+  users?: string[];
   nodes?: Node[];
 }
 

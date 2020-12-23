@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms';
 import { TagService } from 'src/app/services/tag.service';
 import { startWith, debounceTime, switchMap } from 'rxjs/operators';
 import { of, Observable, Subscription } from 'rxjs';
-import { User } from 'src/app/models/user';
+// import { User } from 'src/app/models/user';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute } from '@angular/router';
@@ -44,8 +44,6 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.initDone && (this.swiper.activeIndex == this.dataIndex+1 || this.swiper.activeIndex == this.dataIndex-1)) {
       this.dataIndex = this.swiper.activeIndex;
       this.med = this.data[this.dataIndex];
-    } else {
-      this.swiper.slideTo(this.dataIndex);
     }
   }
   @Input() public data: Media[] = [];
@@ -71,7 +69,7 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
   public addTitleShown = false;
   setDateShown = false;
   med: Media;
-  users: User[] = [];
+  users: string[] = [];
   separatorKeysCodes: number[] = [ENTER, COMMA];
   localTags: string[] = [];
   localGroups: Group[] = [];
@@ -166,13 +164,13 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   getProfileImage(username: string): string {
-    if (this.med.users != null) {
-      this.med.users.forEach(user => {
-        if (user.username === username) {
-          return user.urlImage;
-        }
-      });
-    }
+    // if (this.med.users != null) {
+    //   this.med.users.forEach(user => {
+    //     if (user === username) {
+    //       return user.urlImage;
+    //     }
+    //   });
+    // }
     return 'assets/profile.svg';
   }
 
@@ -399,11 +397,14 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
   // }
 
   next(): void {
-    this.med = this.data[++this.dataIndex];
+    // this.med = this.data[++this.dataIndex];
+
+    this.swiper.slideNext(300);
   }
 
   previous(): void {
-    this.med = this.data[--this.dataIndex];
+    // this.med = this.data[--this.dataIndex];
+    this.swiper.slidePrev(300);
   }
 
 }

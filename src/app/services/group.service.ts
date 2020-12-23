@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Group } from 'src/app/models/group';
-import { User } from 'src/app/models/user';
+// import { User } from 'src/app/models/user';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class GroupService {
     return this.httpClient.get<Group[]>(environment.gateway + '/api/v1/usergroups', { withCredentials: true });
   }
 
-  public addUsersToGroup(users: User[], group: string) {
+  public addUsersToGroup(users: string[], group: string) {
     return this.httpClient.post<Group>(
       environment.gateway + '/api/v1/usergroup/' + group + '/users',
       users,
