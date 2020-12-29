@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm install -g @angular/cli
 
-RUN ng build --output-path=/dist
+RUN ng build --output-path=/dist --base-href=/web/ --deploy-url=/web/
 
 FROM nginx:1.19-alpine as run
 

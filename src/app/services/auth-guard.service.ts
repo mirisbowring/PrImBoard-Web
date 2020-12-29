@@ -32,7 +32,7 @@ import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
 export class AuthGuardService extends KeycloakAuthGuard {
   constructor(
     protected readonly router: Router,
-    protected readonly keycloak: KeycloakService
+    protected readonly keycloak: KeycloakService,
   ) {
     super(router, keycloak);
   }
@@ -45,7 +45,8 @@ export class AuthGuardService extends KeycloakAuthGuard {
     if (!this.authenticated) {
       // this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
       await this.keycloak.login({
-        redirectUri: window.location.origin + state.url,
+        // redirectUri: window.location.origin + state.url,
+        redirectUri: window.location.href,
       });
     }
 
