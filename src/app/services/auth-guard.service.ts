@@ -18,7 +18,8 @@
 //   }
 // }
 
-import { Injectable } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   Router,
@@ -33,20 +34,21 @@ export class AuthGuardService extends KeycloakAuthGuard {
   constructor(
     protected readonly router: Router,
     protected readonly keycloak: KeycloakService,
+    @Inject(APP_BASE_HREF) public baseHref: string,
   ) {
     super(router, keycloak);
   }
 
   public async isAccessAllowed(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ) {
     // Force the user to log in if currently unauthenticated.
     if (!this.authenticated) {
       // this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
       await this.keycloak.login({
         // redirectUri: window.location.origin + state.url,
-        redirectUri: window.location.href,
+        redirectUri: window.location.origin + this.baseHref + state.url,
       });
     }
 

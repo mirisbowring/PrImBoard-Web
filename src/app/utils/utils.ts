@@ -33,7 +33,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
       },
       initOptions: {
         onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+        silentCheckSsoRedirectUri: window.location.origin +  '/web/assets/silent-check-sso.html',
       },
       // bearerExcludedUrls: ['/assets', '/login'],
     });
