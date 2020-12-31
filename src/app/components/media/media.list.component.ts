@@ -122,12 +122,10 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         if (modalRef != null) {
           switch (status) {
             case 0:
-              console.log("ja");
               modalRef.componentInstance.data = Array.from(this.selected.values());
               modalRef.componentInstance.typ = 'media';
               break;
             case 1:
-              console.log("hä");
               modalRef.componentInstance.dataIndex = this.selectedIndex;
               modalRef.componentInstance.data = this.media;
               modalRef.componentInstance.typ = 'media';
