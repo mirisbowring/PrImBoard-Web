@@ -196,16 +196,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.messageService.sendMessage({ openTagDialog: true });
   }
 
-  doLogout() {
-    // this.userService.logoutUser().subscribe(
-    //   res => {
-    //     if (res.status === 204) {
-    //       this.router.navigate(['/login']);
-    //     }
-    //   }
-    // );
-  }
-
   public login() {
     this.keycloak.login();
   }

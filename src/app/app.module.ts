@@ -34,7 +34,6 @@ import { RegisterComponent } from './components/register/register.component';
 import { NgxScrollEventDirective } from '../app/directives/ngx-scroll-event.directive';
 import { UploadComponent } from './components/upload/upload.component';
 import { LoginComponent } from './components/login/login.component';
-import { LogoutComponent } from './components/logout/logout.component';
 import { ModalMediaViewComponent } from './components/modals/modal.media.view.component';
 import { MediaListComponent } from './components/media/media.list.component';
 import { ModalUserGroupComponent } from 'src/app/components/modals/modal.usergroup.component';
@@ -65,7 +64,6 @@ import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
     RegisterComponent,
     UploadComponent,
     LoginComponent,
-    LogoutComponent,
     ModalMediaViewComponent,
     CreateComponent,
     ListComponent,
