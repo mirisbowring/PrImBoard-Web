@@ -30,7 +30,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
-import { RegisterComponent } from './components/register/register.component';
 import { NgxScrollEventDirective } from '../app/directives/ngx-scroll-event.directive';
 import { UploadComponent } from './components/upload/upload.component';
 import { ModalMediaViewComponent } from './components/modals/modal.media.view.component';
@@ -60,7 +59,6 @@ import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
     AppComponent,
     AuthImagePipe,
     MediaListComponent,
-    RegisterComponent,
     UploadComponent,
     ModalMediaViewComponent,
     CreateComponent,
