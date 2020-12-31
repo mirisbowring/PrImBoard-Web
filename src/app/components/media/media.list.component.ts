@@ -95,7 +95,6 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     );
-    let status = 0;
     // message listener
     this.subscriptions.add(
       this.messageService.getMessage().subscribe((message: Message) => {
@@ -107,6 +106,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
         let modalRef: NgbModalRef;
+        let status = 0;
         if (message.openTagDialog !== undefined) {
           modalRef = this.modalService.open(ModalTagComponent);
         } else if (message.openEventDialog !== undefined) {
