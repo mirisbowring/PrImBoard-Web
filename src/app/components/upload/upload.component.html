@@ -16,13 +16,14 @@
         </button>
         <div class="float-right">
           <div ngbDropdown class="d-inline-block mr-2">
-            <button class="btn btn-outline-secondary" id="nodeSelect" ngbDropdownToggle>{{(selectedNode.id === '') ? 'Select Node' : selectedNode.title}}</button>
+            <button class="btn btn-outline-secondary" id="nodeSelect" ngbDropdownToggle>{{(selectedNode.id === '') ?
+              'Select Node' : selectedNode.title}}</button>
             <div ngbDropdownMenu aria-labelledby="nodeSelect">
               <button ngbDropdownItem *ngFor="let node of nodes" (click)="selectedNode = node">{{node.title}}</button>
             </div>
           </div>
           <button type="submit" mat-raised-button color="primary" [disabled]="files.length === 0" class="float-right"
-          (click)="uploadFiles()">Submit</button>
+            (click)="uploadFiles()">Submit</button>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -30,7 +31,8 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <mat-progress-bar [style.display]="(toBeUploaded === 0) ? 'none' : 'block'" [value]="(uploaded / toBeUploaded) * 100"></mat-progress-bar>
+      <mat-progress-bar [style.display]="(toBeUploaded === 0) ? 'none' : 'block'"
+        [value]="(uploaded / toBeUploaded) * 100"></mat-progress-bar>
     </div>
   </div>
   <div class="row">
@@ -99,10 +101,12 @@
             </mat-panel-title>
             <mat-panel-description>
               <!-- <mat-progress-bar [value]="file.progress"></mat-progress-bar> -->
-              <mat-progress-spinner diameter="24" [style.display]="(file.progress === 100 || toBeUploaded === 0) ? 'none' : 'block'"
+              <mat-progress-spinner diameter="24"
+                [style.display]="(file.progress === 100 || toBeUploaded === 0) ? 'none' : 'block'"
                 [mode]="(file.inProgress) ? 'determinate' : 'indeterminate'" [value]="file.progress">
               </mat-progress-spinner>
-              <mat-icon [style.display]="(file.progress === 100) ? 'block' : 'none'" aria-hidden="false" aria-label="done">check_circle_outline</mat-icon>
+              <mat-icon [style.display]="(file.progress === 100) ? 'block' : 'none'" aria-hidden="false"
+                aria-label="done">check_circle_outline</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
           <ng-template matExpansionPanelContent>
