@@ -18,6 +18,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { AuthImagePipe } from 'src/app/services/pipes/authImage.pipe';
 import { HelperService } from 'src/app/services/helper.service';
 import { ModalMediaViewComponent } from '../modals/modal.media.view.component';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-media-list',
@@ -49,6 +50,8 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscriptions = new Subscription();
 
   media: Media[] = [];
+  medialength = 0;
+  cols = 12;
   filter: string;
   private curID: string;
   private eventID: string;
@@ -178,10 +181,30 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async onResize() {
-    this.meta.viewWidth = this.mainView.nativeElement.offsetWidth;
+    // this.meta.viewWidth = this.mainView.nativeElement.offsetWidth;
+    this.vScrollerHeight = (window.innerHeight - 56);
     this.meta.rowItems = Math.ceil(this.meta.viewWidth / this.meta.thumbnailSize);
-    this.meta.rows = Math.ceil(window.innerHeight / this.meta.thumbnailSize * 1.5);
-    this.vScrollerHeight = (window.innerHeight - 70);
+    this.meta.rows = Math.ceil(this.vScrollerHeight / 80);
+
+    // calc cols
+    const width = window.innerWidth;
+    if (width >= 1200 ) {
+      this.cols = 12;
+    } else if (width >= 992 ) {
+      this.cols = 10;
+    } else if (width >= 768 ) {
+      this.cols = 8;
+    } else if (width >= 576) {
+      this.cols = 5;
+    } else if (width < 576) {
+      this.cols = 3;
+    }
+
+    this.media = this.media;
+  }
+
+  getRows() {
+    return [].constructor(Math.ceil(this.medialength/this.cols));
   }
 
   onScroll(event: NgxScrollEvent) {
@@ -211,7 +234,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (id == null) {
       id = '';
     }
-    const size = (this.meta.rowItems * this.meta.rows);
+    const size = (this.cols * this.meta.rows);
     this.mediaService.getMediaPage(id, size, this.filter, param, this.eventID, asc)
       .subscribe((data: Media[]) => {
         if (asc && data != null) {
@@ -227,6 +250,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.fillTop(data);
             }
             this.media = this.media.concat(data);
+            this.medialength = this.media.length;
             break;
           case 'before':
             this.reachedTop = (data == null || data.length < size );
@@ -237,6 +261,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.fillBottom(data);
             }
             this.media = data.concat(this.media);
+            this.medialength = this.media.length;
             break;
           case 'from':
             this.reachedBottom = (data == null || data.length < size);
@@ -247,6 +272,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.fillTop(data);
             }
             this.media = this.media.concat(data);
+            this.medialength = this.media.length;
             break;
           case 'until':
             this.reachedTop = (data == null || data.length < size);
@@ -257,6 +283,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.fillBottom(data);
             }
             this.media = data.concat(this.media);
+            this.medialength = this.media.length;
             break;
           case '':
             this.reachedBottom = (data == null || data.length < size);
@@ -267,6 +294,7 @@ export class MediaListComponent implements OnInit, AfterViewInit, OnDestroy {
               this.fillTop(data);
             }
             this.media = this.media.concat(data);
+            this.medialength = this.media.length;
             break;
         }
         this.refreshing = false;
