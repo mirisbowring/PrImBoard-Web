@@ -10,4 +10,7 @@ export interface Node {
   APIEndpoint?: string;
   dataEndpoint?: string;
   userSession?: string;
+  secret?:string;
+  shown?:boolean;
+  new?:boolean;
 }

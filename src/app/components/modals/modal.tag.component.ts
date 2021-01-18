@@ -63,7 +63,7 @@ export class ModalTagComponent implements OnDestroy {
     this.subscriptions.add(
       this.mediaService.addTagMediaMap({ IDs: ids, Tags: this.localTags }).subscribe(res => {
         if (res.status === 200) {
-          this.activeModal.close({updated: true, media: res.body as Media[]} as MediaMessage);
+          this.activeModal.close({updatedTags: true, media: res.body as Media[]} as MediaMessage);
         }
       }, err => console.error('Error:' + err))
     );

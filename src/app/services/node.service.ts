@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Node } from 'src/app/models/node';
 import { Observable } from 'rxjs';
+import { stringify } from '@angular/compiler/src/util';
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +37,20 @@ export class NodeService {
     return this.httpClient.get<Node[]>(environment.gateway + '/api/v1/user/nodes', { withCredentials: true });
   }
 
+  public registerNode() {
+    return this.httpClient.get(environment.gateway + '/api/v2/infrastructure/node/register', { observe: 'response', withCredentials: true});
+  }
+
+  public refreshSecret(id: string, ret: boolean) {
+    return this.httpClient.get(environment.gateway + '/api/v2/infrastructure/node/' + id + '/secret/refresh?return=' + ret, {withCredentials: true, observe: 'response'});
+  }
+
+  public retrieveSecret(id: string) {
+    return this.httpClient.get(environment.gateway + '/api/v2/infrastructure/node/' + id + '/secret', { observe: 'response', withCredentials: true });
+  }
+
   public updateNode(id: string, node: Node) {
-    return this.httpClient.put<Node>(environment.gateway + '/api/v1/user/node/' + id, node, { withCredentials: true });
+    return this.httpClient.put(environment.gateway + '/api/v1/user/node/' + id, node, { observe: 'response', withCredentials: true });
   }
 
 }

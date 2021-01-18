@@ -1,4 +1,4 @@
-import { Component, Inject, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, ViewChild } from '@angular/core';
 import { NgbActiveModal, NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subscription } from 'rxjs';
 import { startWith, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -12,15 +12,17 @@ import { HelperService } from 'src/app/services/helper.service';
 import { MediaService } from 'src/app/services/media.service';
 import { UserService } from 'src/app/services/user.service';
 import { NodeService } from 'src/app/services/node.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-modal-usergroup',
   templateUrl: './modal.usergroup.component.html',
 })
-export class ModalUserGroupComponent {
+export class ModalUserGroupComponent implements AfterViewInit{
 
   @Input() data: Media[]|Group[]|Event[]|Node[] = [];
   @Input() typ: string;
+  @Input() showAll: boolean = false;
   @ViewChild(NgbTypeahead) ngbTypeahead: NgbTypeahead;
   private subscriptions = new Subscription();
 
@@ -31,7 +33,18 @@ export class ModalUserGroupComponent {
     private groupService: GroupService,
     private mediaService: MediaService,
     private nodeService: NodeService,
-  ) {}
+    private snackBar: MatSnackBar,
+  ) { }
+
+  ngAfterViewInit() {
+    // check if all usergroups should be shown
+    if (this.showAll && this.data.length === 1) {
+      this.localGroups = (this.data[0] as Media).groups;
+      if (this.localGroups == null) {
+        this.localGroups = [];
+      }
+    }
+  }
 
   formatter = (group: Group) => group.title;
 
@@ -58,9 +71,6 @@ export class ModalUserGroupComponent {
     this.localGroups = HelperService.tidyGroups(this.localGroups);
     switch(this.typ) {
       case 'media':
-        if (this.data.length !== 1) {
-          this.activeModal.close({canceled: true, data: null} as ModalMessage<Node>)
-        }
         // collect media ids
         const mIDs: string[] = [];
         for (const m of this.data) {
@@ -99,7 +109,13 @@ export class ModalUserGroupComponent {
   }
 
   removeGroup(group: Group): void {
-    this.localGroups = HelperService.removeItem<Group>(group, this.localGroups);
+    this.subscriptions.add(this.mediaService.removeGroup((this.data[0] as Media).id, group.id).subscribe(res => {
+      if (res.status === 200) {
+        this.data[0] = res.body as Media;
+        this.localGroups = (this.data[0] as Media).groups == null ? [] : (this.data[0] as Media).groups;
+        this.snackBar.open('removed group successfully', 'Ok', { duration: 1000 });
+      }
+    }));
   }
 
   selectedGroup(event: NgbTypeaheadSelectItemEvent): void {

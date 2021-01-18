@@ -9,7 +9,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
 import { Node } from 'src/app/models/node';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDeleteComponent } from '../modals/modal.delete.component';
 import { ModalMessage } from 'src/app/models/message';
 import { ModalUserGroupComponent } from '../modals/modal.usergroup.component';
 import { NodeService } from 'src/app/services/node.service';
@@ -37,7 +36,7 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
     private userService: UserService,
     private modalService: NgbModal,
     private nodeService: NodeService,
-    private keycloakService: KeycloakService,
+    public keycloakService: KeycloakService,
     ) { }
 
   ngOnInit() {
@@ -68,6 +67,17 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
     return parseInt(num, system);
   }
 
+  createNode(): void {
+    this.nodeService.registerNode().subscribe(res => {
+      if (res.status === 201) {
+        this.nodes.unshift(res.body as Node);
+        this.nodes[0].new = true;
+      }
+    }, err => {
+      this.snackBar.open("register node failed", 'Ok', {duration: 2000 });
+    })
+  }
+
   deleteNode(index: number): void {
     const id = this.nodes[index].id;
     this.nodeService.deleteNode(id).subscribe(res => {
@@ -92,22 +102,78 @@ export class SettingComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
+  retrieveSecret(node: Node): void {
+    if (node.shown) {
+      // remove secret if visibility is going to be disabled
+      this.nodes.forEach(n => {
+        if (n.id === node.id) {
+          n.secret = undefined;
+          n.shown = false;
+          return
+        }
+      });
+    } else {
+      this.subscriptions.add(this.nodeService.retrieveSecret(node.id).subscribe(res => {
+        if (res.status === 200) {
+          this.nodes.forEach(n => {
+            if (n.id == node.id) {
+              n.secret = (res.body as Node).secret;
+              n.shown = true;
+              return
+            }
+          })
+        }
+      }, err => {
+        this.snackBar.open('could not get secret', 'Ok', {duration: 2000 });
+      }));
+    }
+  }
+
+  refreshSecret(node: Node): void {
+    const ret = node.shown == undefined || node.shown == null ? false : node.shown;
+    this.subscriptions.add(this.nodeService.refreshSecret(node.id, ret).subscribe(res => {
+      if (res.status == 200) {
+        // set refreshed token if visible at moment
+        if (ret) {
+          this.nodes.forEach(n => {
+            if (n.id == node.id) {
+              n.secret = res.body as string;
+              return;
+            }
+          })
+        }
+        this.snackBar.open('refreshed secret', 'Ok', { duration: 2000 });
+      }
+    }, err => {
+      this.snackBar.open('could not refresh secret', 'Ok', { duration: 2000 });
+    }));
+  }
+
   saveNode(index: number): void {
     const node = this.nodes[index];
+    node.secret = null;
     if (node.id == null) {
-      this.nodeService.createNode(node).subscribe(res => {
+      this.subscriptions.add(this.nodeService.createNode(node).subscribe(res => {
         if (res.status === 201) {
           this.nodes[index] = res.body as Node;
         }
+        this.snackBar.open('node created', 'Ok', {duration: 2000 });
       }, err => {
         console.error(err);
-      })
+        this.snackBar.open('failed to create node', 'Ok', {duration: 2000 });
+      }));
     } else {
-      this.nodeService.updateNode(node.id, node).subscribe((data: Node) => {
-        if (data != null) {
-          this.nodes[index] = data;
+      node.type = node.type == null || node.type === '' ? 'web' : node.type;
+      this.subscriptions.add(this.nodeService.updateNode(node.id, node).subscribe(res => {
+        if (res.status == 200) {
+          if (res.body != null) {
+            this.nodes[index] = res.body as Node;
+          }
+          this.snackBar.open('updated node', 'Ok', {duration: 2000 });
         }
-      })
+      }, err => {
+        this.snackBar.open('failed to update node', 'Ok', {duration: 2000 });
+      }));
     }
   }
 

@@ -94,6 +94,11 @@ export class MediaService {
     return this.httpClient.get(path , { withCredentials: true }).toPromise();
   }
 
+  public removeGroup(id: string, groupId: string) {
+    let path = environment.gateway + '/api/v1/media/' + id + '/groups/' + groupId;
+    return this.httpClient.delete(path, {observe: 'response', withCredentials: true});
+  }
+
   public updateMediaByHash(hash: string, media: Media) {
     return this.httpClient.put(environment.gateway + '/api/v1/mediaByHash/' + hash, media, { observe: 'response', withCredentials: true });
   }

@@ -53,28 +53,12 @@
     <div class="col-md-7">
       <div class="row">
         <div class="col-md-12">
-          <h2>Divers</h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <button mat-stroked-button color="primary" class="btn btn-outline-secondary"
-                (click)="getInviteToken()">Generate Invite</button>
-            </div>
-            <input type="text" class="form-control" placeholder="Token" aria-label="Token" [(ngModel)]="inviteToken"
-              readonly>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
           <div class="float-left">
             <h2>Nodes</h2>
           </div>
           <div class="float-right">
-            <button mat-icon-button aria-label="Add Node" (click)="nodes.unshift({title:'&lt;New Node&gt;'})">
+            <!-- <button mat-icon-button aria-label="Add Node" (click)="nodes.unshift({title:'&lt;New Node&gt;'})"> -->
+            <button mat-icon-button aria-label="Add Node" (click)="createNode()">
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -83,72 +67,102 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <mat-accordion>
-            <mat-expansion-panel *ngFor="let node of nodes; let i = index" [expanded]="(i === 0 && node.id == null) ? true : false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <b>{{node.title}}</b>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-              <ng-template matExpansionPanelContent>
-                <div class="container">
-                  <div class="row">
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="Title" [value]="node.title" (input)="node.title = $event.target.value">
-                      </mat-form-field>
+          <div class="accordion" id="nodeAccordion">
+            <div class="card" *ngFor="let node of nodes; let i = index">
+              <div class="card-header" id="heading-{{node.id}}">
+                <h2 class="mb-0">
+                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" attr.data-target="#collapse-{{node.id}}" aria-expanded="true" attr.aria-controls="collapse-{{node.id}}" (click)="nodes[0].new = false">
+                    <b>{{node.title}}</b>
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapse-{{node.id}}" class="collapse {{(i === 0 && node.new) ? 'show' : ''}}" attr.aria-labelledby="heading-{{node.id}}" data-parent="#nodeAccordion">
+                <div class="card-body">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-6">
+                        <label for="{{node.id}}-title">Title</label>
+                        <div class="input-group">
+                          <input id="{{node.id}}-title" class="form-control" [value]="node.title" (input)="node.title = $event.target.value">
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <label for="{{node.id}}-type">Type</label>
+                        <div class="input-group">
+                          <select id="{{node.id}}-type" class="custom-select" (change)="node.type = $event.target.value">
+                            <option value="web" selected>WEB</option>
+                          </select>
+                          <!-- <div ngbDropdown class="d-inline-block">
+                            <button class="btn btn-outline-primary" id="{{node.id}}-type-select" ngbDropdownToggle>{{node.type==null || node.type === "" ? 'Select type' : node.type}}</button>
+                            <div ngbDropdownMenu aria-labelledby="typeSelect">
+                              <button ngbDropdownItem (click)="node.type='web'">WEB</button>
+                            </div>
+                          </div> -->
+                        </div>
+                        <!-- <mat-form-field appearance="fill"> -->
+                        <!-- <mat-form-field class="full-width-input">
+                          <mat-label>Select type</mat-label>
+                          <mat-select disableRipple [(value)]="node.type">
+                            <mat-option value="web">WEB</mat-option>
+                          </mat-select>
+                        </mat-form-field> -->
+                      </div>
                     </div>
-                    <div class="col-6">
-                      <!-- <mat-form-field appearance="fill"> -->
-                      <mat-form-field class="full-width-input">
-                        <mat-label>Select type</mat-label>
-                        <mat-select disableRipple [(value)]="node.type">
-                          <mat-option value="web">WEB</mat-option>
-                        </mat-select>
-                      </mat-form-field>
+                    <div class="row">
+                      <div class="col-12">
+                        <label for="{{node.id}}-api-endpoint">API Endpoint</label>
+                        <div class="input-group">
+                          <input id="{{node.id}}-api-endpoint" class="form-control" [value]="node.APIEndpoint == null ? '' : node.APIEndpoint" (input)="node.APIEndpoint = $event.target.value">
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="API Endpoint" [value]="node.APIEndpoint" (input)="node.APIEndpoint = $event.target.value">
-                      </mat-form-field>
+                    <div class="row" *ngIf="node.creator === keycloakService.getUsername()">
+                      <div class="col-12">
+                        <label for="{{node.id}}-secret">Keycloak Secret</label>
+                        <div class="input-group">
+                          <input id="{{node.id}}-secret" [type]="node.shown != null && node.shown === true? 'text' : 'password'" class="form-control" [value]="node.secret" disabled>
+                          <div class="input-group-append">
+                            <span class="input-group-text material-icons" role="button" (click)="retrieveSecret(node)">
+                              visibility
+                            </span>
+                            <span class="input-group-text material-icons" role="button" (click)="refreshSecret(node)">
+                              refresh
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="col-6">
-                      <mat-form-field class="full-width-input">
-                        <input matInput placeholder="Data Endpoint" [value]="node.dataEndpoint" (input)="node.dataEndpoint = $event.target.value">
-                      </mat-form-field>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <h6 *ngFor="let group of node.groups; let i = index" class="d-inline mr-1">
+                            <span class="badge badge-pill badge-secondary">
+                              <label class="align-middle ml-1 mb-0 mr-1 font-14 font-weight-normal">{{group.title}}</label>
+                              <!-- <span role="button" id="chip-{{i}}" class="material-icons align-middle font-20 p-1"
+                                (mouseenter)="toggleChipCancel('chip-'+i)" (mouseleave)="toggleChipCancel('chip-'+i)"
+                                (click)="removeGroup(group)">
+                                close
+                              </span> -->
+                            </span>
+                          </h6>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row">
-                  <div class="col-12">
-                    <div class="form-group">
-                      <h6 *ngFor="let group of node.groups; let i = index" class="d-inline mr-1">
-                        <span class="badge badge-pill badge-secondary">
-                          <label class="align-middle ml-1 mb-0 mr-1 font-14 font-weight-normal">{{group.title}}</label>
-                          <!-- <span role="button" id="chip-{{i}}" class="material-icons align-middle font-20 p-1"
-                            (mouseenter)="toggleChipCancel('chip-'+i)" (mouseleave)="toggleChipCancel('chip-'+i)"
-                            (click)="removeGroup(group)">
-                            close
-                          </span> -->
-                        </span>
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="float-right">
-                        <button type="button" class="btn btn-outline-secondary mr-2 material-icons" (click)="openGroupNodeModal(node)" ngbTooltip="map group access">group_add</button>
-                        <button type="button" class="btn btn-outline-success mr-2" (click)="saveNode(i)">Save</button>
-                        <button type="button" class="btn btn-outline-danger" (click)="deleteNode(i)">Delete</button>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="float-right">
+                          <button type="button" class="btn btn-outline-secondary mr-2 material-icons" (click)="openGroupNodeModal(node)" ngbTooltip="map group access">group_add</button>
+                          <button type="button" class="btn btn-outline-success mr-2" (click)="saveNode(i)">Save</button>
+                          <button type="button" class="btn btn-outline-danger" (click)="deleteNode(i)">Delete</button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </ng-template>
-            </mat-expansion-panel>
-          </mat-accordion>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

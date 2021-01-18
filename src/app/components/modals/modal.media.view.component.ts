@@ -19,12 +19,15 @@ import { HelperService } from 'src/app/services/helper.service';
 import { KeycloakService } from 'keycloak-angular';
 import { UserService } from 'src/app/services/user.service';
 import { CookieService } from 'ngx-cookie-service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaMessage } from 'src/app/models/message';
-import SwiperCore, { Navigation, Virtual } from 'swiper/core';
+import SwiperCore, { Navigation, Virtual, Keyboard } from 'swiper/core';
+import { ModalTagComponent } from './modal.tag.component';
+import { Snackbar } from 'src/app/models/snackbar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // install Swiper components
-SwiperCore.use([Navigation, Virtual]);
+SwiperCore.use([Navigation, Virtual, Keyboard]);
 
 @Component({
   selector: 'app-media',
@@ -85,6 +88,8 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
     private keycloakService: KeycloakService,
     private userService: UserService,
     private cookieService: CookieService,
+    private modalService: NgbModal,
+    private snackBar: MatSnackBar
   ) { }
 
   async ngOnInit() {
@@ -246,23 +251,23 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
     this.tagCtrl.setValue('');
   }
 
-  addGroup(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = input.value as Group;
+  // addGroup(event: MatChipInputEvent): void {
+  //   const input = event.input;
+  //   const value = input.value as Group;
 
-    // Add Group
-    if ((value.title || '').trim()) {
-      value.title = value.title.trim();
-      this.localGroups.push(value);
-    }
+  //   // Add Group
+  //   if ((value.title || '').trim()) {
+  //     value.title = value.title.trim();
+  //     this.localGroups.push(value);
+  //   }
 
-    //  Reset the input value
-    if (input) {
-      input.value = null;
-    }
+  //   //  Reset the input value
+  //   if (input) {
+  //     input.value = null;
+  //   }
 
-    this.groupCtrl.setValue('');
-  }
+  //   this.groupCtrl.setValue('');
+  // }
 
   isVideo(): boolean {
     if (this.med.contentType.startsWith('video')) {
@@ -405,6 +410,32 @@ export class ModalMediaViewComponent implements OnInit, AfterViewInit, OnDestroy
   previous(): void {
     // this.med = this.data[--this.dataIndex];
     this.swiper.slidePrev(300);
+  }
+
+  openAccessModal(): void {
+    let modalRef = this.modalService.open(ModalUserGroupComponent);
+    modalRef.componentInstance.data = [this.med] as Media[];
+    modalRef.componentInstance.typ = 'media';
+    modalRef.componentInstance.showAll = true;
+    modalRef.result.then((res: MediaMessage) => {
+      if (res.updatedGroups) {
+        this.med = res.media[0];
+        this.snackBar.open('Mapped groups successfully!', 'Ok', { duration: 2000 });
+      }
+    });
+  }
+
+  openTagModal(): void {
+    let modalRef = this.modalService.open(ModalTagComponent);
+    modalRef.componentInstance.data = [this.med] as Media[];
+    modalRef.componentInstance.typ = 'media';
+    modalRef.result.then((res: MediaMessage) => {
+      if (res.updatedTags) {
+        this.med = res.media[0];
+        this.snackBar.open('Mapped tags successfully!', 'Ok', { duration: 2000 });
+        // this.updateMediaCache(res.media, 'Mapped tags successfully!')
+      }
+    });
   }
 
 }

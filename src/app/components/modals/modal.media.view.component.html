@@ -12,23 +12,29 @@
       <button class="btn btn-outline-secondary" (click)="addTitleShown=false">Cancel</button>
     </form>
   </h5>
-  <span role="button" class="material-icons ml-auto" (click)="openSource()">
+  <span role="button" (click)="openTagModal()" class="material-icons ml-auto" placement="bottom" ngbTooltip="tag item">
+    local_offer
+  </span>
+  <span role="button" (click)="openAccessModal()" class="material-icons ml-3" placement="bottom" ngbTooltip="manage access">
+    group_add
+  </span>
+  <span role="button" (click)="openSource()" class="material-icons ml-3" placement="bottom" ngbTooltip="open in new tab">
     launch
   </span>
   <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close" (click)="onNoClick()">
     <span class="material-icons">close</span>
   </button>
 </div>
-<a role="button" class="carousel-control-prev" style="top:63px;justify-content: flex-end;width:7%;z-index:5000;" (click)="previous()">
+<a role="button" class="carousel-control-prev carousel-control" (click)="previous()">
   <span aria-hidden="true" class="carousel-control-prev-icon"></span>
   <span class="sr-only">Previous</span>
 </a>
-<a role="button" class="carousel-control-next" style="top:63px;justify-content: flex-start;width:7%;z-index:5000;" (click)="next()">
+<a role="button" class="carousel-control-next carousel-control" (click)="next()">
   <span aria-hidden="true" class="carousel-control-next-icon"></span>
   <span class="sr-only">Next</span>
 </a>
 <div class="modal-body" style="padding:1rem 0;">
-  <swiper [slidesPerView]="1" [virtual]="true" [threshold]="50" [initialSlide]="dataIndex" (swiper)="onSwiper($event)"
+  <swiper [slidesPerView]="1" [virtual]="true" [threshold]="50" [initialSlide]="dataIndex" [keyboard]="{enabled: true, onlyInViewport: false}" (swiper)="onSwiper($event)"
     (slideChange)="onSlideChange()">
     <ng-container *ngFor="let m of data; index as i">
 
@@ -99,11 +105,16 @@
           </div> -->
         <div class="row">
           <div class="col-12">
-            <p>
+            <p class="mb-0">
               <ng-container
                 *ngIf="setDateShown === true; then setDate; else (med.timestamp != null && knownDate) || (unknownDate)">
               </ng-container>
             </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <span class="badge badge-secondary badge-list" *ngFor="let tag of med.tags" routerLink="/home/{{tag}}">{{tag}}</span>
           </div>
         </div>
         <div class="row">
@@ -112,11 +123,11 @@
             <p (click)="addDescriptionShown=true" *ngIf="!addDescriptionShown" class="edit-description">
               {{med.description == null ? "Add description" : "Edit Description"}}</p>
             <form (ngSubmit)="submitDescriptionForm()" *ngIf="addDescriptionShown">
-              <mat-form-field class="full-width-input">
-                <textarea matInput placeholder="Description" [formControl]="descriptionInput"></textarea>
-              </mat-form-field>
-              <button mat-flat-button color="primary" type="submit">Send Comment</button>
-              <button mat-flat-button type="button" (click)="addDescriptionShown=false">Cancel</button>
+              <textarea class="form-control mb-3" id="exampleFormControlTextarea1" [formControl]="descriptionInput" placeholder="Description"></textarea>
+              <div class="clearfix">
+                <button type="submit" class="btn btn-success ml-3 float-right">Save Description</button>
+                <button type="button" class="btn btn-outline-secondary float-right" (click)="addDescriptionShown=false">Cancel</button>
+              </div>
             </form>
           </div>
         </div>
@@ -145,15 +156,15 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <button mat-flat-button color="primary" (click)="addCommentShown=true" *ngIf="!addCommentShown">
+                  <button type="button" class="btn btn-primary" (click)="addCommentShown=true" *ngIf="!addCommentShown">
                     Comment
                   </button>
                   <form (ngSubmit)="submitCommentForm()" *ngIf="addCommentShown">
-                    <mat-form-field class="full-width-input">
-                      <textarea matInput placeholder="Kommentar" [formControl]="commentInput"></textarea>
-                    </mat-form-field>
-                    <button mat-flat-button color="primary" type="submit">Send Comment</button>
-                    <button mat-flat-button type="button" (click)="addCommentShown=false">Cancel</button>
+                    <textarea class="form-control mb-3" [formControl]="commentInput" placeholder="Comment"></textarea>
+                    <div class="clearfix">
+                      <button type="submit" class="btn btn-success ml-3 float-right">Send Comment</button>
+                      <button type="button" class="btn btn-outline-secondary float-right" (click)="addCommentShown=false">Cancel</button>
+                    </div>
                   </form>
                 </div>
               </div>
@@ -163,23 +174,7 @@
             <div class="box box-container">
               <div class="row">
                 <div class="col-md-12">
-                  <h3>
-                    Tags
-                    <button class="tag-button" (click)="addTagShown=true" *ngIf="!addTagShown">
-                      <mat-icon>add</mat-icon>
-                    </button>
-                  </h3>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <ng-container *ngIf="med.tags == null else tags">
-                  </ng-container>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <form (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
+                  <!-- <form (ngSubmit)="submitTagForm()" *ngIf="addTagShown">
                     <mat-form-field class="full-width-input">
                       <mat-chip-list #tagList aria-label="Tag selection">
                         <mat-chip *ngFor="let tag of localTags" [selectable]="false" [removable]="true"
@@ -189,7 +184,7 @@
                         </mat-chip>
                         <input #tagInput placeholder="Add Tag..." [formControl]="tagCtrl" [matAutocomplete]="auto"
                           [matChipInputFor]="tagList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                          (matChipInputTokenEnd)="addTag($event)">
+                          (matChipInputTokenEnd)="addTag($event)" class="form-control">
                       </mat-chip-list>
                       <mat-autocomplete autoActivateFirstOption #auto="matAutocomplete"
                         (optionSelected)="selectedTag($event)">
@@ -200,10 +195,10 @@
                     </mat-form-field>
                     <button mat-flat-button color="primary" type="submit">Save Tags</button>
                     <button mat-flat-button type="button" (click)="addTagShown=false">Cancel</button>
-                  </form>
+                  </form> -->
                 </div>
               </div>
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-md-12">
                   <h3>
                     Access
@@ -244,7 +239,7 @@
                     <button mat-flat-button type="button" (click)="addAccessShown=false">Cancel</button>
                   </form>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -270,12 +265,6 @@
             <mat-datepicker #timestamp></mat-datepicker>
           </mat-form-field>
           and uploaded on {{med.timestampUpload * 1000 | date: 'dd. MMMM yyyy'}}
-        </ng-template>
-
-        <ng-template #tags>
-          <mat-chip-list aria-label="tags">
-            <mat-chip class="tag-chip" *ngFor="let tag of med.tags" routerLink="/home/{{tag}}">{{tag}}</mat-chip>
-          </mat-chip-list>
         </ng-template>
 
         <ng-template #groups>
